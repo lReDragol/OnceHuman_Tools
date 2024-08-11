@@ -6,7 +6,7 @@
 
 ###
 
-<h2 align="left">Если вы сдесь то наверняка хотите сделать свою кастомную картину в иге OnceHuman.<br>В таком случае я представляю вам простенькую програмку.<br><br>Краткая инструкция по использованию:<br>-----------------------------------------<br>If you are here, you probably want to make your own custom picture in the OnceHuman game.<br>In this case, I present you a simple program.<br><br>A brief instruction on how to use it:</h2>
+<h2 align="left">Если вы сдесь то наверняка хотите сделать свою кастомную картину в игре OnceHuman.<br>В таком случае я представляю вам простенькую програмку.<br><br>Краткая инструкция по использованию:<br>-----------------------------------------<br>If you are here, you probably want to make your own custom picture in the OnceHuman game.<br>In this case, I present you a simple program.<br><br>A brief instruction on how to use it:</h2>
 
 ###
 
