@@ -10,7 +10,7 @@
 
 ###
 
-<p align="left">1) Запустите программу и перетащите в серое поле любую png.<br>(Обязательно png размером 1920x1080!)<br>-----------------------------------------<br>1) Run the program and drag and drop any png picture into the gray box.<br>(Make sure the png size is 1920x1080!)</p>
+<p align="left">1) Запустите программу и перетащите в серое поле любую png.<br>(Обязательно png размером 1920x1080!)<br>-----------------------------------------<br>1) Run the program and drag and drop any png into the gray box..<br>(Make sure the png size is 1920x1080!)</p>
 
 ###
 
