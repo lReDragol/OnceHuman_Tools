@@ -6,11 +6,11 @@
 
 ###
 
-<h2 align="left">Если вы сдесь то наверняка хотите сделать свою кастомную картину в игре OnceHuman.<br>В таком случае я представляю вам простенькую програмку.<br><br>Краткая инструкция по использованию:<br>-----------------------------------------<br>If you are here, you probably want to make your own custom picture in the OnceHuman game.<br>In this case, I present you a simple program.<br><br>A brief instruction on how to use it:</h2>
+<h2 align="left">Если вы здесь то наверняка хотите сделать свою кастомную картину в игре OnceHuman.<br>В таком случае я представляю вам простенькую програмку.<br><br>Краткая инструкция по использованию:<br>-----------------------------------------<br>If you are here, you probably want to make your own custom picture in the OnceHuman game.<br>In this case, I present you a simple program.<br><br>A brief instruction on how to use it:</h2>
 
 ###
 
-<p align="left">1) Запустите программу и перетащите в серое поле любую png картинку в серое поле.<br>(Обязательно png размером 1920x1080!)<br>-----------------------------------------<br>1) Run the program and drag and drop any png picture into the gray box.<br>(Make sure the png size is 1920x1080!)</p>
+<p align="left">1) Запустите программу и перетащите в серое поле любую png.<br>(Обязательно png размером 1920x1080!)<br>-----------------------------------------<br>1) Run the program and drag and drop any png picture into the gray box.<br>(Make sure the png size is 1920x1080!)</p>
 
 ###
 
