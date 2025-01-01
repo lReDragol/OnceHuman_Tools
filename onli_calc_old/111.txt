@@ -1,0 +1,1961 @@
+[
+    {
+        "type": "on_event",
+        "event": "every_n_shots",
+        "n": 4,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "unstable_bomber",
+                "damage_formula": "100% Psi Intensity",
+                "blast_radius": 1.5,
+                "decay": "50% over radius",
+                "additional_info": {
+                    "can_crit": false,
+                    "can_hit_weakspots": false
+                }
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "crit_hit",
+        "effects": [
+            {
+                "type": "increment_counter",
+                "counter": "shots_towards_bomber_trigger"
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "explosion_elemental_damage_percent",
+                "value": 30,
+                "duration_seconds": 8
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "unstable_bomber_crit_bonus",
+        "properties": {
+            "crit_rate_percent": 25,
+            "can_crit": true
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 60,
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "the_bulls_eye",
+                "vulnerability_bonus_percent": 8,
+                "duration_seconds": 12
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "spread_bulls_eye",
+        "chance_percent": 80,
+        "effects": [
+            {
+                "type": "spread_effect",
+                "radius_meters": 15,
+                "effect": {
+                    "type": "apply_status",
+                    "status": "the_bulls_eye",
+                    "description": "Spread The Bull's Eye to 1 enemy."
+                }
+            },
+            {
+                "type": "increase_stat",
+                "stat": "weapon_damage_percent",
+                "value": 25,
+                "duration_seconds": 10
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "conditions": {
+            "target_is_marked": true
+        },
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "attack_percent",
+                "value": 3,
+                "duration_seconds": 10,
+                "max_stacks": 3
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "chance_percent": 55,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "shrapnel",
+                "description": "Deals Weapon DMG of 50% Attack to a random unhit part.",
+                "damage_formula": "50% Attack",
+                "damage_type": "weapon_element",
+                "can_crit": true,
+                "can_hit_weakspots": true,
+                "decay": true
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "weakspot_damage_bonus",
+        "properties": {
+            "weakspot_damage_bonus_percent": 15
+        }
+    },
+    {
+        "type": "on_event",
+        "event": "trigger_shrapnel",
+        "effects": [
+            {
+                "type": "modify_behavior",
+                "behavior": "ignore_unhit_parts",
+                "enabled": false
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 35,
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "the_bulls_eye",
+                "description": "Highlight marked target with Vulnerability +8% for 12 seconds.",
+                "vulnerability_bonus_percent": 8,
+                "duration_seconds": 12
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "hit_target_with_status",
+        "conditions": {
+            "status": "the_bulls_eye"
+        },
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "damage_percent",
+                "value": 20
+            }
+        ]
+    }
+]
+[]
+[
+    {
+        "type": "on_event",
+        "event": "switch_mode",
+        "cooldown_seconds": 20,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "fortress_warfare",
+                "description": "Create an area of effect within a 2m radius that grants allies Heavy Armor for 5 seconds."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "fortress_warfare_damage_boost",
+        "conditions": {
+            "mode": "fortress_warfare"
+        },
+        "properties": {
+            "weapon_damage_bonus_percent": 10
+        }
+    },
+    {
+        "type": "on_event",
+        "event": "grant_ally_buff",
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "heavy_armor",
+                "description": "Grants Super Armor with Weapon DMG +20%.",
+                "duration_seconds": 5,
+                "stat_bonuses": {
+                    "super_armor": true,
+                    "weapon_damage_bonus_percent": 20
+                }
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 36,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "fast_gunner",
+                "description": "Grants a stack of Fast Gunner with Fire Rate +1% and Attack +1% for 2 seconds. Can stack up to 5 times.",
+                "duration_seconds": 2,
+                "max_stacks": 5,
+                "stat_bonuses": {
+                    "fire_rate_percent": 1,
+                    "attack_percent": 1
+                }
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "effects": [
+            {
+                "type": "modify_chance",
+                "base_event": "hit_target",
+                "new_chance_percent": 72
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "trigger_fast_gunner",
+        "effects": [
+            {
+                "type": "reload_ammo",
+                "amount": 1
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "fire_weapon",
+        "chance_percent": 40,
+        "effects": [
+            {
+                "type": "consume_extra_ammo",
+                "amount": 1
+            },
+            {
+                "type": "conditional_stat_bonus",
+                "condition": "extra_ammo_consumed",
+                "stat": "attack_percent",
+                "value": 80,
+                "duration_seconds": 2
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "chance_percent": 80,
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "power_surge",
+                "description": "Inflicts Power Surge status for 6 seconds, reducing accuracy by 40%.",
+                "duration_seconds": 6,
+                "additional_effects": {
+                    "status_damage_percent": 50,
+                    "damage_type": "shock",
+                    "can_crit": false,
+                    "can_hit_weakspots": false,
+                    "decay": false
+                }
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "hit_enemy_with_status",
+        "conditions": {
+            "status": "power_surge"
+        },
+        "effects": [
+            {
+                "type": "area_damage",
+                "damage_percent": 100,
+                "damage_type": "shock",
+                "description": "Deals Shock DMG to all enemies affected by Power Surge in the area."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "shock_damage_dealt",
+        "conditions": {
+            "count": 4
+        },
+        "effects": [
+            {
+                "type": "reload_ammo",
+                "amount": 1
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "last_shot",
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "burn",
+                "stacks": 1,
+                "duration_seconds": 6,
+                "interval_seconds": 0.5,
+                "damage_formula": "10% Psi Intensity",
+                "damage_type": "blaze",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "all_projectiles_hit",
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "burn",
+                "stacks": 1,
+                "duration_seconds": 6,
+                "interval_seconds": 0.5,
+                "damage_formula": "10% Psi Intensity",
+                "damage_type": "blaze",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "all_projectiles_hit_n_times",
+        "n": 4,
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "special_burn",
+                "description": "Lose HP but gain Attack +20% and Vulnerability +10% for 8 seconds.",
+                "hp_penalty": true,
+                "attack_bonus_percent": 20,
+                "vulnerability_bonus_percent": 10,
+                "duration_seconds": 8
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "hit_burned_target",
+        "conditions": {
+            "all_projectiles_hit": true
+        },
+        "chance_percent": 50,
+        "effects": [
+            {
+                "type": "reload_ammo",
+                "amount": 1
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 30,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "bounce",
+                "description": "Bounce to hit a random enemy within 10m radius, dealing Weapon DMG of 60% Attack.",
+                "damage_formula": "60% Attack",
+                "damage_type": "weapon_element",
+                "can_crit": true,
+                "can_hit_weakspots": true,
+                "decay": true,
+                "bounce_radius_meters": 10
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "bounce_damage_bonus",
+        "properties": {
+            "damage_bonus_percent": 60
+        }
+    }
+]
+[]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 25,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "power_surge",
+                "description": "Triggers Power Surge on hit, dealing 50% Psi Intensity as Shock Element DMG."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "defeat_enemy",
+        "effects": [
+            {
+                "type": "modify_trigger_factor",
+                "ability": "power_surge",
+                "bonus_percent": 30,
+                "duration_seconds": 12,
+                "description": "Increases Power Surge trigger factor by 30% for 12 seconds after defeating an enemy."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "reload_weapon",
+        "effects": [
+            {
+                "type": "modify_trigger_factor",
+                "ability": "power_surge",
+                "bonus_percent": 40,
+                "duration_seconds": 3,
+                "description": "Increases Power Surge trigger factor by 40% for 3 seconds after reloading."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "power_surge_base_factor_bonus",
+        "properties": {
+            "trigger_factor_bonus_percent": 40
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 25,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "shrapnel",
+                "damage_formula": "50% Attack",
+                "damage_type": "weapon_element",
+                "can_crit": true,
+                "can_hit_weakspots": true,
+                "decay": true,
+                "description": "Deals Weapon DMG of 50% Attack to a random unhit part."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "defeat_enemy",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "shrapnel_trigger_chance_percent",
+                "value": 80,
+                "duration_seconds": 12,
+                "description": "Increases the chance to trigger Shrapnel by 80% for 12 seconds after defeating an enemy."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "shrapnel_target_parts",
+                "value": 1,
+                "duration_seconds": 4,
+                "description": "Hitting a Weakspot grants Shrapnel target parts +1 for 4 seconds."
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 25,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "bounce",
+                "damage_formula": "60% Attack",
+                "damage_type": "weapon_element",
+                "can_crit": true,
+                "can_hit_weakspots": true,
+                "decay": true,
+                "bounce_radius_meters": 10,
+                "description": "Deals Weapon DMG of 60% Attack to a random enemy within a 10m radius."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "bounce_trigger_factor_percent",
+                "value": 60,
+                "duration_seconds": 4,
+                "description": "Bounce trigger factor for this shot is increased by 60% when hitting a weakspot."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "magazine_below_half",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "bounce_trigger_count",
+                "value": 1,
+                "description": "When magazine capacity is below 50%, the number of Bounce triggers increases by 1."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "bounce_base_damage_bonus",
+        "properties": {
+            "damage_bonus_percent": 50,
+            "description": "Bounce base damage increased by 50%."
+        }
+    },
+    {
+        "type": "conditional_stat_bonus",
+        "condition": "attacking_protocell",
+        "stat": "damage_percent",
+        "value": 20,
+        "description": "Impact: Increases damage by 20% when attacking Protocell."
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "crit_hit",
+        "chance_percent": 40,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "frost_vortex",
+                "damage_formula": "30% Psi Intensity",
+                "damage_type": "frost",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false,
+                "max_instances": 2,
+                "description": "Traps enemies within a 4.5m radius and inflicts 30% Psi Intensity Status DMG per second for 4 seconds."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "trigger_frost_vortex",
+        "effects": [
+            {
+                "type": "reload_ammo",
+                "amount": 6,
+                "description": "Automatically reloads 15% of bullets after creating Frost Vortex."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "frost_vortex_additional",
+        "properties": {
+            "max_frost_vortex": 2,
+            "description": "Allows up to 2 Frost Vortex to exist simultaneously."
+        }
+    },
+    {
+        "type": "conditional_stat_bonus",
+        "condition": "attacking_rosetta",
+        "stat": "damage_percent",
+        "value": 20,
+        "description": "Penetration: Increases damage by 20% when attacking Rosetta."
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "every_n_hits",
+        "n": 15,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "unstable_bomber",
+                "damage_formula": "100% Psi Intensity",
+                "damage_type": "blast",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": true,
+                "blast_radius_meters": 1.5,
+                "delay_seconds": 0.4,
+                "description": "Triggers Unstable Bomber, inflicting a blast of 100% Psi Intensity after 0.4 seconds with a blast radius of 1.5m. The damage decays over distance down to a minimum of 50%."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "hit_target_with_status",
+        "status": "unstable_bomber",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "explosive_final_dmg_percent",
+                "value": 10,
+                "duration_seconds": 4,
+                "description": "Hitting enemies affected by Unstable Bomber increases the current Unstable Bomber Final DMG by 10% for 4 seconds."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "conditions": {
+            "status": "unstable_bomber"
+        },
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "explosive_final_dmg_percent",
+                "value": 10,
+                "duration_seconds": 4,
+                "description": "Weakspot hits double the DMG increase, adding an additional 10% to Explosive Final DMG."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "unstable_bomber_delay_bonus",
+        "properties": {
+            "delay_bonus_seconds": 0.3,
+            "description": "Unstable Bomber delay increased by 0.3 seconds."
+        }
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "unstable_bomber_dmg_scaling",
+        "properties": {
+            "dmg_scaling_per_0.1s_delay": 20,
+            "description": "For every 0.1 seconds of Unstable Bomber delay, Unstable Bomber DMG increases by 20%."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 30,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "shrapnel",
+                "damage_formula": "50% Attack",
+                "damage_type": "weapon_element",
+                "can_crit": true,
+                "can_hit_weakspots": true,
+                "decay": true,
+                "description": "Deals Weapon DMG of 50% Attack to a random unhit part."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "shrapnel_dmg_bonus",
+        "properties": {
+            "damage_bonus_percent": 60,
+            "description": "Shrapnel damage increased by 60%."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 35,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "power_surge",
+                "damage_formula": "50% Psi Intensity",
+                "damage_type": "shock",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false,
+                "description": "Deals Status DMG of 50% Psi Intensity once and inflicts Power Surge status for 6 seconds, reducing accuracy by 40%."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "crit_hit",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "power_surge_trigger_chance_percent",
+                "value": 30,
+                "duration_seconds": 3,
+                "description": "Critical hits increase the chance to trigger Power Surge by 30% for 3 seconds."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "power_surge_base_chance_bonus",
+        "properties": {
+            "power_surge_chance_percent": 30,
+            "description": "Increases the base chance to trigger Power Surge by 30%."
+        }
+    },
+    {
+        "type": "conditional_stat_bonus",
+        "condition": "attacking_specific_target",
+        "target": "rosetta",
+        "stat": "damage_percent",
+        "value": 20,
+        "description": "Penetration: Increases damage by 20% when attacking Rosetta."
+    }
+]
+[]
+[
+    {
+        "type": "on_event",
+        "event": "every_n_hits",
+        "n": 7,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "burn",
+                "damage_formula": "10% Psi Intensity",
+                "damage_type": "blaze",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false,
+                "duration_seconds": 6,
+                "damage_interval_seconds": 0.5,
+                "max_stacks": 5,
+                "description": "Deals Status DMG of 10% Psi Intensity every 0.5s for 6s. DMG increases with more stacks, up to 5 stacks."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "kill_enemy_with_burn",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "reload_speed_percent",
+                "value": 20,
+                "duration_seconds": 5,
+                "description": "Grants Reload Speed +20% for 5 seconds."
+            },
+            {
+                "type": "increase_stat",
+                "stat": "burn_dmg_percent",
+                "value": 15,
+                "duration_seconds": 5,
+                "description": "Grants Burn DMG +15% for 5 seconds."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "burn_stack_bonus",
+        "properties": {
+            "max_burn_stacks": 1,
+            "description": "Max Burn stacks increased by 1."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "every_n_hits",
+        "n": 20,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "frost_vortex",
+                "damage_formula": "30% Psi Intensity",
+                "damage_type": "frost",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false,
+                "max_instances": 2,
+                "description": "Traps enemies within a 4.5m radius and inflicts 30% Psi Intensity Status DMG per second for 4 seconds."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "effects": [
+            {
+                "type": "increment_hit_count",
+                "value": 1,
+                "description": "Weakspot hits count as 2 hits towards triggering Frost Vortex."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "frost_vortex_dmg_scaling",
+        "properties": {
+            "max_frost_vortex_dmg_bonus_percent": 200,
+            "description": "The closer to the center of the Frost Vortex, the higher the Frost Vortex DMG, up to +200%."
+        }
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "frost_dmg_bonus",
+        "properties": {
+            "damage_bonus_percent": 30,
+            "description": "Frost DMG increased by 30%."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 10,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "frost_vortex",
+                "damage_formula": "30% Psi Intensity",
+                "damage_type": "frost",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false,
+                "max_instances": 2,
+                "description": "Traps enemies within a 4.5m radius and inflicts 30% Psi Intensity Status DMG per second for 4 seconds."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "frost_vortex_triggered",
+        "effects": [
+            {
+                "type": "generate_ice_crystal",
+                "cooldown_seconds": 1.5,
+                "description": "Generates an Ice Crystal upon triggering Frost Vortex."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "ice_crystal_shatter",
+        "effects": [
+            {
+                "type": "deal_status_dmg",
+                "damage_formula": "100% Psi Intensity",
+                "damage_type": "frost",
+                "radius_meters": 4.5,
+                "description": "Ice Crystals automatically shatter after 15 seconds, dealing Frost Elemental Status DMG equal to 100% Psi Intensity to nearby targets."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "shoot_ice_crystal",
+        "effects": [
+            {
+                "type": "shatter_ice_crystal",
+                "damage_formula": "60% DMG",
+                "damage_type": "frost",
+                "description": "Shattering Ice Crystals by shooting them increases the DMG they deal to 60% to players."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "frost_dmg_bonus",
+        "properties": {
+            "damage_bonus_percent": 60,
+            "description": "Increases Frost Elemental DMG by 60%."
+        }
+    },
+    {
+        "type": "conditional_stat_bonus",
+        "condition": "ice_crystal_shattered",
+        "stat": "frost_dmg_percent",
+        "value": 20,
+        "duration_seconds": 10,
+        "max_stacks": 15,
+        "description": "Increases Frost Elemental DMG by an additional 20% for every Ice Crystal shattered, stacking up to 15 times for 10 seconds."
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "every_n_hits",
+        "n": 7,
+        "cooldown_seconds": 15,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "fortress_warfare",
+                "description": "Creates an area of effect within a 2m radius that grants allies Heavy Armor for 5 seconds and recovers 4% of max HP per second."
+            }
+        ]
+    },
+    {
+        "type": "conditional_stat_bonus",
+        "condition": "hp_above_percent",
+        "value": 75,
+        "stat": "damage_percent",
+        "increment": 25,
+        "duration_seconds": 0,
+        "description": "When HP is above 75%, Weapon DMG +25%."
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 12,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "burn",
+                "damage_formula": "10% Psi Intensity",
+                "damage_type": "blaze",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false,
+                "duration_seconds": 6,
+                "damage_interval_seconds": 0.5,
+                "max_stacks": 5,
+                "description": "Deals Status DMG of 10% Psi Intensity every 0.5s for 6s, stacking up to 5 times."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "burn_dmg_bonus",
+        "properties": {
+            "damage_bonus_percent": 10,
+            "description": "Burn damage increased by 10%."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "every_n_hits",
+        "n": 4,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "shrapnel",
+                "damage_formula": "50% Attack",
+                "damage_type": "weapon_element",
+                "can_crit": true,
+                "can_hit_weakspots": true,
+                "decay": true,
+                "description": "Deals Weapon DMG of 50% Attack to a random unhit part."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "crit_hit",
+        "effects": [
+            {
+                "type": "count_as_hits",
+                "value": 2,
+                "description": "Crit hits count as 2 hits towards triggering Shrapnel."
+            },
+            {
+                "type": "increase_stat",
+                "stat": "shrapnel_trigger_chance_percent",
+                "value": 1,
+                "duration_seconds": 1,
+                "description": "Crit hits grant Shrapnel trigger chance +1% for 1 second."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "shrapnel_crit_dmg_bonus",
+        "properties": {
+            "crit_dmg_bonus_percent": 30,
+            "description": "Shrapnel Crit DMG increased by 30%."
+        }
+    }
+]
+[]
+[
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "chance_percent": 60,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "burn",
+                "damage_formula": "10% Psi Intensity",
+                "damage_type": "blaze",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false,
+                "duration_seconds": 6,
+                "damage_interval_seconds": 0.5,
+                "max_stacks": 5,
+                "description": "Deals Status DMG of 10% Psi Intensity every 0.5s for 6s, stacking up to 5 times."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "burn_dmg_bonus",
+        "properties": {
+            "damage_bonus_percent": 10,
+            "description": "Burn damage increased by 10%."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "chance_percent": 80,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "unstable_bomber",
+                "damage_formula": "100% Psi Intensity",
+                "damage_type": "blast",
+                "can_crit": true,
+                "can_hit_weakspots": false,
+                "decay": false,
+                "blast_radius_meters": 1.5,
+                "delay_seconds": 0.1,
+                "description": "Triggers Unstable Bomber, dealing a status DMG blast of 100% Psi Intensity after 0.1 seconds with a blast radius of 1.5m."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "defeat_enemy",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "explosion_range_percent_decrease",
+                "value": 10,
+                "duration_seconds": 30,
+                "max_stacks": 5,
+                "description": "Defeating an enemy decreases explosion range by 10% and increases DMG by 20% for 30 seconds, up to 5 stacks."
+            },
+            {
+                "type": "increase_stat",
+                "stat": "dmg_percent_increase",
+                "value": 20,
+                "duration_seconds": 30,
+                "max_stacks": 5,
+                "description": "Defeating an enemy increases DMG by 20% for 30 seconds, up to 5 stacks."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "unstable_bomber_crit_dmg",
+        "properties": {
+            "guaranteed_crit_dmg": true,
+            "description": "Unstable Bomber is guaranteed to deal Crit DMG."
+        }
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "unstable_bomber_dmg_bonus",
+        "properties": {
+            "dmg_bonus_percent_per_weakspot_dmg_percent": 1,
+            "description": "With every 1% Weakspot DMG, Unstable Bomber DMG increases by 1%."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "chance_percent": 80,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "bounce",
+                "damage_formula": "60% Attack",
+                "damage_type": "weapon_element",
+                "can_crit": true,
+                "can_hit_weakspots": true,
+                "decay": true,
+                "bounce_radius_meters": 10,
+                "description": "Deals Weapon DMG of 60% Attack to a random enemy within a 10m radius."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "bounce_hit_weakspot",
+        "chance_percent": 35,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "bounce_ricochet",
+                "description": "35% chance for Bounce to continue to ricochet when hitting a Weakspot."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "bounce_did_not_defeat_or_no_target",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "weapon_dmg_percent",
+                "value": 20,
+                "duration_seconds": 5,
+                "max_stacks": 5,
+                "description": "If Bounce does not defeat an enemy or there is no target, the next 1 bullet's Weapon DMG is increased by 20%, up to 5 stacks."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "bounce_prioritize_high_hp",
+        "properties": {
+            "description": "Bounce will prioritize enemies with higher HP."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "every_n_hits",
+        "n": 4,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "shrapnel",
+                "damage_formula": "50% Attack",
+                "damage_type": "weapon_element",
+                "can_crit": true,
+                "can_hit_weakspots": true,
+                "decay": true,
+                "description": "Deals Weapon DMG of 50% Attack to a random unhit part."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "crit_hit",
+        "effects": [
+            {
+                "type": "count_as_hits",
+                "value": 2,
+                "description": "Crit hits count as 2 hits towards triggering Shrapnel."
+            },
+            {
+                "type": "increase_stat",
+                "stat": "shrapnel_trigger_chance_percent",
+                "value": 1,
+                "duration_seconds": 1,
+                "description": "Crit hits grant Shrapnel trigger chance +1% for 1 second."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "shrapnel_crit_dmg_bonus",
+        "properties": {
+            "crit_dmg_bonus_percent": 30,
+            "description": "Shrapnel Crit DMG increased by 30%."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "chance_percent": 70,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "the_bullseye",
+                "description": "Highlights the marked target and inflicts Vulnerability +8% for 12 seconds."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "weapon_switch",
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "the_bullseye",
+                "description": "Highlights the marked target and inflicts Vulnerability +8% for 12 seconds on the first hit after switching weapons."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "weakspot_damage_percent",
+                "value": 15,
+                "duration_seconds": 10,
+                "max_stacks": 3,
+                "description": "With a hit, Weakspot DMG +15% for 10 seconds. Effect can stack up to 3 times."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "defeat_enemy_with_weakspot_hit",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "attack_percent",
+                "value": 15,
+                "duration_seconds": 20,
+                "description": "After defeating an enemy with a weakspot hit, Attack +15% for 20 seconds."
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 70,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "power_surge",
+                "description": "Triggers Power Surge but does not inflict the status effect."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "power_surge_crit_bonus",
+        "properties": {
+            "crit_rate_bonus_percent": 15
+        }
+    },
+    {
+        "type": "on_event",
+        "event": "trigger_power_surge",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "crit_damage_percent",
+                "value": 15,
+                "duration_seconds": 6,
+                "max_stacks": 10
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "power_surge_damage_factor",
+        "properties": {
+            "damage_factor_bonus_percent": 15
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "reload_weapon",
+        "cooldown_seconds": 10,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "fortress_warfare",
+                "description": "Create an area of effect within a 2m radius that grants allies Heavy Armor for 5 seconds."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "fortress_warfare_scaling_attack",
+        "conditions": {
+            "mode": "fortress_warfare"
+        },
+        "properties": {
+            "max_attack_bonus_percent": 40,
+            "scaling_rate_per_second": 8
+        }
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "fortress_warfare_crit_rate",
+        "conditions": {
+            "mode": "fortress_warfare"
+        },
+        "properties": {
+            "crit_rate_bonus_percent": 30
+        }
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "fortress_warfare_damage_reduction",
+        "conditions": {
+            "mode": "fortress_warfare"
+        },
+        "properties": {
+            "damage_reduction_percent": 30
+        }
+    },
+    {
+        "type": "on_event",
+        "event": "grant_ally_buff",
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "heavy_armor",
+                "description": "Grants Super Armor with Weapon DMG +20%.",
+                "duration_seconds": 5,
+                "stat_bonuses": {
+                    "super_armor": true,
+                    "weapon_damage_bonus_percent": 20
+                }
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "all_projectiles_hit",
+        "chance_percent": 50,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "fast_gunner",
+                "description": "Grants a stack of Fast Gunner with Fire Rate +1% and Attack +1% for 2 seconds. Can stack up to 5 times.",
+                "duration_seconds": 2,
+                "max_stacks": 5,
+                "stat_bonuses": {
+                    "fire_rate_percent": 1,
+                    "attack_percent": 1
+                }
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "trigger_fast_gunner_n_times",
+        "n": 2,
+        "effects": [
+            {
+                "type": "consume_extra_ammo",
+                "amount": 1
+            },
+            {
+                "type": "increase_projectiles_per_shot",
+                "additional_projectiles": 5,
+                "description": "Next shot will fire an additional 5 projectiles."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "reload_empty_magazine",
+        "effects": [
+            {
+                "type": "apply_buff",
+                "buff_name": "empowered_bullets",
+                "description": "The first 12 bullets after reloading from an empty magazine have Attack +20%.",
+                "duration_bullets": 12,
+                "stat_bonuses": {
+                    "attack_percent": 20
+                }
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 27,
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "burn",
+                "stacks": 1,
+                "duration_seconds": 6,
+                "interval_seconds": 0.5,
+                "damage_formula": "10% Psi Intensity",
+                "damage_type": "blaze",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 20,
+        "effects": [
+            {
+                "type": "spawn_pickup",
+                "pickup_type": "deviant_particle",
+                "description": "Generates a Deviant Particle on hit. Picking it up grants Charge state."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "enter_charge_state",
+        "effects": [
+            {
+                "type": "modify_ammo",
+                "ammo_type": "dragon_breath",
+                "duration_until_reload": true,
+                "description": "Replaces all ammunition with Dragon's Breath ammo until the next reload. Dragon's Breath: Deals Blaze Elemental Weapon DMG equal to 85% Attack."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "reload_weapon",
+        "effects": [
+            {
+                "type": "consume_charge",
+                "effect": {
+                    "type": "increase_stat",
+                    "stat": "blaze_elemental_damage_percent",
+                    "value": 10,
+                    "stackable": true,
+                    "max_stacks": 4,
+                    "description": "Increases Blaze Elemental DMG by 10% for each Charge stack expended, up to 4 stacks."
+                }
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 40,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "fast_gunner",
+                "description": "Triggers Fast Gunner, increasing Fire Rate and Attack."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "fast_gunner_stack_reached_multiple_of_5",
+        "effects": [
+            {
+                "type": "grant_infinite_ammo",
+                "duration_seconds": 0.5,
+                "description": "Grants infinite ammo for 0.5 seconds."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "consecutive_hits_same_target",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "weapon_dmg_percent",
+                "value": 2,
+                "duration_seconds": 0,
+                "max_stacks": 20,
+                "description": "Hitting the same target consecutively grants Weapon DMG +2% per hit, up to +40%. Effect resets when the target is changed."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "remaining_bullets_above_50_percent",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "attack_percent",
+                "value": 40,
+                "duration_seconds": 0,
+                "description": "When the remaining bullets are more than 50% of the magazine capacity, Attack +40%."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "fast_gunner_fire_rate_bonus",
+        "properties": {
+            "fire_rate_bonus_percent": 1,
+            "attack_bonus_percent": 1,
+            "duration_seconds": 2,
+            "max_stacks": 5,
+            "description": "Each Fast Gunner stack grants Fire Rate +1% and Attack +1% for 2 seconds."
+        }
+    }
+]
+[]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 18,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "burn",
+                "damage_formula": "10% Psi Intensity",
+                "damage_type": "blaze",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false,
+                "duration_seconds": 6,
+                "damage_interval_seconds": 0.5,
+                "max_stacks": 5,
+                "description": "Deals Status DMG of 10% Psi Intensity every 0.5s for 6s, stacking up to 5 times."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "kill_enemy_with_burn",
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "explosion",
+                "damage_formula": "300% Psi Intensity",
+                "damage_type": "blaze",
+                "description": "Deals Blaze DMG of 300% Psi Intensity upon killing an enemy affected by Burn and inflicts 1 stack of Burn on hit targets."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "burn_dmg_bonus",
+        "properties": {
+            "damage_bonus_percent": 30,
+            "description": "Blaze DMG increased by 30%."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "crit_hit",
+        "chance_percent": 90,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "bounce",
+                "damage_formula": "60% Attack",
+                "damage_type": "weapon_element",
+                "can_crit": true,
+                "can_hit_weakspots": true,
+                "decay": true,
+                "bounce_radius_meters": 10,
+                "description": "Deals Weapon DMG of 60% Attack to a random enemy within a 10m radius."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "bounce_hit",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "weapon_dmg_percent",
+                "value": 2,
+                "duration_seconds": 5,
+                "max_stacks": 50,
+                "description": "When Bounce hits, Weapon DMG +2%, up to 50 stacks. 1 stack is removed every 5 seconds."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "continuous_fire",
+        "duration_seconds": 2,
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "bounce_targets",
+                "value": 1,
+                "description": "After continuously firing for 2 seconds, Bounce targets +1."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "remaining_bullets_above_50_percent",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "attack_percent",
+                "value": 40,
+                "duration_seconds": 0,
+                "description": "When remaining bullets are more than 50% of the magazine capacity, Attack +40%."
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 40,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "fast_gunner",
+                "description": "Triggers Fast Gunner, granting Fire Rate and Attack bonuses."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "trigger_fast_gunner",
+        "effects": [
+            {
+                "type": "refill_bullet",
+                "description": "Refills 1 bullet from inventory to the secondary weapon."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "defeat_enemy",
+        "effects": [
+            {
+                "type": "restore_bullet",
+                "description": "Restores 1 bullet from inventory to the secondary weapon."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "fast_gunner_bonus",
+        "properties": {
+            "fire_rate_bonus_percent": 1,
+            "attack_bonus_percent": 1,
+            "duration_seconds": 2,
+            "max_stacks": 5,
+            "description": "Each Fast Gunner stack grants Fire Rate +1% and Attack +1% for 2 seconds."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "every_n_hits",
+        "n": 12,
+        "chance_percent": 40,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "shrapnel",
+                "damage_formula": "50% Attack",
+                "damage_type": "weapon_element",
+                "can_crit": true,
+                "can_hit_weakspots": true,
+                "decay": true,
+                "description": "Deals Weapon DMG of 50% Attack to a random unhit part."
+            }
+        ]
+    },
+    {
+        "type": "conditional_stat_bonus",
+        "condition": "magazine_capacity_multiple",
+        "value": 40,
+        "stat": "shrapnel_target_parts",
+        "increment": 1,
+        "max_increment": 4,
+        "description": "For every 40 magazine capacity, parts hit by Shrapnel +1, up to +4."
+    },
+    {
+        "type": "conditional_stat_bonus",
+        "condition": "magazine_capacity_excess",
+        "value": 15,
+        "stat": "shrapnel_dmg_percent",
+        "increment": 8,
+        "description": "For every 15 magazine capacity in excess of 100, Shrapnel DMG +8%."
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "magazine_capacity_bonus",
+        "properties": {
+            "magazine_capacity_bonus": 40,
+            "description": "Magazine capacity increased by 40."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "first_hit_after_reload",
+        "chance_percent": 100,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "frost_vortex",
+                "damage_formula": "30% Psi Intensity",
+                "damage_type": "frost",
+                "can_crit": false,
+                "can_hit_weakspots": false,
+                "decay": false,
+                "duration_seconds": 4,
+                "damage_interval_seconds": 1,
+                "max_instances": 2,
+                "description": "Traps enemies within a 4.5m radius and inflicts 30% Psi Intensity Status DMG per second for 4 seconds."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "frost_dmg_bonus",
+        "properties": {
+            "damage_bonus_percent": 30,
+            "description": "Increases Frost Elemental DMG by 30%."
+        }
+    }
+]
+[]
+[
+    {
+        "type": "on_event",
+        "event": "aim_complete",
+        "cooldown_seconds": 10,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "fortress_warfare",
+                "description": "Creates a 2m radius area granting allies Heavy Armor for 5 seconds."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "fortress_warfare_triggered",
+        "effects": [
+            {
+                "type": "gain_stack",
+                "stack_type": "brutal_mayhem",
+                "count": 3,
+                "description": "Gain 3 stacks of Brutal Mayhem and Weakspot DMG +25%."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "shot_fired",
+        "effects": [
+            {
+                "type": "reduce_stack",
+                "stack_type": "brutal_mayhem",
+                "value": 1,
+                "description": "Every shot reduces Brutal Mayhem stacks by 1."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "aiming",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "attack_percent",
+                "value": 30,
+                "description": "Attack increases the longer you aim, up to 30%."
+            }
+        ]
+    },
+    {
+        "type": "passive_effect",
+        "effect_name": "heavy_armor",
+        "properties": {
+            "super_armor": true,
+            "weapon_dmg_percent": 20,
+            "description": "Heavy Armor grants Super Armor and Weapon DMG +20%."
+        }
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "weakspot_hit",
+        "chance_percent": 100,
+        "effects": [
+            {
+                "type": "trigger_ability",
+                "ability": "the_bullseye",
+                "description": "Inflicts The Bull's Eye on the target, highlighting them and applying Vulnerability +8% for 12 seconds. Additionally, all weapons have Crit Rate +15% against targets with The Bull's Eye for 10 seconds. This effect only works once on the same target within 15 seconds."
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "time_tick",
+        "interval_seconds": 1,
+        "effects": [
+            {
+                "type": "gain_buff",
+                "buff_type": "attack_and_weakspot_dmg",
+                "attack_increase_percent": 10,
+                "weakspot_dmg_increase_percent": 15,
+                "max_stacks": 3,
+                "description": "Gain 1 stack of Attack +10% and Weakspot DMG +15% every 1 second, up to 3 stacks."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "standing_up",
+        "effects": [
+            {
+                "type": "remove_buff",
+                "buff_type": "attack_and_weakspot_dmg",
+                "description": "Effect is canceled when standing up."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "moving",
+        "effects": [
+            {
+                "type": "remove_buff",
+                "buff_type": "attack_and_weakspot_dmg",
+                "description": "Effect is canceled when moving."
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "effects": [
+            {
+                "type": "remove_buff",
+                "buff_type": "attack_and_weakspot_dmg",
+                "description": "Effect is canceled when hitting a target."
+            }
+        ]
+    }
+]
+[
+    {
+        "type": "on_event",
+        "event": "hit_target",
+        "chance_percent": 30,
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "the_bulls_eye",
+                "vulnerability_bonus_percent": 8,
+                "duration_seconds": 12
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "hit_target_within_distance",
+        "distance_meters": 5,
+        "chance_percent": 80,
+        "effects": [
+            {
+                "type": "apply_status",
+                "status": "the_bulls_eye",
+                "description": "Highlight marked target with increased chance when within 5m.",
+                "vulnerability_bonus_percent": 8,
+                "duration_seconds": 12
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "defeat_marked_enemy",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "attack",
+                "value": 6,
+                "duration_seconds": 60,
+                "max_stacks": 5
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "trigger_bulls_eye",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "damage_reduction_percent",
+                "value": 5,
+                "duration_seconds": 8,
+                "max_stacks": 4
+            }
+        ]
+    },
+    {
+        "type": "on_event",
+        "event": "hit_marked_enemy",
+        "effects": [
+            {
+                "type": "increase_stat",
+                "stat": "crit_rate_percent",
+                "value": 30,
+                "duration_seconds": 5,
+                "max_stacks": 1
+            }
+        ]
+    }
+]

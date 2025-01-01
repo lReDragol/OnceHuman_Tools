@@ -1,0 +1,1689 @@
+{
+  "mod_helmet": [
+    {
+      "name": "Fateful Strike",
+      "effects": [
+        {
+          "type": "set_flag",
+          "flag": "can_deal_weakspot_damage",
+          "value": false
+        },
+        {
+          "type": "increase_stat",
+          "stat": "crit_rate_percent",
+          "value": 10
+        },
+        {
+          "type": "increase_stat",
+          "stat": "crit_dmg_percent",
+          "value": 30
+        }
+      ]
+    },
+    {
+      "name": "Deviation Expert",
+      "effects": [
+        {
+          "type": "decrease_stat",
+          "stat": "range_percent",
+          "value": 25
+        },
+        {
+          "type": "increase_stat",
+          "stat": "fire_rate_percent",
+          "value": 10
+        },
+        {
+          "type": "increase_stat",
+          "stat": "status_damage_percent",
+          "value": 20
+        }
+      ]
+    },
+    {
+      "name": "Elemental Havoc",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "elemental_damage_percent",
+          "value": 10
+        },
+        {
+          "type": "conditional_effect",
+          "condition": "hp / max_hp > 0.9",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "elemental_damage_percent",
+              "value": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Momentum Up",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "fire_rate_percent_first_half_mag",
+          "value": 10
+        },
+        {
+          "type": "increase_stat",
+          "stat": "weapon_damage_percent_second_half_mag",
+          "value": 30
+        }
+      ]
+    },
+    {
+      "name": "Precise Strike",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "hit_weakspot",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weakspot_damage_percent",
+              "value": 12.0
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 3,
+              "max_stacks": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Work of Proficiency",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "reload_empty_mag",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": ["reload_speed_percent", "elemental_damage_percent"],
+              "value": [10, 20]
+            },
+            {
+              "type": "set_duration",
+              "duration": "until_next_reload"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Mag Expansion",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "mag_empty",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "magazine_capacity_percent",
+              "value": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "First-Move Advantage",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "reload",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": ["crit_rate_percent", "crit_dmg_percent"],
+              "value": [10, 20]
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "mod_mask": [
+    {
+      "name": "Retrusion Explosion",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "enemy_has_burn",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "crit_dmg_percent",
+              "value": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Blaze Amplifier",
+      "effects": [
+        {
+          "type": "per_stack",
+          "stack_source": "burn",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "psi_intensity_damage_percent",
+              "value": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Lingering Frost",
+      "effects": [
+        {
+          "type": "special_effect",
+          "effect_name": "frost_vortex_damage_increase",
+          "value": 60,
+          "based_on": "duration"
+        }
+      ]
+    },
+    {
+      "name": "Obliteration",
+      "effects": [
+        {
+          "type": "special_effect",
+          "effect_name": "frost_vortex_ultimate_damage_increase",
+          "value": 60,
+          "based_on": "enemies_inside"
+        }
+      ]
+    },
+    {
+      "name": "Point Detonation",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "unstable_bomber_hits_one_enemy",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "unstable_bomber_final_damage_percent",
+              "value": 25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Delayed Blast",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "before_bomb_explodes",
+          "effects": [
+            {
+              "type": "per_hits_taken",
+              "hits_required": 5,
+              "effects": [
+                {
+                  "type": "increase_stat",
+                  "stat": "bomb_ultimate_damage_percent",
+                  "value": 25
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Explosive Shrapnel",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "20th_shrapnel",
+          "effects": [
+            {
+              "type": "set_flag",
+              "flag": "shrapnel_is_explosive",
+              "value": true
+            },
+            {
+              "type": "increase_stat",
+              "stat": "damage_percent",
+              "value": 300
+            },
+            {
+              "type": "set_flag",
+              "flag": "guaranteed_crit",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shrapnel Carnage",
+      "effects": [
+        {
+          "type": "special_effect",
+          "effect_name": "shrapnel_weakspot_hit_chance_increase",
+          "value": 100.0
+        },
+        {
+          "type": "increase_stat",
+          "stat": "weakspot_damage_percent",
+          "value": 25
+        }
+      ]
+    },
+    {
+      "name": "Thunderclap",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "after_power_surge_triggers_20_times",
+          "effects": [
+            {
+              "type": "summon",
+              "entity": "celestial_thunder",
+              "damage_percent_of_psi_intensity": 200
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "First Electrocution",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "enemy_without_power_surge",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "power_surge_ultimate_damage_percent",
+              "value": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Gunslinger",
+      "effects": [
+        {
+          "type": "while_active",
+          "status": "fast_gunner",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weakspot_damage_percent",
+              "value": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Blitzkrieg",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "fast_gunner_max_stacks",
+          "value": 5
+        },
+        {
+          "type": "increase_stat",
+          "stat": "additional_fire_rate_percent_per_stack",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "name": "Targeted Strike",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "target_is_marked",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": ["crit_rate_percent", "crit_dmg_percent"],
+              "value": [10, 25]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Most Wanted",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "enemy_marked",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "attack_percent",
+              "value": 5
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 8,
+              "max_stacks": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Light Cannon",
+      "effects": [
+        {
+          "type": "set_flag",
+          "flag": "super_armor_in_fortress_warfare",
+          "value": false
+        },
+        {
+          "type": "while_active",
+          "status": "fortress_warfare",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "attack_percent",
+              "value": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Unbreakable",
+      "effects": [
+        {
+          "type": "decrease_stat",
+          "stat": "fortress_warfare_range_percent",
+          "value": 30
+        },
+        {
+          "type": "while_active",
+          "status": "fortress_warfare",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "attack_percent",
+              "value": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Precision Bounce",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "6th_bounce",
+          "effects": [
+            {
+              "type": "set_flag",
+              "flag": "is_precision_bounce",
+              "value": true
+            },
+            {
+              "type": "increase_stat",
+              "stat": "damage_percent_increase",
+              "value": 100
+            },
+            {
+              "type": "set_flag",
+              "flag": "guaranteed_crit",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Break Bounce",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "target_hp / target_max_hp > 0.5",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "bullet_ultimate_damage_percent",
+              "value": 50
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "mod_top": [
+    {
+      "name": "Resist Advantage",
+      "effects": [
+        {
+          "type": "out_of_combat",
+          "effects": [
+            {
+              "type": "gain_stack",
+              "every_seconds": 10,
+              "effects": [
+                {
+                  "type": "increase_stat",
+                  "stat": "damage_reduction_percent",
+                  "value": 10,
+                  "max_stacks": 5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "on_event",
+          "event": "hit",
+          "effects": [
+            {
+              "type": "remove_stacks",
+              "stat": "damage_reduction_percent",
+              "value": 10,
+              "stacks": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Head Guard",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "hp / max_hp > 0.7",
+          "effects": [
+            {
+              "type": "set_flag",
+              "flag": "head_is_no_longer_weakspot",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Healing Fortification",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "use_healing_shot",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "damage_reduction_percent",
+              "value": 40
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quick Comeback",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "use_healing_shot",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "movement_speed_percent",
+              "value": 20
+            },
+            {
+              "type": "refill_magazine_percent",
+              "value": 100
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Enduring Shield",
+      "effects": [
+        {
+          "type": "out_of_combat",
+          "effects": [
+            {
+              "type": "gain_stack",
+              "every_seconds": 5,
+              "max_stacks": 5
+            }
+          ]
+        },
+        {
+          "type": "on_event",
+          "event": "shot_received",
+          "effects": [
+            {
+              "type": "remove_stacks",
+              "stacks": 1
+            },
+            {
+              "type": "apply_shield",
+              "percent_of_max_hp": 8,
+              "duration_seconds": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Head-on Conflict",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "enemies_within_distance >= 1",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "damage_reduction_percent",
+              "value": 10
+            }
+          ]
+        },
+        {
+          "type": "on_event",
+          "event": "melee_damage_taken",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "damage_reduction_percent",
+              "value": 10
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Critical Rescue",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "hp / max_hp < 0.3",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "damage_reduction_percent",
+              "value": 20
+            },
+            {
+              "type": "increase_stat",
+              "stat": "healing_received_percent",
+              "value": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Status Immune",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "hp / max_hp < 0.6",
+          "effects": [
+            {
+              "type": "set_flag",
+              "flag": "purge_deviated_state",
+              "value": true
+            },
+            {
+              "type": "set_cooldown",
+              "cooldown_seconds": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rejuvenating",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "hp / max_hp > 0.6",
+          "effects": [
+            {
+              "type": "on_event",
+              "event": "kill",
+              "effects": [
+                {
+                  "type": "recover_hp_percent",
+                  "value": 15
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "mod_gloves": [
+    {
+      "name": "Crit Amplifier",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": ["crit_rate_percent", "crit_dmg_percent"],
+          "value": [10, 15]
+        }
+      ]
+    },
+    {
+      "name": "Crit Boost",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "crit_rate_percent",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "name": "Elemental Overload",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "elemental_damage_percent",
+          "value": 18
+        }
+      ]
+    },
+    {
+      "name": "Status Enhancement",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "status_damage_percent",
+          "value": 20
+        }
+      ]
+    },
+    {
+      "name": "Munitions Amplifier",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "weapon_damage_percent",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "name": "Lifeforce Boost",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "max_hp_percent",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "name": "Weakspot DMG Boost",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "weakspot_damage_percent",
+          "value": 25
+        }
+      ]
+    },
+    {
+      "name": "Melee Amplifier",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "melee_damage_percent",
+          "value": 20
+        }
+      ]
+    }
+  ],
+  "mod_bottoms": [
+    {
+      "name": "Deadshot",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "non_melee_crit_hit",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "crit_dmg_percent",
+              "value": 5,
+              "max_value": 45
+            },
+            {
+              "type": "reset_on_event",
+              "event": "reload"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Melee Momentum",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "melee_kill",
+          "effects": [
+            {
+              "type": "restore_stamina_percent",
+              "value": 30
+            },
+            {
+              "type": "increase_stat",
+              "stat": "melee_damage_percent",
+              "value": 20
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reload Rampage",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "kill_two_enemies",
+          "effects": [
+            {
+              "type": "refill_bullets_from_inventory",
+              "value": 2,
+              "max_refill_percent_of_mag": 50
+            },
+            {
+              "type": "increase_stat",
+              "stat": ["weapon_damage_percent", "status_damage_percent"],
+              "value": [10, 10]
+            },
+            {
+              "type": "set_duration",
+              "duration": "until_next_reload"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Unstoppable",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "target_distance > 20",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weakspot_damage_percent",
+              "value": 10
+            },
+            {
+              "type": "per_meter",
+              "effects": [
+                {
+                  "type": "increase_stat",
+                  "stat": "weakspot_damage_percent",
+                  "value": 1,
+                  "max_value": 20
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bullet Siphon",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "weapon_damage_percent",
+          "value": 5
+        },
+        {
+          "type": "per_bullets_consumed",
+          "bullets": 5,
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weapon_damage_percent",
+              "value": 4,
+              "max_value": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Abnormal Increase",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "mag_empty",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "status_damage_percent",
+              "value": 10
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 12,
+              "max_stacks": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Precision Charge",
+      "effects": [
+        {
+          "type": "per_weakspot_hit_rate",
+          "every_percent": 10,
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "elemental_damage_percent",
+              "value": 4,
+              "max_value": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Slow And Steady",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": ["melee_damage_percent", "weapon_damage_percent", "status_damage_percent"],
+          "value": 10
+        },
+        {
+          "type": "conditional_effect",
+          "condition": "hp / max_hp > 0.9",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": ["melee_damage_percent", "weapon_damage_percent", "status_damage_percent"],
+              "value": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Secluded Strike",
+      "effects": [
+        {
+          "type": "conditional_effect",
+          "condition": "enemies_within_distance == 0",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": ["weapon_damage_percent", "status_damage_percent"],
+              "value": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ruthless Reaper",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "accumulated_kills",
+          "kills_required": 2,
+          "effects": [
+            {
+              "type": "refill_magazine_percent",
+              "value": 100
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ferocious Charge",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "kill_enemy_within_distance",
+          "distance": 10,
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": ["melee_damage_percent", "weapon_damage_percent", "status_damage_percent"],
+              "value": 20
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rush Hour",
+      "effects": [
+        {
+          "type": "per_hp_loss",
+          "every_percent": 10,
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": ["melee_damage_percent", "weapon_damage_percent", "status_damage_percent"],
+              "value": 4
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "mod_weapon": [
+    {
+      "name": "Burning Wrath",
+      "category": "Burn",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "trigger_burn",
+          "chance_percent": 25,
+          "effects": [
+            {
+              "type": "apply_status",
+              "status": "burn",
+              "additional_stacks": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Flame Resonance",
+      "category": "Burn",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "max_burn_stacks",
+          "value": 2
+        },
+        {
+          "type": "decrease_stat",
+          "stat": "burn_duration_percent",
+          "value": 20.0
+        }
+      ]
+    },
+    {
+      "name": "Blaze Blessing",
+      "category": "Burn",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "defeat_enemy_with_burn",
+          "effects": [
+            {
+              "type": "recover_hp_percent",
+              "value": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Embers",
+      "category": "Burn",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "burn_removed",
+          "effects": [
+            {
+              "type": "reduce_burn_stacks_percent",
+              "value": 50
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Frosty Blessing",
+      "category": "Frost Vortex",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "frost_vortex_disappear",
+          "effects": [
+            {
+              "type": "restore_hp_percent",
+              "value": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vortex Multiplier",
+      "category": "Frost Vortex",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "max_frost_vortexes",
+          "value": 1
+        },
+        {
+          "type": "increase_stat",
+          "stat": "frost_vortex_damage_percent",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "name": "Shattering Ice",
+      "category": "Frost Vortex",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "enemy_defeated_at_center",
+          "effects": [
+            {
+              "type": "deal_ice_damage",
+              "percent_of_psi_intensity": 50
+            },
+            {
+              "type": "aoe",
+              "radius_meters": 1,
+              "trigger_times": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cryo Blast",
+      "category": "Frost Vortex",
+      "effects": [
+        {
+          "type": "frost_vortex_applies",
+          "effects": [
+            {
+              "type": "apply_status",
+              "status": "frostbite"
+            },
+            {
+              "type": "increase_stat",
+              "stat": "vulnerability_percent",
+              "value": 4
+            },
+            {
+              "type": "decrease_stat",
+              "stat": "movement_speed_percent",
+              "value": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Surge Amplifier",
+      "category": "Power Surge",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "deal_power_surge_damage",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "power_surge_damage_percent",
+              "value": 5
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 3,
+              "max_stacks": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Static Shock",
+      "category": "Power Surge",
+      "effects": [
+        {
+          "type": "decrease_stat",
+          "stat": "power_surge_status_duration_percent",
+          "value": 50
+        },
+        {
+          "type": "increase_stat",
+          "stat": "power_surge_damage_percent",
+          "value": 20
+        }
+      ]
+    },
+    {
+      "name": "Shock Diffusion",
+      "category": "Power Surge",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "trigger_power_surge",
+          "effects": [
+            {
+              "type": "apply_status_to_nearby_enemies",
+              "status": "power_surge",
+              "number_of_enemies": 1,
+              "radius_meters": 5,
+              "prioritize_unaffected": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shock Rampage",
+      "category": "Power Surge",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "deal_power_surge_damage",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "power_surge_trigger_chance_percent",
+              "value": 5,
+              "based_on_weapon_trigger_chance": true
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 5,
+              "max_stacks": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Heavy Explosives",
+      "category": "Unstable Bomber",
+      "effects": [
+        {
+          "type": "set_flag",
+          "flag": "unstable_bomber_infects_heavy_attack",
+          "value": true
+        }
+      ]
+    },
+    {
+      "name": "Bombardier Souvenir",
+      "category": "Unstable Bomber",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "trigger_unstable_bomber",
+          "effects": [
+            {
+              "type": "refill_magazine_percent",
+              "value": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reckless Bomber",
+      "category": "Unstable Bomber",
+      "effects": [
+        {
+          "type": "per_stat",
+          "stat": "crit_rate_percent",
+          "value": 0.5,
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "unstable_bomber_damage_percent",
+              "value": 0.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Super Charged",
+      "category": "Unstable Bomber",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "trigger_unstable_bomber",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "unstable_bomber_damage_percent",
+              "value": 5
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 3,
+              "max_stacks": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shield Breaker",
+      "category": "Shrapnel",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "hit_shielded_enemy",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "shrapnel_damage_percent",
+              "value": 60
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shrapnel Souvenir",
+      "category": "Shrapnel",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "shrapnel_hit_weakspot",
+          "effects": [
+            {
+              "type": "refill_bullet_from_inventory",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shatter Them All",
+      "category": "Shrapnel",
+      "effects": [
+        {
+          "type": "per_part_hit",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "shrapnel_damage_percent",
+              "value": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shrapnel Smash",
+      "category": "Shrapnel",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "trigger_shrapnel",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "shrapnel_crit_rate_percent",
+              "value": 1.0
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 2,
+              "max_stacks": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cowboy",
+      "category": "Fast Gunner",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "reload_empty_mag",
+          "effects": [
+            {
+              "type": "trigger_status",
+              "status": "fast_gunner",
+              "chance_percent": 100,
+              "based_on_weapon_trigger_chance": true,
+              "duration_seconds": 5
+            }
+          ]
+        },
+        {
+          "type": "on_event",
+          "event": "fast_gunner_max_stacks",
+          "effects": [
+            {
+              "type": "increase_duration",
+              "duration_seconds": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shoot Out",
+      "category": "Fast Gunner",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "trigger_fast_gunner",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weapon_damage_percent",
+              "value": 1.5
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 10,
+              "max_stacks": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shooting Blitz",
+      "category": "Fast Gunner",
+      "effects": [
+        {
+          "type": "set_duration",
+          "duration_seconds": 4
+        },
+        {
+          "type": "while_active",
+          "status": "fast_gunner",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weapon_damage_percent",
+              "value": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Precision Rush",
+      "category": "Fast Gunner",
+      "effects": [
+        {
+          "type": "while_active",
+          "status": "fast_gunner",
+          "effects": [
+            {
+              "type": "increase_stat_over_time",
+              "stat": "weakspot_damage_percent",
+              "value_per_second": 15,
+              "max_value": 45
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Recover Mark",
+      "category": "The Bull's Eye",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "defeat_marked_enemy",
+          "effects": [
+            {
+              "type": "recover_hp_percent",
+              "value": 15
+            },
+            {
+              "type": "recover_stamina_percent",
+              "value": 25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hunter's Perk",
+      "category": "The Bull's Eye",
+      "effects": [
+        {
+          "type": "decrease_stat",
+          "stat": "marked_enemies_damage_vs_metas_percent",
+          "value": 20
+        }
+      ]
+    },
+    {
+      "name": "Vulnerability Amplifier",
+      "category": "The Bull's Eye",
+      "effects": [
+        {
+          "type": "modify_skill",
+          "skill": "the_bulls_eye",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "vulnerability_percent",
+              "value": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Spreading Marks",
+      "category": "The Bull's Eye",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "marked_enemy_defeated",
+          "effects": [
+            {
+              "type": "spread_status_to_nearby_enemies",
+              "status": "the_bulls_eye",
+              "number_of_enemies": 1,
+              "radius_meters": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "United We Stand",
+      "category": "Fortress Warfare",
+      "effects": [
+        {
+          "type": "per_player_in_fortress",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weapon_damage_bonus_percent",
+              "value": 10,
+              "max_value": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Final Territory",
+      "category": "Fortress Warfare",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "fortress_warfare_end",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": ["weapon_damage_percent", "movement_speed_percent"],
+              "value": [10, 10]
+            },
+            {
+              "type": "set_duration",
+              "duration_seconds": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Durable Territory",
+      "category": "Fortress Warfare",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "enemy_defeated_in_fortress",
+          "effects": [
+            {
+              "type": "extend_effect_duration",
+              "duration_seconds": 5,
+              "max_extensions": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Portable Territory",
+      "category": "Fortress Warfare",
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "leave_fortress",
+          "effects": [
+            {
+              "type": "status_remains",
+              "duration_seconds": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Targeted Bounce",
+      "category": "Bounce",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "bounce_weakspot_priority_percent",
+          "value": 300
+        }
+      ]
+    },
+    {
+      "name": "Bounce Rampage",
+      "category": "Bounce",
+      "effects": [
+        {
+          "type": "more_targets_hit",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "bounce_damage_percent",
+              "value": 45
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Not Throw Away Your Shot",
+      "category": "Bounce",
+      "effects": [
+        {
+          "type": "set_flag",
+          "flag": "bounce_can_hit_allies",
+          "value": true
+        },
+        {
+          "type": "set_flag",
+          "flag": "bounce_deals_no_damage_to_allies",
+          "value": true
+        },
+        {
+          "type": "on_event",
+          "event": "bounce_hit_ally",
+          "effects": [
+            {
+              "type": "refill_bullet",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Super Bullet",
+      "category": "Bounce",
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": ["bounce_crit_rate_percent", "bounce_crit_dmg_percent"],
+          "value": [10, 25]
+        }
+      ]
+    }
+  ]
+}
+
+
+
+

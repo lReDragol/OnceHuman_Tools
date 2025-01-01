@@ -1,0 +1,67 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="53">
+            <item index="0" class="java.lang.String" itemvalue="urwid" />
+            <item index="1" class="java.lang.String" itemvalue="aiohttp-proxy" />
+            <item index="2" class="java.lang.String" itemvalue="TGConvertor" />
+            <item index="3" class="java.lang.String" itemvalue="aiofiles" />
+            <item index="4" class="java.lang.String" itemvalue="pythonmonkey" />
+            <item index="5" class="java.lang.String" itemvalue="loguru" />
+            <item index="6" class="java.lang.String" itemvalue="opentele" />
+            <item index="7" class="java.lang.String" itemvalue="Telethon" />
+            <item index="8" class="java.lang.String" itemvalue="aiosqlite" />
+            <item index="9" class="java.lang.String" itemvalue="Pyrogram" />
+            <item index="10" class="java.lang.String" itemvalue="aiohttp" />
+            <item index="11" class="java.lang.String" itemvalue="better-proxy" />
+            <item index="12" class="java.lang.String" itemvalue="pyuseragents" />
+            <item index="13" class="java.lang.String" itemvalue="httpx" />
+            <item index="14" class="java.lang.String" itemvalue="PyJWT" />
+            <item index="15" class="java.lang.String" itemvalue="python-Levenshtein" />
+            <item index="16" class="java.lang.String" itemvalue="python-dotenv" />
+            <item index="17" class="java.lang.String" itemvalue="requests" />
+            <item index="18" class="java.lang.String" itemvalue="numpy" />
+            <item index="19" class="java.lang.String" itemvalue="sounddevice" />
+            <item index="20" class="java.lang.String" itemvalue="Pyinstaller" />
+            <item index="21" class="java.lang.String" itemvalue="num2words" />
+            <item index="22" class="java.lang.String" itemvalue="PyAudio" />
+            <item index="23" class="java.lang.String" itemvalue="flet" />
+            <item index="24" class="java.lang.String" itemvalue="Cython" />
+            <item index="25" class="java.lang.String" itemvalue="fuzzywuzzy" />
+            <item index="26" class="java.lang.String" itemvalue="SpeechRecognition" />
+            <item index="27" class="java.lang.String" itemvalue="PyAutoGUI" />
+            <item index="28" class="java.lang.String" itemvalue="keyboard" />
+            <item index="29" class="java.lang.String" itemvalue="vosk" />
+            <item index="30" class="java.lang.String" itemvalue="aiogram" />
+            <item index="31" class="java.lang.String" itemvalue="torch" />
+            <item index="32" class="java.lang.String" itemvalue="psutil" />
+            <item index="33" class="java.lang.String" itemvalue="openai" />
+            <item index="34" class="java.lang.String" itemvalue="MouseInfo" />
+            <item index="35" class="java.lang.String" itemvalue="soundfile" />
+            <item index="36" class="java.lang.String" itemvalue="pystray" />
+            <item index="37" class="java.lang.String" itemvalue="Pillow" />
+            <item index="38" class="java.lang.String" itemvalue="annotated-types" />
+            <item index="39" class="java.lang.String" itemvalue="pydantic-settings" />
+            <item index="40" class="java.lang.String" itemvalue="pydantic" />
+            <item index="41" class="java.lang.String" itemvalue="async-timeout" />
+            <item index="42" class="java.lang.String" itemvalue="TgCrypto" />
+            <item index="43" class="java.lang.String" itemvalue="attrs" />
+            <item index="44" class="java.lang.String" itemvalue="frozenlist" />
+            <item index="45" class="java.lang.String" itemvalue="pydantic_core" />
+            <item index="46" class="java.lang.String" itemvalue="PySocks" />
+            <item index="47" class="java.lang.String" itemvalue="colorama" />
+            <item index="48" class="java.lang.String" itemvalue="typing_extensions" />
+            <item index="49" class="java.lang.String" itemvalue="multidict" />
+            <item index="50" class="java.lang.String" itemvalue="yarl" />
+            <item index="51" class="java.lang.String" itemvalue="aiosignal" />
+            <item index="52" class="java.lang.String" itemvalue="idna" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

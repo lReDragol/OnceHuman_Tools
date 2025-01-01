@@ -1,0 +1,123 @@
+{
+    "zones": [
+        {
+            "c": [
+                592,
+                173,
+                1342,
+                250
+            ],
+            "p": [
+                "Нажмите левую кнопку в течение 5 секунд, чтобы вытащить."
+            ],
+            "keybind": "left mouse button",
+            "hold": true,
+            "hold_duration": 2800,
+            "delay_before": 0,
+            "delay_after": 500,
+            "hold_lmb": false,
+            "hold_lmb_duration": 0,
+            "selected_phrase": "Нажмите левую кнопку в течение 5 секунд, чтобы вытащить."
+        },
+        {
+            "c": [
+                772,
+                805,
+                988,
+                930
+            ],
+            "p": [
+                "Потянуть влево"
+            ],
+            "keybind": "a",
+            "hold": true,
+            "hold_duration": 2000,
+            "delay_before": 0,
+            "delay_after": 500,
+            "hold_lmb": true,
+            "hold_lmb_duration": 200,
+            "selected_phrase": "Потянуть влево"
+        },
+        {
+            "c": [
+                1049,
+                805,
+                1252,
+                930
+            ],
+            "p": [
+                "Потянуть вправо"
+            ],
+            "keybind": "d",
+            "hold": true,
+            "hold_duration": 2000,
+            "delay_before": 0,
+            "delay_after": 500,
+            "hold_lmb": true,
+            "hold_lmb_duration": 200,
+            "selected_phrase": "Потянуть вправо"
+        },
+        {
+            "c": [
+                1114,
+                515,
+                1212,
+                590
+            ],
+            "p": [
+                "Сбор"
+            ],
+            "keybind": "f",
+            "hold": true,
+            "hold_duration": 1000,
+            "delay_before": 0,
+            "delay_after": 5000,
+            "hold_lmb": false,
+            "hold_lmb_duration": 400,
+            "selected_phrase": "Сбор"
+        },
+        {
+            "c": [
+                64,
+                762,
+                202,
+                789
+            ],
+            "p": [
+                "Прицеливание"
+            ],
+            "keybind": "left mouse button",
+            "hold": false,
+            "hold_duration": 2000,
+            "delay_before": 0,
+            "delay_after": 500,
+            "hold_lmb": false,
+            "hold_lmb_duration": 0,
+            "selected_phrase": "Прицеливание"
+        },
+        {
+            "c": [
+                547,
+                394,
+                1117,
+                815
+            ],
+            "p": [
+                "Шанс изолировать"
+            ],
+            "keybind": "TGBot",
+            "hold": false,
+            "hold_duration": 1,
+            "delay_before": 1,
+            "delay_after": 1000,
+            "hold_lmb": false,
+            "hold_lmb_duration": 0,
+            "selected_phrase": "Шанс изолировать"
+        }
+    ],
+    "telegram_bot_token": "6785861041:AAFYkkcp6p7brqQoPWQkq-eTOVL-RL_Lp44",
+    "telegram_chat_id": "1237841315",
+    "selected_language": "rus",
+    "recognition_threshold": 54,
+    "scan_delay": 0
+}

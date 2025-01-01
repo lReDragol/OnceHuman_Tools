@@ -1,0 +1,801 @@
+{
+  "mod_helmet": [
+    {
+      "name": "Fateful Strike",
+      "stats": {
+        "cannot_deal_weakspot_dmg": true,
+        "crit_rate_percent": 10,
+        "crit_dmg_percent": 30
+      }
+    },
+    {
+      "name": "Deviation Expert",
+      "stats": {
+        "range_percent": -25,
+        "fire_rate_percent": 10,
+        "status_dmg_percent": 20
+      }
+    },
+    {
+      "name": "Elemental Havoc",
+      "stats": {
+        "elemental_dmg_percent": 10,
+        "conditional_bonus": {
+          "condition": "hp_above_90_percent",
+          "additional_elemental_dmg_percent": 10
+        }
+      }
+    },
+    {
+      "name": "Momentum Up",
+      "stats": {
+        "fire_rate_percent_first_half_mag": 10,
+        "weapon_dmg_percent_second_half_mag": 30
+      }
+    },
+    {
+      "name": "Precise Strike",
+      "stats": {
+        "on_hit_weakspot": {
+          "weakspot_dmg_percent": 12.0,
+          "duration_seconds": 3,
+          "max_stacks": 3
+        }
+      }
+    },
+    {
+      "name": "Work of Proficiency",
+      "stats": {
+        "on_reload_empty_mag": {
+          "reload_speed_percent": 10,
+          "elemental_dmg_percent": 20.0,
+          "duration": "until_next_reload"
+        }
+      }
+    },
+    {
+      "name": "Mag Expansion",
+      "stats": {
+        "on_mag_empty": {
+          "mag_capacity_percent_increase": 30
+        }
+      }
+    },
+    {
+      "name": "First-Move Advantage",
+      "stats": {
+        "on_reload": {
+          "crit_rate_percent": 10,
+          "crit_dmg_percent": 20,
+          "duration_seconds": 2
+        }
+      }
+    }
+  ],
+  "mod_mask": [
+    {
+      "name": "Retrusion Explosion",
+      "stats": {
+        "conditional_bonus": {
+          "condition": "enemy_has_burn",
+          "crit_dmg_percent": 40
+        }
+      }
+    },
+    {
+      "name": "Blaze Amplifier",
+      "stats": {
+        "per_burn_stack": {
+          "psi_intensity_dmg_percent": 3
+        }
+      }
+    },
+    {
+      "name": "Lingering Frost",
+      "stats": {
+        "frost_vortex": {
+          "final_dmg_percent_increase": "up_to_60",
+          "based_on_duration": true
+        }
+      }
+    },
+    {
+      "name": "Obliteration",
+      "stats": {
+        "frost_vortex": {
+          "ultimate_dmg_percent_increase": "up_to_60",
+          "based_on_enemies_inside": true
+        }
+      }
+    },
+    {
+      "name": "Point Detonation",
+      "stats": {
+        "on_unstable_bomber_hits_one_enemy": {
+          "unstable_bomber_final_dmg_percent": 25
+        }
+      }
+    },
+    {
+      "name": "Delayed Blast",
+      "stats": {
+        "before_bomb_explodes": {
+          "per_5_hits_taken": {
+            "bomb_ultimate_dmg_percent": 25
+          }
+        }
+      }
+    },
+    {
+      "name": "Explosive Shrapnel",
+      "stats": {
+        "on_20th_shrapnel": {
+          "is_explosive": true,
+          "dmg_percent": 300,
+          "guaranteed_crit": true
+        }
+      }
+    },
+    {
+      "name": "Shrapnel Carnage",
+      "stats": {
+        "shrapnel": {
+          "weakspot_hit_chance_percent_increase": 100.0,
+          "weakspot_dmg_percent": 25
+        }
+      }
+    },
+    {
+      "name": "Thunderclap",
+      "stats": {
+        "after_power_surge_triggers": 20,
+        "next_hit_effect": {
+          "summon_celestial_thunder": true,
+          "shock_dmg_percent_of_psi_intensity": 200
+        }
+      }
+    },
+    {
+      "name": "First Electrocution",
+      "stats": {
+        "conditional_bonus": {
+          "condition": "enemy_without_power_surge",
+          "power_surge_ultimate_dmg_percent": 30
+        }
+      }
+    },
+    {
+      "name": "Gunslinger",
+      "stats": {
+        "while_in_fast_gunner": {
+          "weakspot_dmg_percent": 30
+        }
+      }
+    },
+    {
+      "name": "Blitzkrieg",
+      "stats": {
+        "fast_gunner_stacks_increase": 5,
+        "additional_fire_rate_percent_per_stack": 1
+      }
+    },
+    {
+      "name": "Targeted Strike",
+      "stats": {
+        "when_hitting_marked_enemies": {
+          "crit_rate_percent": 10,
+          "crit_dmg_percent": 25
+        }
+      }
+    },
+    {
+      "name": "Most Wanted",
+      "stats": {
+        "on_enemy_marked": {
+          "attack_percent": 5,
+          "duration_seconds": 8,
+          "max_stacks": 3
+        }
+      }
+    },
+    {
+      "name": "Light Cannon",
+      "stats": {
+        "no_super_armor_in_fortress_warfare": true,
+        "while_in_fortress_warfare": {
+          "attack_percent": 12
+        }
+      }
+    },
+    {
+      "name": "Unbreakable",
+      "stats": {
+        "fortress_warfare_range_percent": -30,
+        "while_in_fortress_warfare": {
+          "attack_percent": 15
+        }
+      }
+    },
+    {
+      "name": "Precision Bounce",
+      "stats": {
+        "on_6th_bounce": {
+          "is_precision_bounce": true,
+          "dmg_percent_increase": 100,
+          "guaranteed_crit": true
+        }
+      }
+    },
+    {
+      "name": "Break Bounce",
+      "stats": {
+        "when_bullet_hits_enemy_hp_above_50_percent": {
+          "bullet_ultimate_dmg_percent": 50
+        }
+      }
+    }
+  ],
+  "mod_top": [
+    {
+      "name": "Resist Advantage",
+      "stats": {
+        "out_of_combat": {
+          "gain_stack_every_seconds": 10,
+          "dmg_reduction_percent_per_stack": 10,
+          "max_stacks": 5,
+          "on_hit_remove_stacks": 1
+        }
+      }
+    },
+    {
+      "name": "Head Guard",
+      "stats": {
+        "when_hp_above_percent": 70,
+        "head_no_longer_weakspot": true
+      }
+    },
+    {
+      "name": "Healing Fortification",
+      "stats": {
+        "on_healing_shot_use": {
+          "dmg_reduction_percent": 40,
+          "duration_seconds": 2
+        }
+      }
+    },
+    {
+      "name": "Quick Comeback",
+      "stats": {
+        "on_healing_shot_use": {
+          "movement_speed_percent": 20,
+          "duration_seconds": 2,
+          "refill_magazine_percent": 100
+        }
+      }
+    },
+    {
+      "name": "Enduring Shield",
+      "stats": {
+        "out_of_combat": {
+          "gain_stack_every_seconds": 5,
+          "max_stacks": 5,
+          "on_shot_received": {
+            "remove_stacks": 1,
+            "shield_percent_of_max_hp": 8,
+            "shield_duration_seconds": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "Head-on Conflict",
+      "stats": {
+        "enemies_within_meters": 7,
+        "dmg_reduction_percent": 10,
+        "on_melee_dmg_taken": {
+          "additional_dmg_reduction_percent": 10,
+          "duration_seconds": 5
+        }
+      }
+    },
+    {
+      "name": "Critical Rescue",
+      "stats": {
+        "when_hp_below_percent": 30,
+        "dmg_reduction_percent": 20,
+        "healing_received_percent": 20
+      }
+    },
+    {
+      "name": "Status Immune",
+      "stats": {
+        "when_hp_below_percent": 60,
+        "purge_deviated_state": true,
+        "cooldown_seconds": 15
+      }
+    },
+    {
+      "name": "Rejuvenating",
+      "stats": {
+        "when_hp_above_percent": 60,
+        "on_kill": {
+          "recover_lost_hp_percent": 15
+        }
+      }
+    }
+  ],
+  "mod_gloves": [
+    {
+      "name": "Crit Amplifier",
+      "stats": {
+        "crit_rate_percent": 10,
+        "crit_dmg_percent": 15
+      }
+    },
+    {
+      "name": "Crit Boost",
+      "stats": {
+        "crit_rate_percent": 15
+      }
+    },
+    {
+      "name": "Elemental Overload",
+      "stats": {
+        "elemental_dmg_percent": 18
+      }
+    },
+    {
+      "name": "Status Enhancement",
+      "stats": {
+        "status_dmg_percent": 20
+      }
+    },
+    {
+      "name": "Munitions Amplifier",
+      "stats": {
+        "weapon_dmg_percent": 15
+      }
+    },
+    {
+      "name": "Lifeforce Boost",
+      "stats": {
+        "max_hp_percent": 12
+      }
+    },
+    {
+      "name": "Weakspot DMG Boost",
+      "stats": {
+        "weakspot_dmg_percent": 25
+      }
+    },
+    {
+      "name": "Melee Amplifier",
+      "stats": {
+        "melee_dmg_percent": 20
+      }
+    }
+  ],
+  "mod_bottoms": [
+    {
+      "name": "Deadshot",
+      "stats": {
+        "on_non_melee_crit_hit": {
+          "crit_dmg_percent_per_hit": 5,
+          "max_crit_dmg_percent": 45,
+          "reset_on_reload": true
+        }
+      }
+    },
+    {
+      "name": "Melee Momentum",
+      "stats": {
+        "on_melee_kill": {
+          "restore_stamina_percent": 30,
+          "melee_dmg_percent": 20,
+          "duration_seconds": 8
+        }
+      }
+    },
+    {
+      "name": "Reload Rampage",
+      "stats": {
+        "on_kill_2_enemies": {
+          "refill_bullets_from_inventory": 2,
+          "max_refill_percent_of_mag": 50,
+          "weapon_dmg_percent": 10,
+          "status_dmg_percent": 10,
+          "duration": "until_next_reload"
+        }
+      }
+    },
+    {
+      "name": "Unstoppable",
+      "stats": {
+        "when_target_distance_over_meters": 20,
+        "weakspot_dmg_percent": 10,
+        "additional_weakspot_dmg_percent_per_meter": 1,
+        "max_additional_weakspot_dmg_percent": 20
+      }
+    },
+    {
+      "name": "Bullet Siphon",
+      "stats": {
+        "weapon_dmg_percent": 5,
+        "per_5_bullets_consumed": {
+          "additional_weapon_dmg_percent": 4,
+          "max_additional_weapon_dmg_percent": 20
+        }
+      }
+    },
+    {
+      "name": "Abnormal Increase",
+      "stats": {
+        "on_mag_empty": {
+          "status_dmg_percent": 10,
+          "duration_seconds": 12,
+          "max_stacks": 3
+        }
+      }
+    },
+    {
+      "name": "Precision Charge",
+      "stats": {
+        "per_10_percent_weakspot_hit_rate_last_mag": {
+          "elemental_dmg_percent": 4,
+          "max_elemental_dmg_percent": 20
+        }
+      }
+    }
+  ],
+  "mod_weapon": [
+    {
+      "name": "Burning Wrath",
+      "category": "Burn",
+      "stats": {
+        "on_trigger_burn": {
+          "chance_percent": 25,
+          "additional_burn_stacks": 1
+        }
+      }
+    },
+    {
+      "name": "Flame Resonance",
+      "category": "Burn",
+      "stats": {
+        "max_burn_stacks_increase": 2,
+        "burn_duration_percent": -20.0
+      }
+    },
+    {
+      "name": "Blaze Blessing",
+      "category": "Burn",
+      "stats": {
+        "on_defeat_enemy_with_burn": {
+          "recover_hp_percent": 5
+        }
+      }
+    },
+    {
+      "name": "Embers",
+      "category": "Burn",
+      "stats": {
+        "on_burn_removed": {
+          "burn_stacks_reduced_by_percent": 50
+        }
+      }
+    },
+    {
+      "name": "Frosty Blessing",
+      "category": "Frost Vortex",
+      "stats": {
+        "on_frost_vortex_disappear": {
+          "restore_hp_percent": 10
+        }
+      }
+    },
+    {
+      "name": "Vortex Multiplier",
+      "category": "Frost Vortex",
+      "stats": {
+        "max_frost_vortexes_increase": 1,
+        "frost_vortex_dmg_percent": 10
+      }
+    },
+    {
+      "name": "Shattering Ice",
+      "category": "Frost Vortex",
+      "stats": {
+        "on_enemy_defeated_at_center": {
+          "ice_dmg_percent_of_psi_intensity": 50,
+          "aoe_radius_meters": 1,
+          "trigger_times": 1
+        }
+      }
+    },
+    {
+      "name": "Cryo Blast",
+      "category": "Frost Vortex",
+      "stats": {
+        "frost_vortex_applies": {
+          "frostbite": true,
+          "vulnerability_percent": 4,
+          "movement_speed_percent": -10
+        }
+      }
+    },
+    {
+      "name": "Surge Amplifier",
+      "category": "Power Surge",
+      "stats": {
+        "on_deal_power_surge_dmg": {
+          "power_surge_dmg_percent": 5,
+          "duration_seconds": 3,
+          "max_stacks": 4
+        }
+      }
+    },
+    {
+      "name": "Static Shock",
+      "category": "Power Surge",
+      "stats": {
+        "power_surge_status_duration_percent": -50,
+        "power_surge_dmg_percent": 20
+      }
+    },
+    {
+      "name": "Shock Diffusion",
+      "category": "Power Surge",
+      "stats": {
+        "on_trigger_power_surge": {
+          "apply_power_surge_to_nearby_enemies": 1,
+          "radius_meters": 5,
+          "prioritize_unaffected_enemies": true
+        }
+      }
+    },
+    {
+      "name": "Shock Rampage",
+      "category": "Power Surge",
+      "stats": {
+        "on_deal_power_surge_dmg": {
+          "power_surge_trigger_chance_percent": 5,
+          "based_on_weapon_trigger_chance": true,
+          "duration_seconds": 5,
+          "max_stacks": 4
+        }
+      }
+    },
+    {
+      "name": "Heavy Explosives",
+      "category": "Unstable Bomber",
+      "stats": {
+        "unstable_bomber_infects_heavy_attack": true
+      }
+    },
+    {
+      "name": "Bombardier Souvenir",
+      "category": "Unstable Bomber",
+      "stats": {
+        "on_trigger_unstable_bomber": {
+          "refill_magazine_percent": 10
+        }
+      }
+    },
+    {
+      "name": "Reckless Bomber",
+      "category": "Unstable Bomber",
+      "stats": {
+        "per_crit_rate_percent": {
+          "unstable_bomber_dmg_percent": 0.5
+        }
+      }
+    },
+    {
+      "name": "Super Charged",
+      "category": "Unstable Bomber",
+      "stats": {
+        "on_trigger_unstable_bomber": {
+          "unstable_bomber_dmg_percent": 5,
+          "duration_seconds": 3,
+          "max_stacks": 6
+        }
+      }
+    },
+    {
+      "name": "Shield Breaker",
+      "category": "Shrapnel",
+      "stats": {
+        "on_hit_shielded_enemy": {
+          "shrapnel_dmg_percent": 60,
+          "duration_seconds": 1
+        }
+      }
+    },
+    {
+      "name": "Shrapnel Souvenir",
+      "category": "Shrapnel",
+      "stats": {
+        "on_shrapnel_hit_weakspot": {
+          "refill_bullet_from_inventory": 1
+        }
+      }
+    },
+    {
+      "name": "Shatter Them All",
+      "category": "Shrapnel",
+      "stats": {
+        "per_part_hit": {
+          "shrapnel_dmg_percent": 15
+        }
+      }
+    },
+    {
+      "name": "Shrapnel Smash",
+      "category": "Shrapnel",
+      "stats": {
+        "on_trigger_shrapnel": {
+          "shrapnel_crit_rate_percent": 1.0,
+          "duration_seconds": 2,
+          "max_stacks": 20
+        }
+      }
+    },
+    {
+      "name": "Cowboy",
+      "category": "Fast Gunner",
+      "stats": {
+        "on_reload_empty_mag": {
+          "fast_gunner_trigger_chance_percent": 100,
+          "based_on_weapon_trigger_chance": true,
+          "duration_seconds": 5
+        },
+        "on_fast_gunner_max_stacks": {
+          "duration_increase_seconds": 5
+        }
+      }
+    },
+    {
+      "name": "Shoot Out",
+      "category": "Fast Gunner",
+      "stats": {
+        "on_trigger_fast_gunner": {
+          "weapon_dmg_percent": 1.5,
+          "duration_seconds": 10,
+          "max_stacks": 20
+        }
+      }
+    },
+    {
+      "name": "Shooting Blitz",
+      "category": "Fast Gunner",
+      "stats": {
+        "fast_gunner_duration_seconds": 4,
+        "while_fast_gunner_active": {
+          "weapon_dmg_percent": 15
+        }
+      }
+    },
+    {
+      "name": "Precision Rush",
+      "category": "Fast Gunner",
+      "stats": {
+        "while_fast_gunner_active": {
+          "increase_weakspot_dmg_over_time": {
+            "time_seconds": 3,
+            "max_weakspot_dmg_percent": 45
+          }
+        }
+      }
+    },
+    {
+      "name": "Recover Mark",
+      "category": "The Bull's Eye",
+      "stats": {
+        "on_defeat_marked_enemy": {
+          "recover_hp_percent": 15,
+          "recover_stamina_percent": 25
+        }
+      }
+    },
+    {
+      "name": "Hunters Perk",
+      "category": "The Bull's Eye",
+      "stats": {
+        "marked_enemies_dmg_vs_metas_percent": -20
+      }
+    },
+    {
+      "name": "Vulnerability Amplifier",
+      "category": "The Bull's Eye",
+      "stats": {
+        "the_bulls_eye_adds": {
+          "vulnerability_percent": 8
+        }
+      }
+    },
+    {
+      "name": "Spreading Marks",
+      "category": "The Bull's Eye",
+      "stats": {
+        "on_marked_enemy_defeated": {
+          "spread_the_bulls_eye_to_nearby_enemies": 1,
+          "radius_meters": 15
+        }
+      }
+    },
+    {
+      "name": "United We Stand",
+      "category": "Fortress Warfare",
+      "stats": {
+        "more_players_in_fortress": {
+          "weapon_dmg_bonus_percent": "up_to_40"
+        }
+      }
+    },
+    {
+      "name": "Final Territory",
+      "category": "Fortress Warfare",
+      "stats": {
+        "on_fortress_warfare_end": {
+          "weapon_dmg_percent": 10,
+          "movement_speed_percent": 10,
+          "duration_seconds": 10
+        }
+      }
+    },
+    {
+      "name": "Durable Territory",
+      "category": "Fortress Warfare",
+      "stats": {
+        "on_enemy_defeated_in_fortress": {
+          "extend_effect_seconds": 5,
+          "max_extensions_per_fortress": 5
+        }
+      }
+    },
+    {
+      "name": "Portable Territory",
+      "category": "Fortress Warfare",
+      "stats": {
+        "after_leaving_fortress": {
+          "status_remains_seconds": 2
+        }
+      }
+    },
+    {
+      "name": "Targeted Bounce",
+      "category": "Bounce",
+      "stats": {
+        "bounce_weakspot_priority_percent": 300
+      }
+    },
+    {
+      "name": "Bounce Rampage",
+      "category": "Bounce",
+      "stats": {
+        "more_targets_hit": {
+          "bounce_dmg_percent": "up_to_45"
+        }
+      }
+    },
+    {
+      "name": "Not Throw Away Your Shot",
+      "category": "Bounce",
+      "stats": {
+        "bounce_can_hit_allies": true,
+        "bounce_deals_no_dmg_to_allies": true,
+        "on_bounce_hit_ally": {
+          "refill_bullet": 1
+        }
+      }
+    },
+    {
+      "name": "Super Bullet",
+      "category": "Bounce",
+      "stats": {
+        "bounce_crit_rate_percent": 10,
+        "bounce_crit_dmg_percent": 25
+      }
+    }
+  ]
+}

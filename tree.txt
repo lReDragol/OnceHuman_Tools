@@ -1,0 +1,165 @@
+once human/
+├── .idea/
+│   ├── .gitignore
+│   ├── aws.xml
+│   ├── encodings.xml
+│   ├── inspectionProfiles/
+│   │   ├── Project_Default.xml
+│   │   └── profiles_settings.xml
+│   ├── misc.xml
+│   ├── modules.xml
+│   ├── once human.iml
+│   └── workspace.xml
+├── 11111.py
+├── __pycache__/
+│   ├── config.cpython-312.pyc
+│   ├── core.cpython-312.pyc
+│   ├── hook-tkinterdnd2.cpython-312.pyc
+│   └── main_menu.cpython-312.pyc
+├── autoclickerV3.spec
+├── config.json
+├── config.py
+├── core.py
+├── create_tree.py
+├── data/
+│   ├── file/
+│   │   ├── MidiKeyMap.json
+│   │   ├── __pycache__/
+│   │   │   └── vk_codes.cpython-312.pyc
+│   │   ├── items_config.json
+│   │   ├── ru.ttf
+│   │   ├── tesseract_add_patch.ps1
+│   │   └── vk_codes.py
+│   ├── icons/
+│   │   ├── 1folder_icon.png
+│   │   ├── 85x85.py
+│   │   ├── armor/
+│   │   │   ├── boots/
+│   │   │   ├── gloves/
+│   │   │   ├── helmet/
+│   │   │   │   └── lonewolf_hood.png
+│   │   │   ├── mask/
+│   │   │   ├── pants/
+│   │   │   └── top/
+│   │   ├── fish.ico
+│   │   ├── icon.ico
+│   │   ├── menu_weapon_icons/
+│   │   │   ├── Assault_Rifle_Icon.png
+│   │   │   ├── Crossbow_Icon.png
+│   │   │   ├── Heavy_Artillery_Icon.png
+│   │   │   ├── LMG_Icon.png
+│   │   │   ├── Melee_Icon.png
+│   │   │   ├── Pistol_Icon.png
+│   │   │   ├── SMGs_Icon.png
+│   │   │   ├── Shotgun_Icon.png
+│   │   │   ├── Sniper_Rifle_Icon.png
+│   │   │   ├── assault_rifl_Icon.png
+│   │   │   ├── crossbows_Icon.png
+│   │   │   ├── lmgs_Icon.png
+│   │   │   └── sniper_rifles_Icon.png
+│   │   ├── mods/
+│   │   │   ├── mod_boots/
+│   │   │   ├── mod_bottoms/
+│   │   │   ├── mod_gloves/
+│   │   │   │   ├── Crit Amplifier.png
+│   │   │   │   ├── Crit Boost.png
+│   │   │   │   ├── Elemental Overload.png
+│   │   │   │   ├── Lifeforce Boost.png
+│   │   │   │   ├── Melee Amplifier.png
+│   │   │   │   ├── Munitions Amplifier.png
+│   │   │   │   ├── Status Enhancement.png
+│   │   │   │   └── Weakspot DMG Boost.png
+│   │   │   ├── mod_helmet/
+│   │   │   │   ├── Deviation Expert.png
+│   │   │   │   ├── Elemental Havoc.png
+│   │   │   │   ├── Fateful Strike.png
+│   │   │   │   ├── First-Move Advantage.png
+│   │   │   │   ├── Mag Expansion.png
+│   │   │   │   ├── Momentum Up.png
+│   │   │   │   ├── Precise Strike.png
+│   │   │   │   └── Work of Proficiency.png
+│   │   │   ├── mod_mask/
+│   │   │   │   ├── Blaze Amplifier.png
+│   │   │   │   ├── Blitzkrieg.png
+│   │   │   │   ├── Break Bounce.png
+│   │   │   │   ├── Delayed Blast.png
+│   │   │   │   ├── Explosive Shrapnel.png
+│   │   │   │   ├── First Electrocution.png
+│   │   │   │   ├── Gunslinger.png
+│   │   │   │   ├── Light Cannon.png
+│   │   │   │   ├── Lingering Frost.png
+│   │   │   │   ├── Most Wanted.png
+│   │   │   │   ├── Obliteration.png
+│   │   │   │   ├── Point Detonation.png
+│   │   │   │   ├── Precision Bounce.png
+│   │   │   │   ├── Retrusion Explosion.png
+│   │   │   │   ├── Shrapnel Carnage.png
+│   │   │   │   ├── Targeted Strike.png
+│   │   │   │   ├── Thunderclap.png
+│   │   │   │   └── Unbreakable.png
+│   │   │   ├── mod_pants/
+│   │   │   │   ├── Deadshot.png
+│   │   │   │   └── Melee Momentum.png
+│   │   │   ├── mod_top/
+│   │   │   │   ├── Critical Rescue.png
+│   │   │   │   ├── Enduring Shield.png
+│   │   │   │   ├── Head Guard.png
+│   │   │   │   ├── Head-on Conflict.png
+│   │   │   │   ├── Healing Fortification.png
+│   │   │   │   ├── Quick Comeback.png
+│   │   │   │   ├── Rejuvenating.png
+│   │   │   │   ├── Resist Advantage.png
+│   │   │   │   └── Status Immune.png
+│   │   │   └── mod_weapon/
+│   │   ├── mods.rar
+│   │   ├── russia_flag.png
+│   │   ├── target_image.png
+│   │   ├── unstable_bomber.png
+│   │   ├── usa_flag.png
+│   │   └── weapons/
+│   │       └── unstable_bomber.png
+│   └── menu/
+│       ├── __pycache__/
+│       │   ├── bot_fish_tab.cpython-311.pyc
+│       │   ├── bot_fish_tab.cpython-312.pyc
+│       │   ├── calc_and_mod_tab.cpython-312.pyc
+│       │   ├── foto_video_tab.cpython-311.pyc
+│       │   ├── foto_video_tab.cpython-312.pyc
+│       │   ├── functions.cpython-312.pyc
+│       │   ├── other_tab.cpython-311.pyc
+│       │   ├── other_tab.cpython-312.pyc
+│       │   ├── pianino_bot_tab.cpython-311.pyc
+│       │   ├── pianino_bot_tab.cpython-312.pyc
+│       │   ├── settings_button.cpython-311.pyc
+│       │   └── settings_button.cpython-312.pyc
+│       ├── bot_fish_tab.py
+│       ├── calc/
+│       │   ├── __pycache__/
+│       │   │   ├── config_manager.cpython-312.pyc
+│       │   │   ├── context_module.cpython-312.pyc
+│       │   │   ├── mechanics.cpython-312.pyc
+│       │   │   └── player.cpython-312.pyc
+│       │   ├── bd_json/
+│       │   │   ├── all_armor_stats.json
+│       │   │   ├── armor_sets.json
+│       │   │   ├── items_and_sets.json
+│       │   │   ├── mods_config.json
+│       │   │   └── weapon_list.json
+│       │   ├── config_manager.py
+│       │   ├── context_module.py
+│       │   ├── mechanics.py
+│       │   └── player.py
+│       ├── calc_and_mod_tab.py
+│       ├── foto_video_tab.py
+│       ├── functions.py
+│       ├── other_tab.py
+│       ├── pianino_bot_tab.py
+│       ├── search_coordinat.py
+│       └── settings_button.py
+├── hook-tkinterdnd2.py
+├── main.py
+├── main.spec
+├── main_menu.py
+├── screenshot.png
+├── translations.json
+└── tree.txt

@@ -1,0 +1,248 @@
+{
+  "items": [
+    {
+      "id": "lonewolf_hood",
+      "name": "Lonewolf Hood",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "lonewolf_set"
+    },
+    {
+      "id": "lonewolf_mask",
+      "name": "Lonewolf Mask",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": "lonewolf_set"
+    },
+    {
+      "id": "lonewolf_jacket",
+      "name": "Lonewolf Jacket",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "lonewolf_set"
+    },
+    {
+      "id": "lonewolf_gloves",
+      "name": "Lonewolf Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "lonewolf_set"
+    },
+    {
+      "id": "lonewolf_pants",
+      "name": "Lonewolf Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "lonewolf_set"
+    },
+    {
+      "id": "lonewolf_shoes",
+      "name": "Lonewolf Shoes",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "lonewolf_set"
+    }
+  ],
+  "sets": [
+    {
+      "set_id": "lonewolf_set",
+      "name": "Lonewolf Set",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "magazine_capacity_percent",
+              "value": 10.0
+            }
+          ]
+        },
+        {
+          "required_items": 2,
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "crit_rate_percent",
+              "value": 5.0
+            }
+          ]
+        },
+        {
+          "required_items": 3,
+          "effects": [
+            {
+              "type": "on_event",
+              "event": "every_2_weapon_crit_hits",
+              "effects": [
+                {
+                  "type": "apply_status",
+                  "status": "lone_shadow",
+                  "effects": [
+                    {
+                      "type": "increase_stat",
+                      "stat": "crit_damage_percent",
+                      "value": 6
+                    },
+                    {
+                      "type": "set_duration",
+                      "duration_seconds": 30
+                    },
+                    {
+                      "type": "set_max_stacks",
+                      "value": 8
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "required_items": 4,
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "max_lone_shadow_stacks",
+              "value": 10
+            },
+            {
+              "type": "on_event",
+              "event": "kill",
+              "effects": [
+                {
+                  "type": "increase_stat",
+                  "stat": "crit_rate_percent",
+                  "value": 8
+                },
+                {
+                  "type": "set_duration",
+                  "duration_seconds": 2
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "multipliers": {
+    "legendary": {
+      "levels": {
+        "1": {
+          "hp": 1.0,
+          "pollution_resist": 1.0,
+          "psi_intensity": 1.0
+        },
+        "2": {
+          "hp": 1.3333,
+          "pollution_resist": 1.3333,
+          "psi_intensity": 1.5
+        },
+        "3": {
+          "hp": 2.6667,
+          "pollution_resist": 1.6667,
+          "psi_intensity": 2.375
+        },
+        "4": {
+          "hp": 5.3333,
+          "pollution_resist": 2.0,
+          "psi_intensity": 3.75
+        },
+        "5": {
+          "hp": 9.8333,
+          "pollution_resist": 2.3333,
+          "psi_intensity": 5.75
+        }
+      }
+    },
+    "epic": {
+      "levels": {
+        "1": {
+          "hp": 1.0,
+          "pollution_resist": 1.0,
+          "psi_intensity": 1.0
+        },
+        "2": {
+          "hp": 1.3333,
+          "pollution_resist": 1.3333,
+          "psi_intensity": 1.5714
+        },
+        "3": {
+          "hp": 2.6667,
+          "pollution_resist": 1.6667,
+          "psi_intensity": 2.5
+        },
+        "4": {
+          "hp": 5.3333,
+          "pollution_resist": 2.0,
+          "psi_intensity": 3.8571
+        },
+        "5": {
+          "hp": 9.8333,
+          "pollution_resist": 2.3333,
+          "psi_intensity": 5.9286
+        }
+      }
+    },
+    "rare": {
+      "levels": {
+        "1": {
+          "hp": 1.0,
+          "pollution_resist": 1.0,
+          "psi_intensity": 1.0
+        },
+        "2": {
+          "hp": 1.3333,
+          "pollution_resist": 1.3333,
+          "psi_intensity": 1.4615
+        },
+        "3": {
+          "hp": 2.6667,
+          "pollution_resist": 1.6667,
+          "psi_intensity": 2.3846
+        },
+        "4": {
+          "hp": 5.3333,
+          "pollution_resist": 2.0,
+          "psi_intensity": 3.6923
+        },
+        "5": {
+          "hp": 9.8333,
+          "pollution_resist": 2.3333,
+          "psi_intensity": 5.6923
+        }
+      }
+    },
+    "common": {
+      "levels": {
+        "1": {
+          "hp": 1.0,
+          "pollution_resist": 1.0,
+          "psi_intensity": 1.0
+        },
+        "2": {
+          "hp": 1.3333,
+          "pollution_resist": 1.3333,
+          "psi_intensity": 1.5455
+        },
+        "3": {
+          "hp": 2.6667,
+          "pollution_resist": 1.6667,
+          "psi_intensity": 2.4545
+        },
+        "4": {
+          "hp": 5.3333,
+          "pollution_resist": 2.0,
+          "psi_intensity": 3.8182
+        },
+        "5": {
+          "hp": 9.8333,
+          "pollution_resist": 2.3333,
+          "psi_intensity": 5.8182
+        }
+      }
+    }
+  }
+}

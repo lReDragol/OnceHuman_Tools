@@ -1,0 +1,3148 @@
+{
+    "weapons": [
+        {
+            "id": "de50_jaws",
+            "name": "DE.50 - Jaws",
+            "type": "pistol",
+            "rarity": "legendary",
+            "base_stats": {
+                "damage_per_projectile": 128,
+                "projectiles_per_shot": 1,
+                "fire_rate": 190,
+                "magazine_capacity": 8,
+                "crit_rate_percent": 6,
+                "weakspot_damage_percent": 60,
+                "crit_damage_percent": 25,
+                "stability": 46,
+                "accuracy": 76,
+                "range": 48,
+                "reload_time_seconds": 2.0,
+                "reload_speed_points": 63
+            },
+            "mechanics": {
+                "description": "Unstable Bomber and Explosive DMG bonuses",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "every_n_shots",
+                        "n": 4,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "unstable_bomber",
+                                "damage_formula": "100% Psi Intensity",
+                                "blast_radius": 1.5,
+                                "decay": "50% over radius",
+                                "additional_info": {
+                                    "can_crit": false,
+                                    "can_hit_weakspots": false
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "crit_hit",
+                        "effects": [
+                            {
+                                "type": "increment_counter",
+                                "counter": "shots_towards_bomber_trigger"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "explosion_elemental_damage_percent",
+                                "value": 30,
+                                "duration_seconds": 8
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "unstable_bomber_crit_bonus",
+                        "properties": {
+                            "crit_rate_percent": 25,
+                            "can_crit": true
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary pistol with explosive mechanics. Best used against Deviants for high damage output."
+        },
+        {
+            "id": "de50_wildfire",
+            "name": "DE.50 - Wildfire",
+            "type": "pistol",
+            "rarity": "epic",
+            "base_stats": {
+                "damage_per_projectile": 115,
+                "projectiles_per_shot": 1,
+                "fire_rate": 190,
+                "magazine_capacity": 8,
+                "crit_rate_percent": 6,
+                "weakspot_damage_percent": 60,
+                "crit_damage_percent": 25,
+                "stability": 46,
+                "accuracy": 76,
+                "range": 48,
+                "reload_time_seconds": 2.0,
+                "reload_speed_points": 63
+            },
+            "mechanics": {
+                "description": "Features revolving around The Bull's Eye ability and marked enemies.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 60,
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "the_bulls_eye",
+                                "vulnerability_bonus_percent": 8,
+                                "duration_seconds": 12
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "spread_bulls_eye",
+                        "chance_percent": 80,
+                        "effects": [
+                            {
+                                "type": "spread_effect",
+                                "radius_meters": 15,
+                                "effect": {
+                                    "type": "apply_status",
+                                    "status": "the_bulls_eye",
+                                    "description": "Spread The Bull's Eye to 1 enemy."
+                                }
+                            },
+                            {
+                                "type": "increase_stat",
+                                "stat": "weapon_damage_percent",
+                                "value": 25,
+                                "duration_seconds": 10
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "conditions": {
+                            "target_is_marked": true
+                        },
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "attack_percent",
+                                "value": 3,
+                                "duration_seconds": 10,
+                                "max_stacks": 3
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "An epic pistol with a focus on marking targets and amplifying damage through The Bull's Eye ability."
+        },
+        {
+            "id": "g17_dusty",
+            "name": "G17 - Dusty",
+            "type": "pistol",
+            "rarity": "epic",
+            "base_stats": {
+                "damage_per_projectile": 54,
+                "projectiles_per_shot": 1,
+                "fire_rate": 410,
+                "magazine_capacity": 13,
+                "crit_rate_percent": 8,
+                "weakspot_damage_percent": 55,
+                "crit_damage_percent": 28,
+                "stability": 73,
+                "accuracy": 39,
+                "range": 23,
+                "reload_time_seconds": 1.8,
+                "reload_speed_points": 69
+            },
+            "mechanics": {
+                "description": "A rapid-fire pistol with Shrapnel mechanics that enhance weakspot damage and deal extra hits.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "chance_percent": 55,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "shrapnel",
+                                "description": "Deals Weapon DMG of 50% Attack to a random unhit part.",
+                                "damage_formula": "50% Attack",
+                                "damage_type": "weapon_element",
+                                "can_crit": true,
+                                "can_hit_weakspots": true,
+                                "decay": true
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "weakspot_damage_bonus",
+                        "properties": {
+                            "weakspot_damage_bonus_percent": 15
+                        }
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "trigger_shrapnel",
+                        "effects": [
+                            {
+                                "type": "modify_behavior",
+                                "behavior": "ignore_unhit_parts",
+                                "enabled": false
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "An epic pistol with fast fire rate and unique Shrapnel mechanics for targeting unhit parts and enhancing weakspot damage."
+        },
+        {
+            "id": "old_huntsman",
+            "name": "Old Huntsman",
+            "type": "shotgun",
+            "rarity": "fine",
+            "base_stats": {
+                "damage_per_projectile": 49,
+                "projectiles_per_shot": 6,
+                "fire_rate": 180,
+                "magazine_capacity": 2,
+                "crit_rate_percent": 10,
+                "weakspot_damage_percent": 25,
+                "crit_damage_percent": 30,
+                "stability": 76,
+                "accuracy": 61,
+                "range": 26,
+                "reload_time_seconds": 2.1,
+                "reload_speed_points": 60
+            },
+            "mechanics": {
+                "description": "A fine shotgun with The Bull's Eye mechanics to mark targets and increase damage.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 35,
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "the_bulls_eye",
+                                "description": "Highlight marked target with Vulnerability +8% for 12 seconds.",
+                                "vulnerability_bonus_percent": 8,
+                                "duration_seconds": 12
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "hit_target_with_status",
+                        "conditions": {
+                            "status": "the_bulls_eye"
+                        },
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "damage_percent",
+                                "value": 20
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "A fine shotgun with mechanics to mark targets using The Bull's Eye and deal additional damage to marked enemies."
+        },
+        {
+            "id": "dbsg",
+            "name": "DBSG",
+            "type": "shotgun",
+            "rarity": "common",
+            "base_stats": {
+                "damage_per_projectile": 49,
+                "projectiles_per_shot": 6,
+                "fire_rate": 180,
+                "magazine_capacity": 2,
+                "crit_rate_percent": 10,
+                "weakspot_damage_percent": 25,
+                "crit_damage_percent": 30,
+                "stability": 76,
+                "accuracy": 61,
+                "range": 26,
+                "reload_time_seconds": 2.2,
+                "reload_speed_points": 56
+            },
+            "mechanics": {
+                "description": "A common shotgun with no unique effects."
+            },
+            "description": "A basic shotgun suitable for close-range combat. Offers reliable performance without any additional mechanics."
+        },
+        {
+            "id": "s870_sandstorm",
+            "name": "S870 - Sandstorm",
+            "type": "shotgun",
+            "rarity": "fine",
+            "base_stats": {
+                "damage_per_projectile": 48,
+                "projectiles_per_shot": 6,
+                "fire_rate": 80,
+                "magazine_capacity": 8,
+                "crit_rate_percent": 10,
+                "weakspot_damage_percent": 25,
+                "crit_damage_percent": 30,
+                "stability": 67,
+                "accuracy": 49,
+                "range": 58,
+                "reload_time_seconds": 2.5,
+                "reload_speed_points": 47
+            },
+            "mechanics": {
+                "description": "A fine shotgun with Fortress Warfare mechanics to enhance allies and boost weapon damage.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "switch_mode",
+                        "cooldown_seconds": 20,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "fortress_warfare",
+                                "description": "Create an area of effect within a 2m radius that grants allies Heavy Armor for 5 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "fortress_warfare_damage_boost",
+                        "conditions": {
+                            "mode": "fortress_warfare"
+                        },
+                        "properties": {
+                            "weapon_damage_bonus_percent": 10
+                        }
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "grant_ally_buff",
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "heavy_armor",
+                                "description": "Grants Super Armor with Weapon DMG +20%.",
+                                "duration_seconds": 5,
+                                "stat_bonuses": {
+                                    "super_armor": true,
+                                    "weapon_damage_bonus_percent": 20
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "A fine shotgun with the unique ability to boost allies' defense and damage through Fortress Warfare mechanics."
+        },
+        {
+            "id": "r500_memento",
+            "name": "R500 - Memento",
+            "type": "pistol",
+            "rarity": "legendary",
+            "base_stats": {
+                "damage_per_projectile": 170,
+                "projectiles_per_shot": 1,
+                "fire_rate": 145,
+                "magazine_capacity": 5,
+                "crit_rate_percent": 4,
+                "crit_damage_percent": 25,
+                "weakspot_damage_percent": 65,
+                "stability": 76,
+                "accuracy": 82,
+                "range": 79,
+                "reload_time_seconds": 2.2,
+                "reload_speed_points": 56
+            },
+            "mechanics": {
+                "description": "A sniper rifle designed to counter Rosetta with unique mechanics like Fast Gunner.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 36,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "fast_gunner",
+                                "description": "Grants a stack of Fast Gunner with Fire Rate +1% and Attack +1% for 2 seconds. Can stack up to 5 times.",
+                                "duration_seconds": 2,
+                                "max_stacks": 5,
+                                "stat_bonuses": {
+                                    "fire_rate_percent": 1,
+                                    "attack_percent": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "effects": [
+                            {
+                                "type": "modify_chance",
+                                "base_event": "hit_target",
+                                "new_chance_percent": 72
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "trigger_fast_gunner",
+                        "effects": [
+                            {
+                                "type": "reload_ammo",
+                                "amount": 1
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "fire_weapon",
+                        "chance_percent": 40,
+                        "effects": [
+                            {
+                                "type": "consume_extra_ammo",
+                                "amount": 1
+                            },
+                            {
+                                "type": "conditional_stat_bonus",
+                                "condition": "extra_ammo_consumed",
+                                "stat": "attack_percent",
+                                "value": 80,
+                                "duration_seconds": 2
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "A powerful sniper rifle with mechanics focused on rapid reloads and high attack bonuses through Fast Gunner."
+        },
+        {
+            "id": "r500_hammerhead_shark",
+            "name": "R500 - Hammerhead Shark",
+            "type": "pistol",
+            "rarity": "epic",
+            "base_stats": {
+                "damage_per_projectile": 153,
+                "projectiles_per_shot": 1,
+                "fire_rate": 145,
+                "magazine_capacity": 5,
+                "crit_rate_percent": 4,
+                "crit_damage_percent": 25,
+                "weakspot_damage_percent": 65,
+                "stability": 76,
+                "accuracy": 82,
+                "range": 75,
+                "reload_time_seconds": 2.5,
+                "reload_speed_points": 47
+            },
+            "mechanics": {
+                "description": "A sniper rifle with Power Surge mechanics to inflict AoE Shock DMG and ammo regeneration.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "chance_percent": 80,
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "power_surge",
+                                "description": "Inflicts Power Surge status for 6 seconds, reducing accuracy by 40%.",
+                                "duration_seconds": 6,
+                                "additional_effects": {
+                                    "status_damage_percent": 50,
+                                    "damage_type": "shock",
+                                    "can_crit": false,
+                                    "can_hit_weakspots": false,
+                                    "decay": false
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "hit_enemy_with_status",
+                        "conditions": {
+                            "status": "power_surge"
+                        },
+                        "effects": [
+                            {
+                                "type": "area_damage",
+                                "damage_percent": 100,
+                                "damage_type": "shock",
+                                "description": "Deals Shock DMG to all enemies affected by Power Surge in the area."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "shock_damage_dealt",
+                        "conditions": {
+                            "count": 4
+                        },
+                        "effects": [
+                            {
+                                "type": "reload_ammo",
+                                "amount": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "An epic sniper rifle with powerful AoE damage mechanics through Power Surge and automatic ammo regeneration."
+        },
+        {
+            "id": "dual_fury",
+            "name": "Dual Fury",
+            "type": "shotgun",
+            "rarity": "epic",
+            "base_stats": {
+                "damage_per_projectile": 56,
+                "projectiles_per_shot": 6,
+                "fire_rate": 180,
+                "magazine_capacity": 2,
+                "crit_rate_percent": 10,
+                "crit_damage_percent": 30,
+                "weakspot_damage_percent": 25,
+                "stability": 76,
+                "accuracy": 61,
+                "range": 27,
+                "reload_time_seconds": 2.1,
+                "reload_speed_points": 60
+            },
+            "mechanics": {
+                "description": "A close-range dual shotgun with Burn mechanics that boost damage and refill ammo.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "last_shot",
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "burn",
+                                "stacks": 1,
+                                "duration_seconds": 6,
+                                "interval_seconds": 0.5,
+                                "damage_formula": "10% Psi Intensity",
+                                "damage_type": "blaze",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "all_projectiles_hit",
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "burn",
+                                "stacks": 1,
+                                "duration_seconds": 6,
+                                "interval_seconds": 0.5,
+                                "damage_formula": "10% Psi Intensity",
+                                "damage_type": "blaze",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "all_projectiles_hit_n_times",
+                        "n": 4,
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "special_burn",
+                                "description": "Lose HP but gain Attack +20% and Vulnerability +10% for 8 seconds.",
+                                "hp_penalty": true,
+                                "attack_bonus_percent": 20,
+                                "vulnerability_bonus_percent": 10,
+                                "duration_seconds": 8
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "hit_burned_target",
+                        "conditions": {
+                            "all_projectiles_hit": true
+                        },
+                        "chance_percent": 50,
+                        "effects": [
+                            {
+                                "type": "reload_ammo",
+                                "amount": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "An epic dual shotgun with Burn mechanics that apply Blaze damage over time, grant temporary bonuses, and can refill ammo on specific conditions."
+        },
+        {
+            "id": "mps5_blue_tiger",
+            "name": "MPS5 - Blue Tiger",
+            "type": "smgs",
+            "rarity": "fine",
+            "base_stats": {
+                "damage_per_projectile": 30,
+                "projectiles_per_shot": 1,
+                "fire_rate": 750,
+                "magazine_capacity": 30,
+                "crit_rate_percent": 8,
+                "crit_damage_percent": 30,
+                "weakspot_damage_percent": 55,
+                "stability": 50,
+                "accuracy": 53,
+                "range": 67,
+                "reload_time_seconds": 2.4,
+                "reload_speed_points": 50
+            },
+            "mechanics": {
+                "description": "A fine SMG with Bounce mechanics to deal extra damage by bouncing bullets to nearby enemies.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 30,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "bounce",
+                                "description": "Bounce to hit a random enemy within 10m radius, dealing Weapon DMG of 60% Attack.",
+                                "damage_formula": "60% Attack",
+                                "damage_type": "weapon_element",
+                                "can_crit": true,
+                                "can_hit_weakspots": true,
+                                "decay": true,
+                                "bounce_radius_meters": 10
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "bounce_damage_bonus",
+                        "properties": {
+                            "damage_bonus_percent": 60
+                        }
+                    }
+                ]
+            },
+            "description": "A fine SMG designed for crowd control with its Bounce ability, allowing bullets to hit multiple enemies and deal consistent extra damage."
+        },
+        {
+            "id": "mps7",
+            "name": "MPS7",
+            "type": "smgs",
+            "rarity": "common",
+            "base_stats": {
+                "damage_per_projectile": 26,
+                "projectiles_per_shot": 1,
+                "fire_rate": 850,
+                "magazine_capacity": 35,
+                "crit_rate_percent": 8,
+                "crit_damage_percent": 30,
+                "weakspot_damage_percent": 50,
+                "stability": 60,
+                "accuracy": 45,
+                "range": 18,
+                "reload_time_seconds": 2.5,
+                "reload_speed_points": 47
+            },
+            "mechanics": {
+                "description": "A basic submachine gun without any unique effects.",
+                "effects": []
+            },
+            "description": "A common SMG designed for consistent damage output with no additional mechanics. Suitable for beginners or backup purposes."
+        },
+        {
+            "id": "mps7_outer_space",
+            "name": "MPS7 - Outer Space",
+            "type": "smgs",
+            "rarity": "legendary",
+            "base_stats": {
+                "damage_per_projectile": 33,
+                "projectiles_per_shot": 1,
+                "fire_rate": 850,
+                "magazine_capacity": 35,
+                "crit_rate_percent": 8,
+                "crit_damage_percent": 30,
+                "weakspot_damage_percent": 50,
+                "stability": 65,
+                "accuracy": 50,
+                "range": 20,
+                "reload_speed_points": 50,
+                "reload_time_seconds": 2.4
+            },
+            "mechanics": {
+                "description": "A legendary SMG with Power Surge mechanics that enhance trigger factors upon defeating enemies and reloading.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 25,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "power_surge",
+                                "description": "Triggers Power Surge on hit, dealing 50% Psi Intensity as Shock Element DMG."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "defeat_enemy",
+                        "effects": [
+                            {
+                                "type": "modify_trigger_factor",
+                                "ability": "power_surge",
+                                "bonus_percent": 30,
+                                "duration_seconds": 12,
+                                "description": "Increases Power Surge trigger factor by 30% for 12 seconds after defeating an enemy."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "reload_weapon",
+                        "effects": [
+                            {
+                                "type": "modify_trigger_factor",
+                                "ability": "power_surge",
+                                "bonus_percent": 40,
+                                "duration_seconds": 3,
+                                "description": "Increases Power Surge trigger factor by 40% for 3 seconds after reloading."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "power_surge_base_factor_bonus",
+                        "properties": {
+                            "trigger_factor_bonus_percent": 40
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary SMG focused on Power Surge mechanics, granting stacking trigger bonuses upon defeating enemies and reloading for consistent Shock DMG output."
+        },
+        {
+            "id": "mps7_div_evo",
+            "name": "MPS7 - Div-Evo",
+            "type": "smgs",
+            "rarity": "epic",
+            "blueprint_fragment_type": "Stranger",
+            "base_stats": {
+                "damage_per_projectile": 29,
+                "projectiles_per_shot": 1,
+                "fire_rate": 850,
+                "magazine_capacity": 35,
+                "crit_rate_percent": 8,
+                "weakspot_damage_percent": 50,
+                "crit_damage_percent": 30,
+                "damage_bonus": "None",
+                "stability": 43,
+                "accuracy": 58,
+                "range": 45,
+                "reload_speed_points": 32,
+                "reload_time_seconds": 3.0
+            },
+            "mechanics": {
+                "description": "Shrapnel mechanics with increased trigger chances upon defeating enemies and enhanced targeting when hitting weakspots.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 25,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "shrapnel",
+                                "damage_formula": "50% Attack",
+                                "damage_type": "weapon_element",
+                                "can_crit": true,
+                                "can_hit_weakspots": true,
+                                "decay": true,
+                                "description": "Deals Weapon DMG of 50% Attack to a random unhit part."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "defeat_enemy",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "shrapnel_trigger_chance_percent",
+                                "value": 80,
+                                "duration_seconds": 12,
+                                "description": "Increases the chance to trigger Shrapnel by 80% for 12 seconds after defeating an enemy."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "shrapnel_target_parts",
+                                "value": 1,
+                                "duration_seconds": 4,
+                                "description": "Hitting a Weakspot grants Shrapnel target parts +1 for 4 seconds."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "An epic SMG with Shrapnel mechanics that deal additional damage to random unhit parts. Increased trigger chances upon defeating enemies and enhanced targeting when hitting weakspots ensure high efficiency in combat."
+        },
+        {
+            "id": "mps5_kumawink",
+            "name": "MPS5 - Kumawink",
+            "type": "smgs",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Stranger",
+            "base_stats": {
+                "damage_per_projectile": 37,
+                "projectiles_per_shot": 1,
+                "fire_rate": 750,
+                "magazine_capacity": 30,
+                "crit_rate_percent": 8,
+                "weakspot_damage_percent": 55,
+                "crit_damage_percent": 30,
+                "damage_bonus": "Impact: Dealing more DMG against Protocell",
+                "stability": 50,
+                "accuracy": 54,
+                "range": 68,
+                "reload_speed_points": 43,
+                "reload_time_seconds": 2.6
+            },
+            "mechanics": {
+                "description": "Bounce mechanics with increased trigger chances when hitting weakspots and additional damage against Protocell.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 25,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "bounce",
+                                "damage_formula": "60% Attack",
+                                "damage_type": "weapon_element",
+                                "can_crit": true,
+                                "can_hit_weakspots": true,
+                                "decay": true,
+                                "bounce_radius_meters": 10,
+                                "description": "Deals Weapon DMG of 60% Attack to a random enemy within a 10m radius."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "bounce_trigger_factor_percent",
+                                "value": 60,
+                                "duration_seconds": 4,
+                                "description": "Bounce trigger factor for this shot is increased by 60% when hitting a weakspot."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "magazine_below_half",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "bounce_trigger_count",
+                                "value": 1,
+                                "description": "When magazine capacity is below 50%, the number of Bounce triggers increases by 1."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "bounce_base_damage_bonus",
+                        "properties": {
+                            "damage_bonus_percent": 50,
+                            "description": "Bounce base damage increased by 50%."
+                        }
+                    },
+                    {
+                        "type": "conditional_stat_bonus",
+                        "condition": "attacking_protocell",
+                        "stat": "damage_percent",
+                        "value": 20,
+                        "description": "Impact: Increases damage by 20% when attacking Protocell."
+                    }
+                ]
+            },
+            "description": "A legendary SMG with Bounce mechanics that allow bullets to ricochet to nearby enemies. Increased trigger chances when hitting weakspots and enhanced damage against Protocell provide additional bonuses when magazine capacity is reduced."
+        },
+        {
+            "id": "kv-sbr_icy_rain",
+            "name": "KV-SBR - Icy Rain",
+            "type": "smgs",
+            "rarity": "epic",
+            "blueprint_fragment_type": "Operator",
+            "base_stats": {
+                "damage_per_projectile": 25,
+                "projectiles_per_shot": 1,
+                "fire_rate": 1000,
+                "magazine_capacity": 39,
+                "crit_rate_percent": 10,
+                "weakspot_damage_percent": 45,
+                "crit_damage_percent": 30,
+                "damage_bonus": "Penetration: Dealing more DMG against Rosetta",
+                "stability": 36,
+                "accuracy": 71,
+                "range": 21,
+                "reload_speed_points": 56,
+                "reload_time_seconds": 2.2
+            },
+            "mechanics": {
+                "description": "Frost Vortex mechanics with a chance to trigger on crit hits, auto-reloading, and increased number of existing vortices.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "crit_hit",
+                        "chance_percent": 40,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "frost_vortex",
+                                "damage_formula": "30% Psi Intensity",
+                                "damage_type": "frost",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false,
+                                "max_instances": 2,
+                                "description": "Traps enemies within a 4.5m radius and inflicts 30% Psi Intensity Status DMG per second for 4 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "trigger_frost_vortex",
+                        "effects": [
+                            {
+                                "type": "reload_ammo",
+                                "amount": 6,
+                                "description": "Automatically reloads 15% of bullets after creating Frost Vortex."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "frost_vortex_additional",
+                        "properties": {
+                            "max_frost_vortex": 2,
+                            "description": "Allows up to 2 Frost Vortex to exist simultaneously."
+                        }
+                    },
+                    {
+                        "type": "conditional_stat_bonus",
+                        "condition": "attacking_rosetta",
+                        "stat": "damage_percent",
+                        "value": 20,
+                        "description": "Penetration: Increases damage by 20% when attacking Rosetta."
+                    }
+                ]
+            },
+            "description": "An epic SMG with Frost Vortex mechanics that trap enemies within a 4.5m radius and inflict status damage over time. Critical hits have a 40% chance to activate Frost Vortex, automatically reload 15% of bullets, and allow up to 2 Frost Vortex instances simultaneously. Additional damage against Rosetta enhances combat effectiveness."
+        },
+        {
+            "id": "kv-sbr_little_jaws",
+            "name": "KV-SBR - Little Jaws",
+            "type": "smgs",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Beyonder",
+            "base_stats": {
+                "damage_per_projectile": 29,
+                "projectiles_per_shot": 1,
+                "fire_rate": 1000,
+                "magazine_capacity": 39,
+                "crit_rate_percent": 10,
+                "weakspot_damage_percent": 45,
+                "crit_damage_percent": 30,
+                "damage_bonus": "None",
+                "stability": 36,
+                "accuracy": 33,
+                "range": 24,
+                "reload_speed_points": 56,
+                "reload_time_seconds": 2.2
+            },
+            "mechanics": {
+                "description": "Unstable Bomber mechanics with increased damage upon hitting enemies affected by Unstable Bomber, additional damage modifiers for weakspot hits, and scaling damage based on Unstable Bomber delay.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "every_n_hits",
+                        "n": 15,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "unstable_bomber",
+                                "damage_formula": "100% Psi Intensity",
+                                "damage_type": "blast",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": true,
+                                "blast_radius_meters": 1.5,
+                                "delay_seconds": 0.4,
+                                "description": "Triggers Unstable Bomber, inflicting a blast of 100% Psi Intensity after 0.4 seconds with a blast radius of 1.5m. The damage decays over distance down to a minimum of 50%."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "hit_target_with_status",
+                        "status": "unstable_bomber",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "explosive_final_dmg_percent",
+                                "value": 10,
+                                "duration_seconds": 4,
+                                "description": "Hitting enemies affected by Unstable Bomber increases the current Unstable Bomber Final DMG by 10% for 4 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "conditions": {
+                            "status": "unstable_bomber"
+                        },
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "explosive_final_dmg_percent",
+                                "value": 10,
+                                "duration_seconds": 4,
+                                "description": "Weakspot hits double the DMG increase, adding an additional 10% to Explosive Final DMG."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "unstable_bomber_delay_bonus",
+                        "properties": {
+                            "delay_bonus_seconds": 0.3,
+                            "description": "Unstable Bomber delay increased by 0.3 seconds."
+                        }
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "unstable_bomber_dmg_scaling",
+                        "properties": {
+                            "dmg_scaling_per_0.1s_delay": 20,
+                            "description": "For every 0.1 seconds of Unstable Bomber delay, Unstable Bomber DMG increases by 20%."
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary SMG with Unstable Bomber mechanics that trigger after hitting enemies 15 times. Unstable Bomber inflicts a powerful blast with increased damage based on delay and additional bonuses when hitting enemies affected by it or targeting weakspots. Scaling damage ensures devastating bursts against foes."
+        },
+        {
+            "id": "kam_pioneer",
+            "name": "KAM - Pioneer",
+            "type": "assault_rifl",
+            "rarity": "fine",
+            "base_stats": {
+                "damage_per_projectile": 31,
+                "projectiles_per_shot": 1,
+                "fire_rate": 600,
+                "magazine_capacity": 40,
+                "crit_rate_percent": 6,
+                "crit_damage_percent": 30,
+                "weakspot_damage_percent": 55,
+                "stability": 35,
+                "accuracy": 67,
+                "range": 58,
+                "reload_speed_points": 38,
+                "reload_time_seconds": 2.8
+            },
+            "mechanics": {
+                "description": "Shrapnel mechanics with increased damage and additional bonuses.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 30,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "shrapnel",
+                                "damage_formula": "50% Attack",
+                                "damage_type": "weapon_element",
+                                "can_crit": true,
+                                "can_hit_weakspots": true,
+                                "decay": true,
+                                "description": "Deals Weapon DMG of 50% Attack to a random unhit part."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "shrapnel_dmg_bonus",
+                        "properties": {
+                            "damage_bonus_percent": 60,
+                            "description": "Shrapnel damage increased by 60%."
+                        }
+                    }
+                ]
+            },
+            "description": "A fine Assault Rifle with Shrapnel mechanics that deal additional damage to random unhit parts. Increased damage bonuses enhance its effectiveness in combat."
+        },
+        {
+            "id": "socr_outsider",
+            "name": "SOCR - Outsider",
+            "type": "assault_rifl",
+            "rarity": "epic",
+            "base_stats": {
+                "damage_per_projectile": 41,
+                "projectiles_per_shot": 1,
+                "fire_rate": 515,
+                "magazine_capacity": 30,
+                "crit_rate_percent": 6,
+                "crit_damage_percent": 27,
+                "weakspot_damage_percent": 60,
+                "stability": 39,
+                "accuracy": 51,
+                "range": 75,
+                "reload_speed_points": 56,
+                "reload_time_seconds": 2.2
+            },
+            "mechanics": {
+                "description": "Power Surge mechanics with increased trigger chances on hit, enhanced chance upon critical hits, and additional bonuses when attacking specific targets.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 35,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "power_surge",
+                                "damage_formula": "50% Psi Intensity",
+                                "damage_type": "shock",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false,
+                                "description": "Deals Status DMG of 50% Psi Intensity once and inflicts Power Surge status for 6 seconds, reducing accuracy by 40%."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "crit_hit",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "power_surge_trigger_chance_percent",
+                                "value": 30,
+                                "duration_seconds": 3,
+                                "description": "Critical hits increase the chance to trigger Power Surge by 30% for 3 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "power_surge_base_chance_bonus",
+                        "properties": {
+                            "power_surge_chance_percent": 30,
+                            "description": "Increases the base chance to trigger Power Surge by 30%."
+                        }
+                    },
+                    {
+                        "type": "conditional_stat_bonus",
+                        "condition": "attacking_specific_target",
+                        "target": "rosetta",
+                        "stat": "damage_percent",
+                        "value": 20,
+                        "description": "Penetration: Increases damage by 20% when attacking Rosetta."
+                    }
+                ]
+            },
+            "description": "An epic Assault Rifle with Power Surge mechanics that trigger a powerful shock damage blast and inflict a debilitating status effect. Critical hits enhance the chance to activate Power Surge, and additional damage bonuses are applied when targeting specific enemies like Rosetta, ensuring high effectiveness in various combat scenarios."
+        },
+        {
+            "id": "kam",
+            "name": "KAM",
+            "type": "assault_rifl",
+            "rarity": "common",
+            "blueprint_fragment_type": "Wanderer",
+            "base_stats": {
+                "damage_per_projectile": 31,
+                "projectiles_per_shot": 1,
+                "fire_rate": 600,
+                "magazine_capacity": 40,
+                "crit_rate_percent": 6,
+                "weakspot_damage_percent": 55,
+                "crit_damage_percent": 30,
+                "damage_bonus": "None",
+                "stability": 35,
+                "accuracy": 67,
+                "range": 55,
+                "reload_speed_points": 37,
+                "reload_time_seconds": 2.8
+            },
+            "mechanics": {
+                "description": "This weapon doesn't have any unique effects.",
+                "effects": []
+            },
+            "description": "A common Assault Rifle with reliable damage output and balanced stats, suitable for beginners or backup purposes."
+        },
+        {
+            "id": "kam_crank",
+            "name": "KAM - Crank",
+            "type": "assault_rifl",
+            "rarity": "epic",
+            "blueprint_fragment_type": "Juggernaut",
+            "base_stats": {
+                "damage_per_projectile": 35,
+                "projectiles_per_shot": 1,
+                "fire_rate": 600,
+                "magazine_capacity": 40,
+                "crit_rate_percent": 6,
+                "weakspot_damage_percent": 55,
+                "crit_damage_percent": 30,
+                "damage_bonus": "Suppression: Dealing more DMG against Deviants",
+                "stability": 35,
+                "accuracy": 67,
+                "range": 59,
+                "reload_speed_points": 38,
+                "reload_time_seconds": 2.8
+            },
+            "mechanics": {
+                "description": "Burn mechanics with increased damage and bonuses upon killing burned enemies.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "every_n_hits",
+                        "n": 7,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "burn",
+                                "damage_formula": "10% Psi Intensity",
+                                "damage_type": "blaze",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false,
+                                "duration_seconds": 6,
+                                "damage_interval_seconds": 0.5,
+                                "max_stacks": 5,
+                                "description": "Deals Status DMG of 10% Psi Intensity every 0.5s for 6s. DMG increases with more stacks, up to 5 stacks."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "kill_enemy_with_burn",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "reload_speed_percent",
+                                "value": 20,
+                                "duration_seconds": 5,
+                                "description": "Grants Reload Speed +20% for 5 seconds."
+                            },
+                            {
+                                "type": "increase_stat",
+                                "stat": "burn_dmg_percent",
+                                "value": 15,
+                                "duration_seconds": 5,
+                                "description": "Grants Burn DMG +15% for 5 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "burn_stack_bonus",
+                        "properties": {
+                            "max_burn_stacks": 1,
+                            "description": "Max Burn stacks increased by 1."
+                        }
+                    }
+                ]
+            },
+            "description": "An epic Assault Rifle with Burn mechanics that inflict status damage over time upon hitting enemies. Killing enemies affected by Burn grants Reload Speed and Burn DMG bonuses for a short duration. Increased Burn stacks enhance the damage output, ensuring sustained effectiveness in combat."
+        },
+        {
+            "id": "kam_abyss_glance",
+            "name": "KAM - Abyss Glance",
+            "type": "assault_rifl",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Stranger",
+            "base_stats": {
+                "damage_per_projectile": 39,
+                "projectiles_per_shot": 1,
+                "fire_rate": 600,
+                "magazine_capacity": 50,
+                "crit_rate_percent": 6,
+                "weakspot_damage_percent": 55,
+                "crit_damage_percent": 30,
+                "damage_bonus": "Suppression: Dealing more DMG against Deviants",
+                "stability": 61,
+                "accuracy": 95,
+                "range": 63,
+                "reload_speed_points": 25,
+                "reload_time_seconds": 3.2
+            },
+            "mechanics": {
+                "description": "Frost Vortex mechanics with increased damage based on proximity to the vortex center and additional bonuses when triggering on multiple hits.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "every_n_hits",
+                        "n": 20,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "frost_vortex",
+                                "damage_formula": "30% Psi Intensity",
+                                "damage_type": "frost",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false,
+                                "max_instances": 2,
+                                "description": "Traps enemies within a 4.5m radius and inflicts 30% Psi Intensity Status DMG per second for 4 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "effects": [
+                            {
+                                "type": "increment_hit_count",
+                                "value": 1,
+                                "description": "Weakspot hits count as 2 hits towards triggering Frost Vortex."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "frost_vortex_dmg_scaling",
+                        "properties": {
+                            "max_frost_vortex_dmg_bonus_percent": 200,
+                            "description": "The closer to the center of the Frost Vortex, the higher the Frost Vortex DMG, up to +200%."
+                        }
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "frost_dmg_bonus",
+                        "properties": {
+                            "damage_bonus_percent": 30,
+                            "description": "Frost DMG increased by 30%."
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary Assault Rifle with Frost Vortex mechanics that trap enemies within a 4.5m radius and inflict status damage over time. Hitting enemies 20 times triggers Frost Vortex, with additional damage bonuses based on proximity to the vortex center and increased damage when hitting weakspots. The weapon also deals more damage against Deviants, ensuring high effectiveness in combat."
+        },
+        {
+            "id": "m416_silent_anabasis",
+            "name": "M416 - Silent Anabasis",
+            "type": "assault_rifl",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Wanderer",
+            "base_stats": {
+                "damage_per_projectile": 33,
+                "projectiles_per_shot": 1,
+                "fire_rate": 750,
+                "magazine_capacity": 36,
+                "crit_rate_percent": 6,
+                "weakspot_damage_percent": 55,
+                "crit_damage_percent": 30,
+                "damage_bonus": "Suppression: Dealing more DMG against Deviants",
+                "stability": 35,
+                "accuracy": 67,
+                "range": 59,
+                "reload_speed_points": 37,
+                "reload_time_seconds": 2.8
+            },
+            "mechanics": {
+                "description": "Frost Vortex mechanics with Ice Crystal generation and damage scaling based on shattered Ice Crystals.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 10,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "frost_vortex",
+                                "damage_formula": "30% Psi Intensity",
+                                "damage_type": "frost",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false,
+                                "max_instances": 2,
+                                "description": "Traps enemies within a 4.5m radius and inflicts 30% Psi Intensity Status DMG per second for 4 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "frost_vortex_triggered",
+                        "effects": [
+                            {
+                                "type": "generate_ice_crystal",
+                                "cooldown_seconds": 1.5,
+                                "description": "Generates an Ice Crystal upon triggering Frost Vortex."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "ice_crystal_shatter",
+                        "effects": [
+                            {
+                                "type": "deal_status_dmg",
+                                "damage_formula": "100% Psi Intensity",
+                                "damage_type": "frost",
+                                "radius_meters": 4.5,
+                                "description": "Ice Crystals automatically shatter after 15 seconds, dealing Frost Elemental Status DMG equal to 100% Psi Intensity to nearby targets."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "shoot_ice_crystal",
+                        "effects": [
+                            {
+                                "type": "shatter_ice_crystal",
+                                "damage_formula": "60% DMG",
+                                "damage_type": "frost",
+                                "description": "Shattering Ice Crystals by shooting them increases the DMG they deal to 60% to players."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "frost_dmg_bonus",
+                        "properties": {
+                            "damage_bonus_percent": 60,
+                            "description": "Increases Frost Elemental DMG by 60%."
+                        }
+                    },
+                    {
+                        "type": "conditional_stat_bonus",
+                        "condition": "ice_crystal_shattered",
+                        "stat": "frost_dmg_percent",
+                        "value": 20,
+                        "duration_seconds": 10,
+                        "max_stacks": 15,
+                        "description": "Increases Frost Elemental DMG by an additional 20% for every Ice Crystal shattered, stacking up to 15 times for 10 seconds."
+                    }
+                ]
+            },
+            "description": "A legendary Assault Rifle with Frost Vortex mechanics that trap enemies within a 4.5m radius and inflict status damage over time. Hitting enemies triggers Frost Vortex with a 10% chance, generating Ice Crystals that shatter to deal massive Frost Elemental DMG. Shattering Ice Crystals by shooting them enhances their damage, and overall Frost DMG is significantly increased for sustained combat effectiveness."
+        },
+        {
+            "id": "m416_autumn_equinox",
+            "name": "M416 - Autumn Equinox",
+            "type": "assault_rifl",
+            "rarity": "epic",
+            "blueprint_fragment_type": "Beyonder",
+            "base_stats": {
+                "damage_per_projectile": 30,
+                "projectiles_per_shot": 1,
+                "fire_rate": 750,
+                "magazine_capacity": 36,
+                "crit_rate_percent": 6,
+                "weakspot_damage_percent": 60,
+                "crit_damage_percent": 27,
+                "damage_bonus": "None",
+                "stability": 36,
+                "accuracy": 45,
+                "range": 40,
+                "reload_speed_points": 55,
+                "reload_time_seconds": 2.2
+            },
+            "mechanics": {
+                "description": "Fortress Warfare mechanics that trigger after hitting enemies 7 times, granting Heavy Armor to allies and HP recovery in the area, along with damage bonuses when HP is high.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "every_n_hits",
+                        "n": 7,
+                        "cooldown_seconds": 15,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "fortress_warfare",
+                                "description": "Creates an area of effect within a 2m radius that grants allies Heavy Armor for 5 seconds and recovers 4% of max HP per second."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "conditional_stat_bonus",
+                        "condition": "hp_above_percent",
+                        "value": 75,
+                        "stat": "damage_percent",
+                        "increment": 25,
+                        "duration_seconds": 0,
+                        "description": "When HP is above 75%, Weapon DMG +25%."
+                    }
+                ]
+            },
+            "description": "An epic Assault Rifle with Fortress Warfare mechanics that trigger after hitting enemies 7 times. Fortress Warfare creates a 2m radius area granting allies Heavy Armor for 5 seconds and recovering 4% of max HP per second. Additionally, when HP is above 75%, Weapon DMG is increased by 25%, ensuring enhanced combat effectiveness."
+        },
+        {
+            "id": "m416_scorched_earth",
+            "name": "M416 - Scorched Earth",
+            "type": "assault_rifl",
+            "rarity": "fine",
+            "blueprint_fragment_type": "Juggernaut",
+            "base_stats": {
+                "damage_per_projectile": 26,
+                "projectiles_per_shot": 1,
+                "fire_rate": 750,
+                "magazine_capacity": 36,
+                "crit_rate_percent": 6,
+                "weakspot_damage_percent": 60,
+                "crit_damage_percent": 27,
+                "damage_bonus": "None",
+                "stability": 36,
+                "accuracy": 45,
+                "range": 40,
+                "reload_speed_points": 55,
+                "reload_time_seconds": 2.2
+            },
+            "mechanics": {
+                "description": "Burn mechanics with increased damage and additional bonuses.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 12,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "burn",
+                                "damage_formula": "10% Psi Intensity",
+                                "damage_type": "blaze",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false,
+                                "duration_seconds": 6,
+                                "damage_interval_seconds": 0.5,
+                                "max_stacks": 5,
+                                "description": "Deals Status DMG of 10% Psi Intensity every 0.5s for 6s, stacking up to 5 times."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "burn_dmg_bonus",
+                        "properties": {
+                            "damage_bonus_percent": 10,
+                            "description": "Burn damage increased by 10%."
+                        }
+                    }
+                ]
+            },
+            "description": "A fine Assault Rifle with Burn mechanics that inflict status damage over time upon hitting enemies. A 12% chance to trigger Burn on hit, increasing Burn DMG by 10%. Ensures sustained effectiveness in combat."
+        },
+        {
+            "id": "socr_the_last_valor",
+            "name": "SOCR - The Last Valor",
+            "type": "assault_rifl",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Beyonder",
+            "base_stats": {
+                "damage_per_projectile": 45,
+                "projectiles_per_shot": 1,
+                "fire_rate": 515,
+                "magazine_capacity": 30,
+                "crit_rate_percent": 6,
+                "weakspot_damage_percent": 60,
+                "crit_damage_percent": 27,
+                "damage_bonus": "Penetration: Dealing more DMG against Rosetta",
+                "stability": 39,
+                "accuracy": 51,
+                "range": 75,
+                "reload_speed_points": 56,
+                "reload_time_seconds": 2.2
+            },
+            "mechanics": {
+                "description": "Shrapnel mechanics with increased trigger chances upon multiple hits, enhanced damage on crit hits, and bonuses to Shrapnel DMG.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "every_n_hits",
+                        "n": 4,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "shrapnel",
+                                "damage_formula": "50% Attack",
+                                "damage_type": "weapon_element",
+                                "can_crit": true,
+                                "can_hit_weakspots": true,
+                                "decay": true,
+                                "description": "Deals Weapon DMG of 50% Attack to a random unhit part."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "crit_hit",
+                        "effects": [
+                            {
+                                "type": "count_as_hits",
+                                "value": 2,
+                                "description": "Crit hits count as 2 hits towards triggering Shrapnel."
+                            },
+                            {
+                                "type": "increase_stat",
+                                "stat": "shrapnel_trigger_chance_percent",
+                                "value": 1,
+                                "duration_seconds": 1,
+                                "description": "Crit hits grant Shrapnel trigger chance +1% for 1 second."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "shrapnel_crit_dmg_bonus",
+                        "properties": {
+                            "crit_dmg_bonus_percent": 30,
+                            "description": "Shrapnel Crit DMG increased by 30%."
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary Assault Rifle with Shrapnel mechanics that trigger after hitting enemies 4 times. Critical hits count as 2 hits and increase the chance to trigger Shrapnel by 1% for 1 second. Shrapnel's Crit DMG is increased by 30%, dealing additional damage to random unhit parts and enhancing effectiveness against targets like Rosetta."
+        },
+        {
+            "id": "sn700",
+            "name": "SN700",
+            "type": "sniper_rifles",
+            "rarity": "common",
+            "blueprint_fragment_type": "Huntsman",
+            "base_stats": {
+                "damage_per_projectile": 255,
+                "projectiles_per_shot": 1,
+                "fire_rate": 40,
+                "magazine_capacity": 5,
+                "crit_rate_percent": 2,
+                "weakspot_damage_percent": 90,
+                "crit_damage_percent": 24,
+                "damage_bonus": "None",
+                "stability": 76,
+                "accuracy": 72,
+                "range": 75,
+                "reload_speed_points": 39,
+                "reload_time_seconds": 2.8
+            },
+            "mechanics": {
+                "description": "This weapon doesn't have any unique effects.",
+                "effects": []
+            },
+            "description": "A common Sniper Rifle with reliable damage output and balanced stats, suitable for beginners or backup purposes."
+        },
+        {
+            "id": "hamr_crumble",
+            "name": "HAMR - Crumble",
+            "type": "sniper_rifles",
+            "rarity": "fine",
+            "blueprint_fragment_type": "Juggernaut",
+            "base_stats": {
+                "damage_per_projectile": 175,
+                "projectiles_per_shot": 1,
+                "fire_rate": 85,
+                "magazine_capacity": 8,
+                "crit_rate_percent": 2,
+                "weakspot_damage_percent": 80,
+                "crit_damage_percent": 30,
+                "damage_bonus": "None",
+                "stability": 58,
+                "accuracy": 77,
+                "range": 66,
+                "reload_speed_points": 24,
+                "reload_time_seconds": 3.2
+            },
+            "mechanics": {
+                "description": "Burn mechanics with increased damage and additional bonuses.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "chance_percent": 60,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "burn",
+                                "damage_formula": "10% Psi Intensity",
+                                "damage_type": "blaze",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false,
+                                "duration_seconds": 6,
+                                "damage_interval_seconds": 0.5,
+                                "max_stacks": 5,
+                                "description": "Deals Status DMG of 10% Psi Intensity every 0.5s for 6s, stacking up to 5 times."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "burn_dmg_bonus",
+                        "properties": {
+                            "damage_bonus_percent": 10,
+                            "description": "Burn damage increased by 10%."
+                        }
+                    }
+                ]
+            },
+            "description": "A fine Sniper Rifle with Burn mechanics that inflict status damage over time upon hitting enemies. A 60% chance to trigger Burn on weakspot hits, increasing Burn DMG by 10%. Ensures sustained effectiveness in combat."
+        },
+        {
+            "id": "sn700_gulped_lore",
+            "name": "SN700 - Gulped Lore",
+            "type": "sniper_rifles",
+            "rarity": "epic",
+            "blueprint_fragment_type": "TBA",
+            "base_stats": {
+                "damage_per_projectile": 287,
+                "projectiles_per_shot": 1,
+                "fire_rate": 40,
+                "magazine_capacity": 5,
+                "crit_rate_percent": 2,
+                "weakspot_damage_percent": 90,
+                "crit_damage_percent": 24,
+                "damage_bonus": "Penetration: Dealing more DMG against Rosetta",
+                "stability": 90,
+                "accuracy": 80,
+                "range": 69,
+                "reload_speed_points": 40,
+                "reload_time_seconds": 2.7
+            },
+            "mechanics": {
+                "description": "Unstable Bomber mechanics with increased damage and bonuses upon defeating enemies.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "chance_percent": 80,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "unstable_bomber",
+                                "damage_formula": "100% Psi Intensity",
+                                "damage_type": "blast",
+                                "can_crit": true,
+                                "can_hit_weakspots": false,
+                                "decay": false,
+                                "blast_radius_meters": 1.5,
+                                "delay_seconds": 0.1,
+                                "description": "Triggers Unstable Bomber, dealing a status DMG blast of 100% Psi Intensity after 0.1 seconds with a blast radius of 1.5m."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "defeat_enemy",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "explosion_range_percent_decrease",
+                                "value": 10,
+                                "duration_seconds": 30,
+                                "max_stacks": 5,
+                                "description": "Defeating an enemy decreases explosion range by 10% and increases DMG by 20% for 30 seconds, up to 5 stacks."
+                            },
+                            {
+                                "type": "increase_stat",
+                                "stat": "dmg_percent_increase",
+                                "value": 20,
+                                "duration_seconds": 30,
+                                "max_stacks": 5,
+                                "description": "Defeating an enemy increases DMG by 20% for 30 seconds, up to 5 stacks."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "unstable_bomber_crit_dmg",
+                        "properties": {
+                            "guaranteed_crit_dmg": true,
+                            "description": "Unstable Bomber is guaranteed to deal Crit DMG."
+                        }
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "unstable_bomber_dmg_bonus",
+                        "properties": {
+                            "dmg_bonus_percent_per_weakspot_dmg_percent": 1,
+                            "description": "With every 1% Weakspot DMG, Unstable Bomber DMG increases by 1%."
+                        }
+                    }
+                ]
+            },
+            "description": "An epic Sniper Rifle with Unstable Bomber mechanics that trigger after hitting a weakspot with an 80% chance. Unstable Bomber deals a powerful Blast DMG and is guaranteed to Crit. Defeating enemies reduces explosion range and increases DMG for a duration, stacking up to 5 times, enhancing overall combat effectiveness against targets like Rosetta."
+        },
+        {
+            "id": "hamr_brahminy",
+            "name": "HAMR - Brahminy",
+            "type": "sniper_rifles",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Operator",
+            "base_stats": {
+                "damage_per_projectile": 218,
+                "projectiles_per_shot": 1,
+                "fire_rate": 85,
+                "magazine_capacity": 8,
+                "crit_rate_percent": 2,
+                "weakspot_damage_percent": 80,
+                "crit_damage_percent": 30,
+                "damage_bonus": "Penetration: Dealing more DMG against Rosetta",
+                "stability": 58,
+                "accuracy": 49,
+                "range": 66,
+                "reload_speed_points": 24,
+                "reload_time_seconds": 3.2
+            },
+            "mechanics": {
+                "description": "Bounce mechanics with increased trigger chances on weakspot hits, enhanced ricochet, and damage bonuses upon certain conditions.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "chance_percent": 80,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "bounce",
+                                "damage_formula": "60% Attack",
+                                "damage_type": "weapon_element",
+                                "can_crit": true,
+                                "can_hit_weakspots": true,
+                                "decay": true,
+                                "bounce_radius_meters": 10,
+                                "description": "Deals Weapon DMG of 60% Attack to a random enemy within a 10m radius."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "bounce_hit_weakspot",
+                        "chance_percent": 35,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "bounce_ricochet",
+                                "description": "35% chance for Bounce to continue to ricochet when hitting a Weakspot."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "bounce_did_not_defeat_or_no_target",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "weapon_dmg_percent",
+                                "value": 20,
+                                "duration_seconds": 5,
+                                "max_stacks": 5,
+                                "description": "If Bounce does not defeat an enemy or there is no target, the next 1 bullet's Weapon DMG is increased by 20%, up to 5 stacks."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "bounce_prioritize_high_hp",
+                        "properties": {
+                            "description": "Bounce will prioritize enemies with higher HP."
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary Sniper Rifle with Bounce mechanics that trigger an 80% chance to bounce upon hitting a weakspot. When Bounce hits a weakspot, there's a 35% chance to ricochet again. If Bounce does not defeat an enemy or there is no target, the next 1 bullet's Weapon DMG is increased by 20%, stacking up to 5 times. Bounce prioritizes enemies with higher HP, ensuring efficient damage output against tougher foes like Rosetta."
+        },
+        {
+            "id": "aws338_black_panther",
+            "name": "AWS.338 - Black Panther",
+            "type": "sniper_rifles",
+            "rarity": "epic",
+            "blueprint_fragment_type": "Huntsman",
+            "base_stats": {
+                "damage_per_projectile": 284,
+                "projectiles_per_shot": 1,
+                "fire_rate": 40,
+                "magazine_capacity": 5,
+                "crit_rate_percent": 2,
+                "weakspot_damage_percent": 95,
+                "crit_damage_percent": 26,
+                "damage_bonus": "Penetration: Dealing more DMG against Rosetta",
+                "stability": 83,
+                "accuracy": 70,
+                "range": 72,
+                "reload_speed_points": 42,
+                "reload_time_seconds": 2.7
+            },
+            "mechanics": {
+                "description": "Shrapnel mechanics with increased trigger chances upon multiple hits, enhanced damage on crit hits, and bonuses to Shrapnel DMG.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "every_n_hits",
+                        "n": 4,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "shrapnel",
+                                "damage_formula": "50% Attack",
+                                "damage_type": "weapon_element",
+                                "can_crit": true,
+                                "can_hit_weakspots": true,
+                                "decay": true,
+                                "description": "Deals Weapon DMG of 50% Attack to a random unhit part."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "crit_hit",
+                        "effects": [
+                            {
+                                "type": "count_as_hits",
+                                "value": 2,
+                                "description": "Crit hits count as 2 hits towards triggering Shrapnel."
+                            },
+                            {
+                                "type": "increase_stat",
+                                "stat": "shrapnel_trigger_chance_percent",
+                                "value": 1,
+                                "duration_seconds": 1,
+                                "description": "Crit hits grant Shrapnel trigger chance +1% for 1 second."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "shrapnel_crit_dmg_bonus",
+                        "properties": {
+                            "crit_dmg_bonus_percent": 30,
+                            "description": "Shrapnel Crit DMG increased by 30%."
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary Sniper Rifle with Shrapnel mechanics that trigger after hitting enemies 4 times. Critical hits count as 2 hits and increase the chance to trigger Shrapnel by 1% for 1 second. Shrapnel's Crit DMG is increased by 30%, dealing additional damage to random unhit parts and enhancing effectiveness against targets like Rosetta."
+        },
+        {
+            "id": "aws338_bullseye",
+            "name": "AWS.338 - Bullseye",
+            "type": "sniper_rifles",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Huntsman",
+            "base_stats": {
+                "damage_per_projectile": 316,
+                "projectiles_per_shot": 1,
+                "fire_rate": 40,
+                "magazine_capacity": 5,
+                "crit_rate_percent": 2,
+                "weakspot_damage_percent": 95,
+                "crit_damage_percent": 26,
+                "damage_bonus": "None",
+                "stability": 83,
+                "accuracy": 66,
+                "range": 72,
+                "reload_speed_points": 42,
+                "reload_time_seconds": 2.7
+            },
+            "mechanics": {
+                "description": "The Bull's Eye mechanics that trigger on weakspot hits and after switching weapons, providing Vulnerability and damage bonuses.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "chance_percent": 70,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "the_bullseye",
+                                "description": "Highlights the marked target and inflicts Vulnerability +8% for 12 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "weapon_switch",
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "the_bullseye",
+                                "description": "Highlights the marked target and inflicts Vulnerability +8% for 12 seconds on the first hit after switching weapons."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "weakspot_damage_percent",
+                                "value": 15,
+                                "duration_seconds": 10,
+                                "max_stacks": 3,
+                                "description": "With a hit, Weakspot DMG +15% for 10 seconds. Effect can stack up to 3 times."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "defeat_enemy_with_weakspot_hit",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "attack_percent",
+                                "value": 15,
+                                "duration_seconds": 20,
+                                "description": "After defeating an enemy with a weakspot hit, Attack +15% for 20 seconds."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "A legendary Sniper Rifle with The Bull's Eye mechanics that trigger on weakspot hits and after switching weapons. Hitting weakspots grants Vulnerability on targets, increases Weakspot DMG, and provides Attack bonuses upon defeating enemies. Ensures high effectiveness against tough foes like Rosetta."
+        },
+        {
+            "id": "acs12_corrosion",
+            "name": "ACS12 - Corrosion",
+            "type": "shotgun",
+            "rarity": "legendary",
+            "base_stats": {
+                "damage_per_projectile": 36,
+                "projectiles_per_shot": 5,
+                "fire_rate": 180,
+                "magazine_capacity": 18,
+                "crit_rate_percent": 8,
+                "crit_damage_percent": 27,
+                "weakspot_damage_percent": 15,
+                "stability": 42,
+                "accuracy": 32,
+                "range": 41,
+                "reload_speed_points": 13,
+                "reload_time_seconds": 4.0
+            },
+            "mechanics": {
+                "description": "A legendary shotgun focused on Power Surge mechanics, offering high crit potential and stacking bonuses.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 70,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "power_surge",
+                                "description": "Triggers Power Surge but does not inflict the status effect."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "power_surge_crit_bonus",
+                        "properties": {
+                            "crit_rate_bonus_percent": 15
+                        }
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "trigger_power_surge",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "crit_damage_percent",
+                                "value": 15,
+                                "duration_seconds": 6,
+                                "max_stacks": 10
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "power_surge_damage_factor",
+                        "properties": {
+                            "damage_factor_bonus_percent": 15
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary shotgun leveraging Power Surge mechanics to stack critical damage bonuses and deliver high burst damage against Deviants."
+        },
+        {
+            "id": "db12_raining_cash",
+            "name": "DB12 - Raining Cash",
+            "type": "shotgun",
+            "rarity": "legendary",
+            "base_stats": {
+                "damage_per_projectile": 55,
+                "projectiles_per_shot": 5,
+                "fire_rate": 105,
+                "magazine_capacity": 12,
+                "crit_rate_percent": 8,
+                "crit_damage_percent": 28,
+                "weakspot_damage_percent": 20,
+                "stability": 53,
+                "accuracy": 41,
+                "range": 54,
+                "reload_speed_points": 49,
+                "reload_time_seconds": 2.3
+            },
+            "mechanics": {
+                "description": "A legendary shotgun with Fortress Warfare mechanics that enhance allies and provide significant buffs during its duration.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "reload_weapon",
+                        "cooldown_seconds": 10,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "fortress_warfare",
+                                "description": "Create an area of effect within a 2m radius that grants allies Heavy Armor for 5 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "fortress_warfare_scaling_attack",
+                        "conditions": {
+                            "mode": "fortress_warfare"
+                        },
+                        "properties": {
+                            "max_attack_bonus_percent": 40,
+                            "scaling_rate_per_second": 8
+                        }
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "fortress_warfare_crit_rate",
+                        "conditions": {
+                            "mode": "fortress_warfare"
+                        },
+                        "properties": {
+                            "crit_rate_bonus_percent": 30
+                        }
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "fortress_warfare_damage_reduction",
+                        "conditions": {
+                            "mode": "fortress_warfare"
+                        },
+                        "properties": {
+                            "damage_reduction_percent": 30
+                        }
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "grant_ally_buff",
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "heavy_armor",
+                                "description": "Grants Super Armor with Weapon DMG +20%.",
+                                "duration_seconds": 5,
+                                "stat_bonuses": {
+                                    "super_armor": true,
+                                    "weapon_damage_bonus_percent": 20
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "A legendary shotgun that combines Fortress Warfare with offensive and defensive buffs, enhancing allies and scaling attack power during its effect."
+        },
+        {
+            "id": "acs12_netherworld",
+            "name": "ACS12 - Netherworld",
+            "type": "shotgun",
+            "rarity": "epic",
+            "base_stats": {
+                "damage_per_projectile": 32,
+                "projectiles_per_shot": 5,
+                "fire_rate": 180,
+                "magazine_capacity": 18,
+                "crit_rate_percent": 8,
+                "crit_damage_percent": 27,
+                "weakspot_damage_percent": 15,
+                "stability": 42,
+                "accuracy": 32,
+                "range": 40,
+                "reload_speed_points": 13,
+                "reload_time_seconds": 4.0
+            },
+            "mechanics": {
+                "description": "An epic shotgun that utilizes Fast Gunner mechanics for increased fire rate, attack, and bonus projectiles.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "all_projectiles_hit",
+                        "chance_percent": 50,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "fast_gunner",
+                                "description": "Grants a stack of Fast Gunner with Fire Rate +1% and Attack +1% for 2 seconds. Can stack up to 5 times.",
+                                "duration_seconds": 2,
+                                "max_stacks": 5,
+                                "stat_bonuses": {
+                                    "fire_rate_percent": 1,
+                                    "attack_percent": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "trigger_fast_gunner_n_times",
+                        "n": 2,
+                        "effects": [
+                            {
+                                "type": "consume_extra_ammo",
+                                "amount": 1
+                            },
+                            {
+                                "type": "increase_projectiles_per_shot",
+                                "additional_projectiles": 5,
+                                "description": "Next shot will fire an additional 5 projectiles."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "reload_empty_magazine",
+                        "effects": [
+                            {
+                                "type": "apply_buff",
+                                "buff_name": "empowered_bullets",
+                                "description": "The first 12 bullets after reloading from an empty magazine have Attack +20%.",
+                                "duration_bullets": 12,
+                                "stat_bonuses": {
+                                    "attack_percent": 20
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "An epic shotgun with Fast Gunner mechanics to enhance fire rate, attack, and firepower through bonus projectiles and empowered bullets."
+        },
+        {
+            "id": "acs12_pyroclasm_starter",
+            "name": "ACS12 - Pyroclasm Starter",
+            "type": "shotgun",
+            "rarity": "legendary",
+            "base_stats": {
+                "damage_per_projectile": 36,
+                "projectiles_per_shot": 5,
+                "fire_rate": 180,
+                "magazine_capacity": 18,
+                "crit_rate_percent": 8,
+                "crit_damage_percent": 27,
+                "weakspot_damage_percent": 15,
+                "stability": 42,
+                "accuracy": 32,
+                "range": 40,
+                "reload_speed_points": 13,
+                "reload_time_seconds": 4.0
+            },
+            "mechanics": {
+                "description": "A legendary shotgun that combines Burn mechanics with Dragon's Breath ammunition and Charge state buffs.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 27,
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "burn",
+                                "stacks": 1,
+                                "duration_seconds": 6,
+                                "interval_seconds": 0.5,
+                                "damage_formula": "10% Psi Intensity",
+                                "damage_type": "blaze",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 20,
+                        "effects": [
+                            {
+                                "type": "spawn_pickup",
+                                "pickup_type": "deviant_particle",
+                                "description": "Generates a Deviant Particle on hit. Picking it up grants Charge state."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "enter_charge_state",
+                        "effects": [
+                            {
+                                "type": "modify_ammo",
+                                "ammo_type": "dragon_breath",
+                                "duration_until_reload": true,
+                                "description": "Replaces all ammunition with Dragon's Breath ammo until the next reload. Dragon's Breath: Deals Blaze Elemental Weapon DMG equal to 85% Attack."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "reload_weapon",
+                        "effects": [
+                            {
+                                "type": "consume_charge",
+                                "effect": {
+                                    "type": "increase_stat",
+                                    "stat": "blaze_elemental_damage_percent",
+                                    "value": 10,
+                                    "stackable": true,
+                                    "max_stacks": 4,
+                                    "description": "Increases Blaze Elemental DMG by 10% for each Charge stack expended, up to 4 stacks."
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "A legendary shotgun that leverages Burn mechanics, generates Charge state for enhanced Blaze DMG, and uses Dragon's Breath ammunition to deal devastating fire damage."
+        },
+        {
+            "id": "mg4_predator",
+            "name": "MG4 - Predator",
+            "type": "lmgs",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Operator",
+            "base_stats": {
+                "damage_per_projectile": 32,
+                "projectiles_per_shot": 1,
+                "fire_rate": 700,
+                "magazine_capacity": 75,
+                "crit_rate_percent": 8,
+                "weakspot_damage_percent": 35,
+                "crit_damage_percent": 30,
+                "damage_bonus": "None",
+                "stability": 60,
+                "accuracy": 72,
+                "range": 45,
+                "reload_speed_points": 28,
+                "reload_time_seconds": 3.1
+            },
+            "mechanics": {
+                "description": "Fast Gunner mechanics with increased fire rate and attack bonuses, infinite ammo upon reaching stack multiples, and damage bonuses when hitting the same target consecutively.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 40,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "fast_gunner",
+                                "description": "Triggers Fast Gunner, increasing Fire Rate and Attack."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "fast_gunner_stack_reached_multiple_of_5",
+                        "effects": [
+                            {
+                                "type": "grant_infinite_ammo",
+                                "duration_seconds": 0.5,
+                                "description": "Grants infinite ammo for 0.5 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "consecutive_hits_same_target",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "weapon_dmg_percent",
+                                "value": 2,
+                                "duration_seconds": 0,
+                                "max_stacks": 20,
+                                "description": "Hitting the same target consecutively grants Weapon DMG +2% per hit, up to +40%. Effect resets when the target is changed."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "remaining_bullets_above_50_percent",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "attack_percent",
+                                "value": 40,
+                                "duration_seconds": 0,
+                                "description": "When the remaining bullets are more than 50% of the magazine capacity, Attack +40%."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "fast_gunner_fire_rate_bonus",
+                        "properties": {
+                            "fire_rate_bonus_percent": 1,
+                            "attack_bonus_percent": 1,
+                            "duration_seconds": 2,
+                            "max_stacks": 5,
+                            "description": "Each Fast Gunner stack grants Fire Rate +1% and Attack +1% for 2 seconds."
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary Light Machine Gun with Fast Gunner mechanics that trigger a 40% chance to increase Fire Rate and Attack upon hitting enemies. Reaching multiples of 5 stacks grants infinite ammo for a short duration. Consecutive hits on the same target increase Weapon DMG, and maintaining more than 50% ammo grants a significant Attack bonus, ensuring high sustained damage in combat."
+        },
+        {
+            "id": "mg4_scorched_earth",
+            "name": "MG4 - Scorched Earth",
+            "type": "lmgs",
+            "rarity": "common",
+            "blueprint_fragment_type": "Operator",
+            "base_stats": {
+                "damage_per_projectile": 25,
+                "projectiles_per_shot": 1,
+                "fire_rate": 700,
+                "magazine_capacity": 75,
+                "crit_rate_percent": 8,
+                "weakspot_damage_percent": 35,
+                "crit_damage_percent": 30,
+                "damage_bonus": "None",
+                "stability": 34,
+                "accuracy": 61,
+                "range": 42,
+                "reload_speed_points": 48,
+                "reload_time_seconds": 2.5
+            },
+            "mechanics": {
+                "description": "This weapon doesn't have any unique effects.",
+                "effects": []
+            },
+            "description": "A common Light Machine Gun with reliable damage output and balanced stats, suitable for beginners or backup purposes."
+        },
+        {
+            "id": "kvd_boom_boom",
+            "name": "KVD - Boom! Boom!",
+            "type": "lmgs",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Juggernaut",
+            "base_stats": {
+                "damage_per_projectile": 44,
+                "projectiles_per_shot": 1,
+                "fire_rate": 500,
+                "magazine_capacity": 100,
+                "crit_rate_percent": 10,
+                "weakspot_damage_percent": 40,
+                "crit_damage_percent": 30,
+                "damage_bonus": "Suppression: Dealing more DMG against Deviants",
+                "stability": 43,
+                "accuracy": 43,
+                "range": 59,
+                "reload_speed_points": 24,
+                "reload_time_seconds": 3.2
+            },
+            "mechanics": {
+                "description": "Burn mechanics with increased damage and bonuses upon defeating enemies.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 18,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "burn",
+                                "damage_formula": "10% Psi Intensity",
+                                "damage_type": "blaze",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false,
+                                "duration_seconds": 6,
+                                "damage_interval_seconds": 0.5,
+                                "max_stacks": 5,
+                                "description": "Deals Status DMG of 10% Psi Intensity every 0.5s for 6s, stacking up to 5 times."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "kill_enemy_with_burn",
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "explosion",
+                                "damage_formula": "300% Psi Intensity",
+                                "damage_type": "blaze",
+                                "description": "Deals Blaze DMG of 300% Psi Intensity upon killing an enemy affected by Burn and inflicts 1 stack of Burn on hit targets."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "burn_dmg_bonus",
+                        "properties": {
+                            "damage_bonus_percent": 30,
+                            "description": "Blaze DMG increased by 30%."
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary Light Machine Gun with Burn mechanics that inflict status damage over time upon hitting enemies. An 18% chance to trigger Burn on hit, killing enemies affected by Burn causes a powerful Blaze explosion, and Blaze DMG is increased by 30%. Ensures high sustained damage in combat."
+        },
+        {
+            "id": "mg4_mr_squid",
+            "name": "MG4 - Mr Squid",
+            "type": "lmgs",
+            "rarity": "epic",
+            "blueprint_fragment_type": "Wanderer",
+            "base_stats": {
+                "damage_per_projectile": 29,
+                "projectiles_per_shot": 1,
+                "fire_rate": 700,
+                "magazine_capacity": 75,
+                "crit_rate_percent": 8,
+                "weakspot_damage_percent": 35,
+                "crit_damage_percent": 30,
+                "damage_bonus": "None",
+                "stability": 34,
+                "accuracy": 61,
+                "range": 43,
+                "reload_speed_points": 48,
+                "reload_time_seconds": 2.5
+            },
+            "mechanics": {
+                "description": "Bounce mechanics with increased trigger chances on critical hits, Weapon DMG stacking, and bonuses when firing continuously or having high ammo.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "crit_hit",
+                        "chance_percent": 90,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "bounce",
+                                "damage_formula": "60% Attack",
+                                "damage_type": "weapon_element",
+                                "can_crit": true,
+                                "can_hit_weakspots": true,
+                                "decay": true,
+                                "bounce_radius_meters": 10,
+                                "description": "Deals Weapon DMG of 60% Attack to a random enemy within a 10m radius."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "bounce_hit",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "weapon_dmg_percent",
+                                "value": 2,
+                                "duration_seconds": 5,
+                                "max_stacks": 50,
+                                "description": "When Bounce hits, Weapon DMG +2%, up to 50 stacks. 1 stack is removed every 5 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "continuous_fire",
+                        "duration_seconds": 2,
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "bounce_targets",
+                                "value": 1,
+                                "description": "After continuously firing for 2 seconds, Bounce targets +1."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "remaining_bullets_above_50_percent",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "attack_percent",
+                                "value": 40,
+                                "duration_seconds": 0,
+                                "description": "When remaining bullets are more than 50% of the magazine capacity, Attack +40%."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "A legendary Light Machine Gun with Bounce mechanics that trigger a 90% chance on critical hits. Bouncing increases Weapon DMG by 2% per stack, up to 50 stacks, with stacks decaying over time. Continuously firing for 2 seconds increases Bounce targets, and maintaining over 50% ammo grants a significant Attack bonus, ensuring high sustained damage in combat."
+        },
+        {
+            "id": "mg4_wrath_of_hades",
+            "name": "MG4 - Wrath Of Hades",
+            "type": "lmgs",
+            "rarity": "epic",
+            "blueprint_fragment_type": "Juggernaut",
+            "base_stats": {
+                "damage_per_projectile": 29,
+                "projectiles_per_shot": 1,
+                "fire_rate": 700,
+                "magazine_capacity": 75,
+                "crit_rate_percent": 8,
+                "weakspot_damage_percent": 35,
+                "crit_damage_percent": 30,
+                "damage_bonus": "Penetration: Dealing more DMG against Rosetta",
+                "stability": 34,
+                "accuracy": 44,
+                "range": 45,
+                "reload_speed_points": 48,
+                "reload_time_seconds": 2.5
+            },
+            "mechanics": {
+                "description": "Fast Gunner mechanics with increased fire rate and attack bonuses, bullet refills upon triggering Fast Gunner and defeating enemies, ensuring sustained firepower.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 40,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "fast_gunner",
+                                "description": "Triggers Fast Gunner, granting Fire Rate and Attack bonuses."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "trigger_fast_gunner",
+                        "effects": [
+                            {
+                                "type": "refill_bullet",
+                                "description": "Refills 1 bullet from inventory to the secondary weapon."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "defeat_enemy",
+                        "effects": [
+                            {
+                                "type": "restore_bullet",
+                                "description": "Restores 1 bullet from inventory to the secondary weapon."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "fast_gunner_bonus",
+                        "properties": {
+                            "fire_rate_bonus_percent": 1,
+                            "attack_bonus_percent": 1,
+                            "duration_seconds": 2,
+                            "max_stacks": 5,
+                            "description": "Each Fast Gunner stack grants Fire Rate +1% and Attack +1% for 2 seconds."
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary Light Machine Gun with Fast Gunner mechanics that trigger a 40% chance on hitting a target. Fast Gunner refills bullets from the inventory and grants Fire Rate and Attack bonuses, stacking up to 5 times. After defeating enemies, additional bullets are restored, ensuring high sustained damage and firepower in combat."
+        },
+        {
+            "id": "mg4_conflicting_memories",
+            "name": "MG4 - Conflicting Memories",
+            "type": "lmgs",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Beyonder",
+            "base_stats": {
+                "damage_per_projectile": 32,
+                "projectiles_per_shot": 1,
+                "fire_rate": 700,
+                "magazine_capacity": 75,
+                "crit_rate_percent": 8,
+                "weakspot_damage_percent": 35,
+                "crit_damage_percent": 30,
+                "damage_bonus": "None",
+                "stability": 34,
+                "accuracy": 44,
+                "range": 45,
+                "reload_speed_points": 48,
+                "reload_time_seconds": 2.5
+            },
+            "mechanics": {
+                "description": "Shrapnel mechanics that trigger after a certain number of shots on target, with scaling bonuses based on magazine capacity and magazine capacity increases.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "every_n_hits",
+                        "n": 12,
+                        "chance_percent": 40,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "shrapnel",
+                                "damage_formula": "50% Attack",
+                                "damage_type": "weapon_element",
+                                "can_crit": true,
+                                "can_hit_weakspots": true,
+                                "decay": true,
+                                "description": "Deals Weapon DMG of 50% Attack to a random unhit part."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "conditional_stat_bonus",
+                        "condition": "magazine_capacity_multiple",
+                        "value": 40,
+                        "stat": "shrapnel_target_parts",
+                        "increment": 1,
+                        "max_increment": 4,
+                        "description": "For every 40 magazine capacity, parts hit by Shrapnel +1, up to +4."
+                    },
+                    {
+                        "type": "conditional_stat_bonus",
+                        "condition": "magazine_capacity_excess",
+                        "value": 15,
+                        "stat": "shrapnel_dmg_percent",
+                        "increment": 8,
+                        "description": "For every 15 magazine capacity in excess of 100, Shrapnel DMG +8%."
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "magazine_capacity_bonus",
+                        "properties": {
+                            "magazine_capacity_bonus": 40,
+                            "description": "Magazine capacity increased by 40."
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary Light Machine Gun with Shrapnel mechanics that trigger after hitting enemies 12 times. Shrapnel deals Weapon DMG to random unhit parts, with additional parts hit based on magazine capacity and increased Shrapnel DMG when magazine capacity exceeds certain thresholds. Additionally, magazine capacity is increased by 40, enhancing overall firepower and combat effectiveness."
+        },
+        {
+            "id": "kvd_icebreaker",
+            "name": "KVD - Icebreaker",
+            "type": "lmgs",
+            "rarity": "fine",
+            "blueprint_fragment_type": "Operator",
+            "base_stats": {
+                "damage_per_projectile": 35,
+                "projectiles_per_shot": 1,
+                "fire_rate": 500,
+                "magazine_capacity": 100,
+                "crit_rate_percent": 10,
+                "weakspot_damage_percent": 40,
+                "crit_damage_percent": 30,
+                "damage_bonus": "None",
+                "stability": 43,
+                "accuracy": 43,
+                "range": 62,
+                "reload_speed_points": 24,
+                "reload_time_seconds": 3.2
+            },
+            "mechanics": {
+                "description": "Frost Vortex mechanics that trigger on the first hit after reloading, increasing Frost DMG and providing area-of-effect damage over time.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "first_hit_after_reload",
+                        "chance_percent": 100,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "frost_vortex",
+                                "damage_formula": "30% Psi Intensity",
+                                "damage_type": "frost",
+                                "can_crit": false,
+                                "can_hit_weakspots": false,
+                                "decay": false,
+                                "duration_seconds": 4,
+                                "damage_interval_seconds": 1,
+                                "max_instances": 2,
+                                "description": "Traps enemies within a 4.5m radius and inflicts 30% Psi Intensity Status DMG per second for 4 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "frost_dmg_bonus",
+                        "properties": {
+                            "damage_bonus_percent": 30,
+                            "description": "Increases Frost Elemental DMG by 30%."
+                        }
+                    }
+                ]
+            },
+            "description": "A fine Light Machine Gun with Frost Vortex mechanics that trigger on the first hit after reloading. Frost Vortex traps enemies within a 4.5m radius and inflicts status damage over time. Additionally, Frost Elemental DMG is increased by 30%, enhancing sustained damage output in combat."
+        },
+        {
+            "id": "rustic_crossbow",
+            "name": "Rustic Crossbow",
+            "type": "crossbows",
+            "rarity": "common",
+            "blueprint_fragment_type": "Huntsman",
+            "base_stats": {
+                "damage_per_projectile": 217,
+                "projectiles_per_shot": 1,
+                "fire_rate": 125,
+                "magazine_capacity": 1,
+                "crit_rate_percent": 2,
+                "weakspot_damage_percent": 70,
+                "crit_damage_percent": 28,
+                "damage_bonus": "None",
+                "stability": 57,
+                "accuracy": 34,
+                "range": 26,
+                "reload_speed_points": 56,
+                "reload_time_seconds": 2.2
+            },
+            "mechanics": {
+                "description": "This weapon doesn't have any unique effects.",
+                "effects": []
+            },
+            "description": "A common Crossbow with reliable damage output and balanced stats, suitable for beginners or backup purposes."
+        },
+        {
+            "id": "compound_bow",
+            "name": "Compound Bow",
+            "type": "crossbows",
+            "rarity": "legendary",
+            "blueprint_fragment_type": "Huntsman",
+            "base_stats": {
+                "damage_per_projectile": 310,
+                "projectiles_per_shot": 1,
+                "fire_rate": 500,
+                "magazine_capacity": 1,
+                "crit_rate_percent": 2,
+                "weakspot_damage_percent": 70,
+                "crit_damage_percent": 28,
+                "damage_bonus": "None",
+                "stability": 57,
+                "accuracy": 34,
+                "range": 70,
+                "reload_speed_points": 56,
+                "reload_time_seconds": 2.2
+            },
+            "mechanics": {
+                "description": "Fortress Warfare mechanics that trigger after aiming for 3 seconds, providing Attack bonuses and Heavy Armor to allies, with stackable bonuses upon defeating enemies.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "aim_complete",
+                        "cooldown_seconds": 10,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "fortress_warfare",
+                                "description": "Creates a 2m radius area granting allies Heavy Armor for 5 seconds."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "fortress_warfare_triggered",
+                        "effects": [
+                            {
+                                "type": "gain_stack",
+                                "stack_type": "brutal_mayhem",
+                                "count": 3,
+                                "description": "Gain 3 stacks of Brutal Mayhem and Weakspot DMG +25%."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "shot_fired",
+                        "effects": [
+                            {
+                                "type": "reduce_stack",
+                                "stack_type": "brutal_mayhem",
+                                "value": 1,
+                                "description": "Every shot reduces Brutal Mayhem stacks by 1."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "aiming",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "attack_percent",
+                                "value": 30,
+                                "description": "Attack increases the longer you aim, up to 30%."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "passive_effect",
+                        "effect_name": "heavy_armor",
+                        "properties": {
+                            "super_armor": true,
+                            "weapon_dmg_percent": 20,
+                            "description": "Heavy Armor grants Super Armor and Weapon DMG +20%."
+                        }
+                    }
+                ]
+            },
+            "description": "A legendary Crossbow with Fortress Warfare mechanics that trigger after aiming for 3 seconds. Fortress Warfare creates a 2m radius area granting allies Heavy Armor for 5 seconds. Attack increases the longer you aim, up to 30%. Defeating enemies grants Brutal Mayhem stacks, enhancing Weakspot DMG. Ensures high combat effectiveness with sustained Attack bonuses and team support."
+        },
+        {
+            "id": "recurve_crossbow",
+            "name": "Recurve Crossbow",
+            "type": "crossbows",
+            "rarity": "epic",
+            "blueprint_fragment_type": "Huntsman",
+            "base_stats": {
+                "damage_per_projectile": 279,
+                "projectiles_per_shot": 1,
+                "fire_rate": 125,
+                "magazine_capacity": 1,
+                "crit_rate_percent": 2,
+                "weakspot_damage_percent": 70,
+                "crit_damage_percent": 28,
+                "damage_bonus": "None",
+                "stability": 57,
+                "accuracy": 34,
+                "range": 80,
+                "reload_speed_points": 56,
+                "reload_time_seconds": 2.2
+            },
+            "mechanics": {
+                "description": "The Bull's Eye mechanics that trigger on hitting a weakspot, applying Vulnerability to targets and increasing Crit Rate against marked targets.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "weakspot_hit",
+                        "chance_percent": 100,
+                        "effects": [
+                            {
+                                "type": "trigger_ability",
+                                "ability": "the_bullseye",
+                                "description": "Inflicts The Bull's Eye on the target, highlighting them and applying Vulnerability +8% for 12 seconds. Additionally, all weapons have Crit Rate +15% against targets with The Bull's Eye for 10 seconds. This effect only works once on the same target within 15 seconds."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "A legendary Crossbow with The Bull's Eye mechanics that trigger on hitting weakspots. Inflicting The Bull's Eye highlights targets and applies Vulnerability +8%, while increasing Crit Rate against marked targets. The effect only applies once on the same target within 15 seconds, ensuring high effectiveness against prioritized foes."
+        },
+        {
+            "id": "recurve_bow",
+            "name": "Recurve Bow",
+            "type": "crossbows",
+            "rarity": "fine",
+            "blueprint_fragment_type": "Huntsman",
+            "base_stats": {
+                "damage_per_projectile": 189,
+                "projectiles_per_shot": 1,
+                "fire_rate": 65,
+                "magazine_capacity": 1,
+                "crit_rate_percent": 2,
+                "weakspot_damage_percent": 80,
+                "crit_damage_percent": 30,
+                "damage_bonus": "None",
+                "stability": 57,
+                "accuracy": 34,
+                "range": 26,
+                "reload_speed_points": 64,
+                "reload_time_seconds": 2.0
+            },
+            "mechanics": {
+                "description": "Stacking Attack and Weakspot DMG bonuses over time, with stacks reset upon movement, standing up, or hitting a target.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "time_tick",
+                        "interval_seconds": 1,
+                        "effects": [
+                            {
+                                "type": "gain_buff",
+                                "buff_type": "attack_and_weakspot_dmg",
+                                "attack_increase_percent": 10,
+                                "weakspot_dmg_increase_percent": 15,
+                                "max_stacks": 3,
+                                "description": "Gain 1 stack of Attack +10% and Weakspot DMG +15% every 1 second, up to 3 stacks."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "standing_up",
+                        "effects": [
+                            {
+                                "type": "remove_buff",
+                                "buff_type": "attack_and_weakspot_dmg",
+                                "description": "Effect is canceled when standing up."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "moving",
+                        "effects": [
+                            {
+                                "type": "remove_buff",
+                                "buff_type": "attack_and_weakspot_dmg",
+                                "description": "Effect is canceled when moving."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "effects": [
+                            {
+                                "type": "remove_buff",
+                                "buff_type": "attack_and_weakspot_dmg",
+                                "description": "Effect is canceled when hitting a target."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "A fine Crossbow that grants stacking Attack +10% and Weakspot DMG +15% bonuses every second. These effects stack up to 3 times and are canceled when the user stands up, moves, or hits a target, ensuring sustained damage output while stationary."
+        },
+        {
+            "id": "dbsg_doombringer",
+            "name": "DBSG - Doombringer",
+            "type": "shotgun",
+            "rarity": "legendary",
+            "base_stats": {
+                "damage_per_projectile": 362,
+                "projectiles_per_shot": 6,
+                "fire_rate": 180,
+                "magazine_capacity": 2,
+                "crit_rate_percent": 10,
+                "crit_damage_percent": 30,
+                "weakspot_damage_percent": 25,
+                "stability": 76,
+                "accuracy": 41,
+                "range": 30,
+                "reload_speed_points": 47,
+                "reload_time_seconds": 2.5
+            },
+            "mechanics": {
+                "description": "Features focusing on marking enemies with The Bull's Eye and stacking buffs.",
+                "effects": [
+                    {
+                        "type": "on_event",
+                        "event": "hit_target",
+                        "chance_percent": 30,
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "the_bulls_eye",
+                                "vulnerability_bonus_percent": 8,
+                                "duration_seconds": 12
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "hit_target_within_distance",
+                        "distance_meters": 5,
+                        "chance_percent": 80,
+                        "effects": [
+                            {
+                                "type": "apply_status",
+                                "status": "the_bulls_eye",
+                                "description": "Highlight marked target with increased chance when within 5m.",
+                                "vulnerability_bonus_percent": 8,
+                                "duration_seconds": 12
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "defeat_marked_enemy",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "attack",
+                                "value": 6,
+                                "duration_seconds": 60,
+                                "max_stacks": 5
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "trigger_bulls_eye",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "damage_reduction_percent",
+                                "value": 5,
+                                "duration_seconds": 8,
+                                "max_stacks": 4
+                            }
+                        ]
+                    },
+                    {
+                        "type": "on_event",
+                        "event": "hit_marked_enemy",
+                        "effects": [
+                            {
+                                "type": "increase_stat",
+                                "stat": "crit_rate_percent",
+                                "value": 30,
+                                "duration_seconds": 5,
+                                "max_stacks": 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            "description": "A legendary shotgun with mechanics centered around marking and debuffing enemies while providing defensive and offensive buffs."
+        }
+    ]
+}

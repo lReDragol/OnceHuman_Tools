@@ -1,0 +1,2904 @@
+{
+    "items": {
+        "helmet": {
+            "legendary": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 60,
+                                "pollution_resist": 9,
+                                "psi_intensity": 16
+                            },
+                            "2": {
+                                "hp": 80,
+                                "pollution_resist": 12,
+                                "psi_intensity": 24
+                            },
+                            "3": {
+                                "hp": 160,
+                                "pollution_resist": 15,
+                                "psi_intensity": 38
+                            },
+                            "4": {
+                                "hp": 320,
+                                "pollution_resist": 18,
+                                "psi_intensity": 60
+                            },
+                            "5": {
+                                "hp": 590,
+                                "pollution_resist": 21,
+                                "psi_intensity": 92
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 63,
+                                "pollution_resist": 9,
+                                "psi_intensity": 17
+                            },
+                            "2": {
+                                "hp": 84,
+                                "pollution_resist": 12,
+                                "psi_intensity": 25
+                            },
+                            "3": {
+                                "hp": 168,
+                                "pollution_resist": 15,
+                                "psi_intensity": 40
+                            },
+                            "4": {
+                                "hp": 336,
+                                "pollution_resist": 18,
+                                "psi_intensity": 63
+                            },
+                            "5": {
+                                "hp": 620,
+                                "pollution_resist": 21,
+                                "psi_intensity": 97
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 12,
+                                "psi_intensity": 12
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 16,
+                                "psi_intensity": 19
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 20,
+                                "psi_intensity": 30
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 24,
+                                "psi_intensity": 46
+                            },
+                            "5": {
+                                "hp": 649,
+                                "pollution_resist": 21,
+                                "psi_intensity": 101
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 69,
+                                "pollution_resist": 9,
+                                "psi_intensity": 18
+                            },
+                            "2": {
+                                "hp": 92,
+                                "pollution_resist": 12,
+                                "psi_intensity": 28
+                            },
+                            "3": {
+                                "hp": 184,
+                                "pollution_resist": 15,
+                                "psi_intensity": 44
+                            },
+                            "4": {
+                                "hp": 368,
+                                "pollution_resist": 18,
+                                "psi_intensity": 69
+                            },
+                            "5": {
+                                "hp": 678,
+                                "pollution_resist": 21,
+                                "psi_intensity": 106
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 708,
+                                "pollution_resist": 21,
+                                "psi_intensity": 110
+                            }
+                        }
+                    },
+                    "6": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 738,
+                                "pollution_resist": 21,
+                                "psi_intensity": 115
+                            }
+                        }
+                    }
+                }
+            },
+            "epic": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 54,
+                                "pollution_resist": 9,
+                                "psi_intensity": 14
+                            },
+                            "2": {
+                                "hp": 72,
+                                "pollution_resist": 12,
+                                "psi_intensity": 22
+                            },
+                            "3": {
+                                "hp": 144,
+                                "pollution_resist": 15,
+                                "psi_intensity": 35
+                            },
+                            "4": {
+                                "hp": 288,
+                                "pollution_resist": 18,
+                                "psi_intensity": 54
+                            },
+                            "5": {
+                                "hp": 531,
+                                "pollution_resist": 21,
+                                "psi_intensity": 83
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "5": {
+                                "hp": 563,
+                                "pollution_resist": 21,
+                                "psi_intensity": 88
+                            },
+                            "1": {
+                                "hp": 57,
+                                "pollution_resist": 9,
+                                "psi_intensity": 15
+                            },
+                            "2": {
+                                "hp": 76,
+                                "pollution_resist": 12,
+                                "psi_intensity": 23
+                            },
+                            "3": {
+                                "hp": 153,
+                                "pollution_resist": 15,
+                                "psi_intensity": 37
+                            },
+                            "4": {
+                                "hp": 305,
+                                "pollution_resist": 18,
+                                "psi_intensity": 57
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "5": {
+                                "hp": 589,
+                                "pollution_resist": 21,
+                                "psi_intensity": 92
+                            },
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "5": {
+                                "hp": 621,
+                                "pollution_resist": 21,
+                                "psi_intensity": 97
+                            },
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "5": {
+                                "hp": 648,
+                                "pollution_resist": 21,
+                                "psi_intensity": 101
+                            },
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            }
+                        }
+                    }
+                }
+            },
+            "rare": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 48,
+                                "pollution_resist": 9,
+                                "psi_intensity": 13
+                            },
+                            "2": {
+                                "hp": 64,
+                                "pollution_resist": 12,
+                                "psi_intensity": 19
+                            },
+                            "3": {
+                                "hp": 256,
+                                "pollution_resist": 15,
+                                "psi_intensity": 31
+                            },
+                            "4": {
+                                "hp": 256,
+                                "pollution_resist": 18,
+                                "psi_intensity": 48
+                            },
+                            "5": {
+                                "hp": 472,
+                                "pollution_resist": 21,
+                                "psi_intensity": 74
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "5": {
+                                "hp": 500,
+                                "pollution_resist": 21,
+                                "psi_intensity": 78
+                            },
+                            "1": {
+                                "hp": 51,
+                                "pollution_resist": 9,
+                                "psi_intensity": 14
+                            },
+                            "2": {
+                                "hp": 68,
+                                "pollution_resist": 12,
+                                "psi_intensity": 20
+                            },
+                            "3": {
+                                "hp": 136,
+                                "pollution_resist": 15,
+                                "psi_intensity": 33
+                            },
+                            "4": {
+                                "hp": 271,
+                                "pollution_resist": 18,
+                                "psi_intensity": 51
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "5": {
+                                "hp": 533,
+                                "pollution_resist": 21,
+                                "psi_intensity": 84
+                            },
+                            "1": {
+                                "hp": 54,
+                                "pollution_resist": 9,
+                                "psi_intensity": 15
+                            },
+                            "2": {
+                                "hp": 72,
+                                "pollution_resist": 12,
+                                "psi_intensity": 21
+                            },
+                            "3": {
+                                "hp": 145,
+                                "pollution_resist": 15,
+                                "psi_intensity": 35
+                            },
+                            "4": {
+                                "hp": 289,
+                                "pollution_resist": 18,
+                                "psi_intensity": 54
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "5": {
+                                "hp": 562,
+                                "pollution_resist": 21,
+                                "psi_intensity": 88
+                            },
+                            "1": {
+                                "hp": 57,
+                                "pollution_resist": 9,
+                                "psi_intensity": 15
+                            },
+                            "2": {
+                                "hp": 76,
+                                "pollution_resist": 12,
+                                "psi_intensity": 23
+                            },
+                            "3": {
+                                "hp": 152,
+                                "pollution_resist": 15,
+                                "psi_intensity": 37
+                            },
+                            "4": {
+                                "hp": 305,
+                                "pollution_resist": 18,
+                                "psi_intensity": 57
+                            }
+                        }
+                    }
+                }
+            },
+            "common": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 42,
+                                "pollution_resist": 9,
+                                "psi_intensity": 11
+                            },
+                            "2": {
+                                "hp": 56,
+                                "pollution_resist": 12,
+                                "psi_intensity": 17
+                            },
+                            "3": {
+                                "hp": 112,
+                                "pollution_resist": 15,
+                                "psi_intensity": 27
+                            },
+                            "4": {
+                                "hp": 224,
+                                "pollution_resist": 18,
+                                "psi_intensity": 42
+                            },
+                            "5": {
+                                "hp": 413,
+                                "pollution_resist": 21,
+                                "psi_intensity": 64
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "5": {
+                                "hp": 442,
+                                "pollution_resist": 21,
+                                "psi_intensity": 68
+                            },
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "5": {
+                                "hp": 471,
+                                "pollution_resist": 21,
+                                "psi_intensity": 73
+                            },
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "mask": {
+            "legendary": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 30,
+                                "pollution_resist": 12,
+                                "psi_intensity": 20
+                            },
+                            "2": {
+                                "hp": 40,
+                                "pollution_resist": 16,
+                                "psi_intensity": 30
+                            },
+                            "3": {
+                                "hp": 80,
+                                "pollution_resist": 20,
+                                "psi_intensity": 48
+                            },
+                            "4": {
+                                "hp": 160,
+                                "pollution_resist": 24,
+                                "psi_intensity": 75
+                            },
+                            "5": {
+                                "hp": 295,
+                                "pollution_resist": 28,
+                                "psi_intensity": 115
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 310,
+                                "pollution_resist": 28,
+                                "psi_intensity": 121
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 33,
+                                "pollution_resist": 12,
+                                "psi_intensity": 22
+                            },
+                            "2": {
+                                "hp": 44,
+                                "pollution_resist": 16,
+                                "psi_intensity": 33
+                            },
+                            "3": {
+                                "hp": 88,
+                                "pollution_resist": 20,
+                                "psi_intensity": 53
+                            },
+                            "4": {
+                                "hp": 176,
+                                "pollution_resist": 24,
+                                "psi_intensity": 82
+                            },
+                            "5": {
+                                "hp": 324,
+                                "pollution_resist": 28,
+                                "psi_intensity": 127
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 339,
+                                "pollution_resist": 28,
+                                "psi_intensity": 132
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 354,
+                                "pollution_resist": 28,
+                                "psi_intensity": 138
+                            }
+                        }
+                    },
+                    "6": {
+                        "levels": {
+                            "1": {
+                                "hp": 38,
+                                "pollution_resist": 12,
+                                "psi_intensity": 25
+                            },
+                            "2": {
+                                "hp": 50,
+                                "pollution_resist": 16,
+                                "psi_intensity": 38
+                            },
+                            "3": {
+                                "hp": 100,
+                                "pollution_resist": 20,
+                                "psi_intensity": 60
+                            },
+                            "4": {
+                                "hp": 200,
+                                "pollution_resist": 24,
+                                "psi_intensity": 94
+                            },
+                            "5": {
+                                "hp": 369,
+                                "pollution_resist": 28,
+                                "psi_intensity": 144
+                            }
+                        }
+                    }
+                }
+            },
+            "epic": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 27,
+                                "pollution_resist": 12,
+                                "psi_intensity": 18
+                            },
+                            "2": {
+                                "hp": 36,
+                                "pollution_resist": 16,
+                                "psi_intensity": 27
+                            },
+                            "3": {
+                                "hp": 72,
+                                "pollution_resist": 20,
+                                "psi_intensity": 43
+                            },
+                            "4": {
+                                "hp": 144,
+                                "pollution_resist": 24,
+                                "psi_intensity": 68
+                            },
+                            "5": {
+                                "hp": 266,
+                                "pollution_resist": 28,
+                                "psi_intensity": 104
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "5": {
+                                "hp": 282,
+                                "pollution_resist": 28,
+                                "psi_intensity": 110
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "5": {
+                                "hp": 295,
+                                "pollution_resist": 28,
+                                "psi_intensity": 115
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "5": {
+                                "hp": 311,
+                                "pollution_resist": 28,
+                                "psi_intensity": 122
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "5": {
+                                "hp": 325,
+                                "pollution_resist": 28,
+                                "psi_intensity": 127
+                            }
+                        }
+                    }
+                }
+            },
+            "rare": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 24,
+                                "pollution_resist": 12,
+                                "psi_intensity": 16
+                            },
+                            "2": {
+                                "hp": 32,
+                                "pollution_resist": 16,
+                                "psi_intensity": 24
+                            },
+                            "3": {
+                                "hp": 64,
+                                "pollution_resist": 20,
+                                "psi_intensity": 38
+                            },
+                            "4": {
+                                "hp": 128,
+                                "pollution_resist": 24,
+                                "psi_intensity": 60
+                            },
+                            "5": {
+                                "hp": 236,
+                                "pollution_resist": 28,
+                                "psi_intensity": 92
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 250,
+                                "pollution_resist": 28,
+                                "psi_intensity": 98
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 267,
+                                "pollution_resist": 28,
+                                "psi_intensity": 104
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 29,
+                                "pollution_resist": 12,
+                                "psi_intensity": 19
+                            },
+                            "2": {
+                                "hp": 38,
+                                "pollution_resist": 16,
+                                "psi_intensity": 29
+                            },
+                            "3": {
+                                "hp": 76,
+                                "pollution_resist": 20,
+                                "psi_intensity": 45
+                            },
+                            "4": {
+                                "hp": 152,
+                                "pollution_resist": 24,
+                                "psi_intensity": 71
+                            },
+                            "5": {
+                                "hp": 281,
+                                "pollution_resist": 28,
+                                "psi_intensity": 109
+                            }
+                        }
+                    }
+                }
+            },
+            "common": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 21,
+                                "pollution_resist": 12,
+                                "psi_intensity": 14
+                            },
+                            "2": {
+                                "hp": 28,
+                                "pollution_resist": 16,
+                                "psi_intensity": 21
+                            },
+                            "3": {
+                                "hp": 56,
+                                "pollution_resist": 20,
+                                "psi_intensity": 34
+                            },
+                            "4": {
+                                "hp": 112,
+                                "pollution_resist": 24,
+                                "psi_intensity": 53
+                            },
+                            "5": {
+                                "hp": 207,
+                                "pollution_resist": 28,
+                                "psi_intensity": 81
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "5": {
+                                "hp": 221,
+                                "pollution_resist": 28,
+                                "psi_intensity": 87
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "5": {
+                                "hp": 236,
+                                "pollution_resist": 28,
+                                "psi_intensity": 92
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "top": {
+            "legendary": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 156,
+                                "pollution_resist": 12,
+                                "psi_intensity": 11
+                            },
+                            "2": {
+                                "hp": 208,
+                                "pollution_resist": 16,
+                                "psi_intensity": 17
+                            },
+                            "3": {
+                                "hp": 416,
+                                "pollution_resist": 20,
+                                "psi_intensity": 27
+                            },
+                            "4": {
+                                "hp": 832,
+                                "pollution_resist": 24,
+                                "psi_intensity": 42
+                            },
+                            "5": {
+                                "hp": 1534,
+                                "pollution_resist": 28,
+                                "psi_intensity": 64
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 172,
+                                "pollution_resist": 12,
+                                "psi_intensity": 12
+                            },
+                            "2": {
+                                "hp": 229,
+                                "pollution_resist": 16,
+                                "psi_intensity": 19
+                            },
+                            "3": {
+                                "hp": 458,
+                                "pollution_resist": 20,
+                                "psi_intensity": 30
+                            },
+                            "4": {
+                                "hp": 915,
+                                "pollution_resist": 24,
+                                "psi_intensity": 46
+                            },
+                            "5": {
+                                "hp": 1687,
+                                "pollution_resist": 28,
+                                "psi_intensity": 70
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1611,
+                                "pollution_resist": 28,
+                                "psi_intensity": 67
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1764,
+                                "pollution_resist": 28,
+                                "psi_intensity": 74
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1840,
+                                "pollution_resist": 28,
+                                "psi_intensity": 77
+                            }
+                        }
+                    },
+                    "6": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1918,
+                                "pollution_resist": 28,
+                                "psi_intensity": 80
+                            }
+                        }
+                    }
+                }
+            },
+            "epic": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 140,
+                                "pollution_resist": 12,
+                                "psi_intensity": 10
+                            },
+                            "2": {
+                                "hp": 187,
+                                "pollution_resist": 16,
+                                "psi_intensity": 15
+                            },
+                            "3": {
+                                "hp": 374,
+                                "pollution_resist": 20,
+                                "psi_intensity": 24
+                            },
+                            "4": {
+                                "hp": 749,
+                                "pollution_resist": 24,
+                                "psi_intensity": 38
+                            },
+                            "5": {
+                                "hp": 1381,
+                                "pollution_resist": 28,
+                                "psi_intensity": 58
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "1": {
+                                "hp": 171,
+                                "pollution_resist": 12,
+                                "psi_intensity": 12
+                            },
+                            "2": {
+                                "hp": 228,
+                                "pollution_resist": 16,
+                                "psi_intensity": 18
+                            },
+                            "3": {
+                                "hp": 456,
+                                "pollution_resist": 20,
+                                "psi_intensity": 29
+                            },
+                            "4": {
+                                "hp": 914,
+                                "pollution_resist": 24,
+                                "psi_intensity": 46
+                            },
+                            "5": {
+                                "hp": 1685,
+                                "pollution_resist": 28,
+                                "psi_intensity": 71
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 155,
+                                "pollution_resist": 12,
+                                "psi_intensity": 11
+                            },
+                            "2": {
+                                "hp": 208,
+                                "pollution_resist": 16,
+                                "psi_intensity": 17
+                            },
+                            "3": {
+                                "hp": 415,
+                                "pollution_resist": 20,
+                                "psi_intensity": 27
+                            },
+                            "4": {
+                                "hp": 831,
+                                "pollution_resist": 24,
+                                "psi_intensity": 42
+                            },
+                            "5": {
+                                "hp": 1533,
+                                "pollution_resist": 28,
+                                "psi_intensity": 64
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1464,
+                                "pollution_resist": 28,
+                                "psi_intensity": 61
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 171,
+                                "pollution_resist": 12,
+                                "psi_intensity": 12
+                            },
+                            "2": {
+                                "hp": 228,
+                                "pollution_resist": 16,
+                                "psi_intensity": 18
+                            },
+                            "3": {
+                                "hp": 456,
+                                "pollution_resist": 20,
+                                "psi_intensity": 29
+                            },
+                            "4": {
+                                "hp": 914,
+                                "pollution_resist": 24,
+                                "psi_intensity": 46
+                            },
+                            "5": {
+                                "hp": 1685,
+                                "pollution_resist": 28,
+                                "psi_intensity": 71
+                            }
+                        }
+                    }
+                }
+            },
+            "rare": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 125,
+                                "pollution_resist": 12,
+                                "psi_intensity": 9
+                            },
+                            "2": {
+                                "hp": 166,
+                                "pollution_resist": 16,
+                                "psi_intensity": 13
+                            },
+                            "3": {
+                                "hp": 333,
+                                "pollution_resist": 20,
+                                "psi_intensity": 22
+                            },
+                            "4": {
+                                "hp": 666,
+                                "pollution_resist": 24,
+                                "psi_intensity": 34
+                            },
+                            "5": {
+                                "hp": 1227,
+                                "pollution_resist": 28,
+                                "psi_intensity": 52
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1301,
+                                "pollution_resist": 28,
+                                "psi_intensity": 55
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1387,
+                                "pollution_resist": 28,
+                                "psi_intensity": 59
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 149,
+                                "pollution_resist": 12,
+                                "psi_intensity": 11
+                            },
+                            "2": {
+                                "hp": 198,
+                                "pollution_resist": 16,
+                                "psi_intensity": 15
+                            },
+                            "3": {
+                                "hp": 396,
+                                "pollution_resist": 20,
+                                "psi_intensity": 26
+                            },
+                            "4": {
+                                "hp": 793,
+                                "pollution_resist": 24,
+                                "psi_intensity": 40
+                            },
+                            "5": {
+                                "hp": 1460,
+                                "pollution_resist": 28,
+                                "psi_intensity": 62
+                            }
+                        }
+                    }
+                }
+            },
+            "common": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 109,
+                                "pollution_resist": 12,
+                                "psi_intensity": 8
+                            },
+                            "2": {
+                                "hp": 146,
+                                "pollution_resist": 16,
+                                "psi_intensity": 12
+                            },
+                            "3": {
+                                "hp": 291,
+                                "pollution_resist": 20,
+                                "psi_intensity": 19
+                            },
+                            "4": {
+                                "hp": 582,
+                                "pollution_resist": 24,
+                                "psi_intensity": 29
+                            },
+                            "5": {
+                                "hp": 1074,
+                                "pollution_resist": 28,
+                                "psi_intensity": 45
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1149,
+                                "pollution_resist": 28,
+                                "psi_intensity": 48
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1224,
+                                "pollution_resist": 28,
+                                "psi_intensity": 51
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "pants": {
+            "legendary": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 144,
+                                "pollution_resist": 9,
+                                "psi_intensity": 13
+                            },
+                            "2": {
+                                "hp": 192,
+                                "pollution_resist": 12,
+                                "psi_intensity": 19
+                            },
+                            "3": {
+                                "hp": 384,
+                                "pollution_resist": 15,
+                                "psi_intensity": 31
+                            },
+                            "4": {
+                                "hp": 768,
+                                "pollution_resist": 18,
+                                "psi_intensity": 48
+                            },
+                            "5": {
+                                "hp": 1416,
+                                "pollution_resist": 21,
+                                "psi_intensity": 74
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1487,
+                                "pollution_resist": 21,
+                                "psi_intensity": 78
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 158,
+                                "pollution_resist": 9,
+                                "psi_intensity": 14
+                            },
+                            "2": {
+                                "hp": 211,
+                                "pollution_resist": 12,
+                                "psi_intensity": 21
+                            },
+                            "3": {
+                                "hp": 422,
+                                "pollution_resist": 15,
+                                "psi_intensity": 34
+                            },
+                            "4": {
+                                "hp": 845,
+                                "pollution_resist": 18,
+                                "psi_intensity": 53
+                            },
+                            "5": {
+                                "hp": 1558,
+                                "pollution_resist": 21,
+                                "psi_intensity": 81
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1628,
+                                "pollution_resist": 21,
+                                "psi_intensity": 85
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1699,
+                                "pollution_resist": 21,
+                                "psi_intensity": 89
+                            }
+                        }
+                    },
+                    "6": {
+                        "levels": {
+                            "1": {
+                                "hp": 180,
+                                "pollution_resist": 9,
+                                "psi_intensity": 16
+                            },
+                            "2": {
+                                "hp": 240,
+                                "pollution_resist": 12,
+                                "psi_intensity": 24
+                            },
+                            "3": {
+                                "hp": 480,
+                                "pollution_resist": 15,
+                                "psi_intensity": 39
+                            },
+                            "4": {
+                                "hp": 960,
+                                "pollution_resist": 18,
+                                "psi_intensity": 60
+                            },
+                            "5": {
+                                "hp": 1770,
+                                "pollution_resist": 21,
+                                "psi_intensity": 92
+                            }
+                        }
+                    }
+                }
+            },
+            "epic": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 130,
+                                "pollution_resist": 9,
+                                "psi_intensity": 12
+                            },
+                            "2": {
+                                "hp": 173,
+                                "pollution_resist": 12,
+                                "psi_intensity": 17
+                            },
+                            "3": {
+                                "hp": 346,
+                                "pollution_resist": 15,
+                                "psi_intensity": 28
+                            },
+                            "4": {
+                                "hp": 691,
+                                "pollution_resist": 18,
+                                "psi_intensity": 43
+                            },
+                            "5": {
+                                "hp": 1274,
+                                "pollution_resist": 21,
+                                "psi_intensity": 66
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "5": {
+                                "hp": 1350,
+                                "pollution_resist": 21,
+                                "psi_intensity": 70
+                            },
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "5": {
+                                "hp": 1414,
+                                "pollution_resist": 21,
+                                "psi_intensity": 73
+                            },
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "5": {
+                                "hp": 1491,
+                                "pollution_resist": 21,
+                                "psi_intensity": 77
+                            },
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "5": {
+                                "hp": 1554,
+                                "pollution_resist": 21,
+                                "psi_intensity": 81
+                            },
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            }
+                        }
+                    }
+                }
+            },
+            "rare": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 115,
+                                "pollution_resist": 9,
+                                "psi_intensity": 10
+                            },
+                            "2": {
+                                "hp": 154,
+                                "pollution_resist": 12,
+                                "psi_intensity": 15
+                            },
+                            "3": {
+                                "hp": 307,
+                                "pollution_resist": 15,
+                                "psi_intensity": 25
+                            },
+                            "4": {
+                                "hp": 614,
+                                "pollution_resist": 18,
+                                "psi_intensity": 38
+                            },
+                            "5": {
+                                "hp": 1133,
+                                "pollution_resist": 21,
+                                "psi_intensity": 59
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "5": {
+                                "hp": 1201,
+                                "pollution_resist": 21,
+                                "psi_intensity": 63
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "5": {
+                                "hp": 1280,
+                                "pollution_resist": 21,
+                                "psi_intensity": 67
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "5": {
+                                "hp": 1348,
+                                "pollution_resist": 21,
+                                "psi_intensity": 70
+                            }
+                        }
+                    }
+                }
+            },
+            "common": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 101,
+                                "pollution_resist": 9,
+                                "psi_intensity": 9
+                            },
+                            "2": {
+                                "hp": 134,
+                                "pollution_resist": 12,
+                                "psi_intensity": 13
+                            },
+                            "3": {
+                                "hp": 269,
+                                "pollution_resist": 15,
+                                "psi_intensity": 22
+                            },
+                            "4": {
+                                "hp": 538,
+                                "pollution_resist": 18,
+                                "psi_intensity": 34
+                            },
+                            "5": {
+                                "hp": 991,
+                                "pollution_resist": 21,
+                                "psi_intensity": 52
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1060,
+                                "pollution_resist": 21,
+                                "psi_intensity": 56
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1130,
+                                "pollution_resist": 21,
+                                "psi_intensity": 59
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "gloves": {
+            "legendary": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 90,
+                                "pollution_resist": 9,
+                                "psi_intensity": 12
+                            },
+                            "2": {
+                                "hp": 120,
+                                "pollution_resist": 12,
+                                "psi_intensity": 18
+                            },
+                            "3": {
+                                "hp": 240,
+                                "pollution_resist": 15,
+                                "psi_intensity": 29
+                            },
+                            "4": {
+                                "hp": 480,
+                                "pollution_resist": 18,
+                                "psi_intensity": 45
+                            },
+                            "5": {
+                                "hp": 885,
+                                "pollution_resist": 21,
+                                "psi_intensity": 69
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 929,
+                                "pollution_resist": 21,
+                                "psi_intensity": 72
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 974,
+                                "pollution_resist": 21,
+                                "psi_intensity": 76
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1018,
+                                "pollution_resist": 21,
+                                "psi_intensity": 79
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1061,
+                                "pollution_resist": 21,
+                                "psi_intensity": 83
+                            }
+                        }
+                    },
+                    "6": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1106,
+                                "pollution_resist": 21,
+                                "psi_intensity": 86
+                            }
+                        }
+                    }
+                }
+            },
+            "epic": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 81,
+                                "pollution_resist": 9,
+                                "psi_intensity": 11
+                            },
+                            "2": {
+                                "hp": 108,
+                                "pollution_resist": 12,
+                                "psi_intensity": 16
+                            },
+                            "3": {
+                                "hp": 216,
+                                "pollution_resist": 15,
+                                "psi_intensity": 26
+                            },
+                            "4": {
+                                "hp": 432,
+                                "pollution_resist": 18,
+                                "psi_intensity": 41
+                            },
+                            "5": {
+                                "hp": 797,
+                                "pollution_resist": 21,
+                                "psi_intensity": 62
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "5": {
+                                "hp": 845,
+                                "pollution_resist": 21,
+                                "psi_intensity": 66
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "5": {
+                                "hp": 885,
+                                "pollution_resist": 21,
+                                "psi_intensity": 69
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "5": {
+                                "hp": 932,
+                                "pollution_resist": 21,
+                                "psi_intensity": 73
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "5": {
+                                "hp": 972,
+                                "pollution_resist": 21,
+                                "psi_intensity": 76
+                            }
+                        }
+                    }
+                }
+            },
+            "rare": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 72,
+                                "pollution_resist": 9,
+                                "psi_intensity": 10
+                            },
+                            "2": {
+                                "hp": 96,
+                                "pollution_resist": 12,
+                                "psi_intensity": 14
+                            },
+                            "3": {
+                                "hp": 192,
+                                "pollution_resist": 15,
+                                "psi_intensity": 23
+                            },
+                            "4": {
+                                "hp": 384,
+                                "pollution_resist": 18,
+                                "psi_intensity": 36
+                            },
+                            "5": {
+                                "hp": 708,
+                                "pollution_resist": 21,
+                                "psi_intensity": 55
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "5": {
+                                "hp": 750,
+                                "pollution_resist": 21,
+                                "psi_intensity": 58
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "5": {
+                                "hp": 800,
+                                "pollution_resist": 21,
+                                "psi_intensity": 62
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "5": {
+                                "hp": 843,
+                                "pollution_resist": 21,
+                                "psi_intensity": 65
+                            }
+                        }
+                    }
+                }
+            },
+            "common": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 63,
+                                "pollution_resist": 9,
+                                "psi_intensity": 8
+                            },
+                            "2": {
+                                "hp": 84,
+                                "pollution_resist": 12,
+                                "psi_intensity": 13
+                            },
+                            "3": {
+                                "hp": 168,
+                                "pollution_resist": 15,
+                                "psi_intensity": 20
+                            },
+                            "4": {
+                                "hp": 336,
+                                "pollution_resist": 18,
+                                "psi_intensity": 32
+                            },
+                            "5": {
+                                "hp": 620,
+                                "pollution_resist": 21,
+                                "psi_intensity": 48
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "5": {
+                                "hp": 663,
+                                "pollution_resist": 21,
+                                "psi_intensity": 51
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "5": {
+                                "hp": 707,
+                                "pollution_resist": 21,
+                                "psi_intensity": 55
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "boots": {
+            "legendary": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 120,
+                                "pollution_resist": 9,
+                                "psi_intensity": 8
+                            },
+                            "2": {
+                                "hp": 160,
+                                "pollution_resist": 12,
+                                "psi_intensity": 12
+                            },
+                            "3": {
+                                "hp": 320,
+                                "pollution_resist": 15,
+                                "psi_intensity": 19
+                            },
+                            "4": {
+                                "hp": 640,
+                                "pollution_resist": 18,
+                                "psi_intensity": 30
+                            },
+                            "5": {
+                                "hp": 1180,
+                                "pollution_resist": 21,
+                                "psi_intensity": 46
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 126,
+                                "pollution_resist": 9,
+                                "psi_intensity": 8
+                            },
+                            "2": {
+                                "hp": 168,
+                                "pollution_resist": 12,
+                                "psi_intensity": 13
+                            },
+                            "3": {
+                                "hp": 336,
+                                "pollution_resist": 15,
+                                "psi_intensity": 20
+                            },
+                            "4": {
+                                "hp": 672,
+                                "pollution_resist": 18,
+                                "psi_intensity": 32
+                            },
+                            "5": {
+                                "hp": 1239,
+                                "pollution_resist": 21,
+                                "psi_intensity": 48
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1298,
+                                "pollution_resist": 21,
+                                "psi_intensity": 51
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1357,
+                                "pollution_resist": 21,
+                                "psi_intensity": 53
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1416,
+                                "pollution_resist": 21,
+                                "psi_intensity": 55
+                            }
+                        }
+                    },
+                    "6": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1475,
+                                "pollution_resist": 21,
+                                "psi_intensity": 58
+                            }
+                        }
+                    }
+                }
+            },
+            "epic": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 108,
+                                "pollution_resist": 9,
+                                "psi_intensity": 7
+                            },
+                            "2": {
+                                "hp": 144,
+                                "pollution_resist": 12,
+                                "psi_intensity": 11
+                            },
+                            "3": {
+                                "hp": 288,
+                                "pollution_resist": 15,
+                                "psi_intensity": 17
+                            },
+                            "4": {
+                                "hp": 567,
+                                "pollution_resist": 18,
+                                "psi_intensity": 27
+                            },
+                            "5": {
+                                "hp": 1062,
+                                "pollution_resist": 21,
+                                "psi_intensity": 41
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1126,
+                                "pollution_resist": 21,
+                                "psi_intensity": 43
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1179,
+                                "pollution_resist": 21,
+                                "psi_intensity": 46
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 126,
+                                "pollution_resist": 9,
+                                "psi_intensity": 8
+                            },
+                            "2": {
+                                "hp": 168,
+                                "pollution_resist": 12,
+                                "psi_intensity": 13
+                            },
+                            "3": {
+                                "hp": 337,
+                                "pollution_resist": 15,
+                                "psi_intensity": 20
+                            },
+                            "4": {
+                                "hp": 674,
+                                "pollution_resist": 18,
+                                "psi_intensity": 32
+                            },
+                            "5": {
+                                "hp": 1243,
+                                "pollution_resist": 21,
+                                "psi_intensity": 48
+                            }
+                        }
+                    },
+                    "5": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1296,
+                                "pollution_resist": 21,
+                                "psi_intensity": 50
+                            }
+                        }
+                    }
+                }
+            },
+            "rare": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 96,
+                                "pollution_resist": 9,
+                                "psi_intensity": 6
+                            },
+                            "2": {
+                                "hp": 128,
+                                "pollution_resist": 12,
+                                "psi_intensity": 10
+                            },
+                            "3": {
+                                "hp": 256,
+                                "pollution_resist": 15,
+                                "psi_intensity": 15
+                            },
+                            "4": {
+                                "hp": 512,
+                                "pollution_resist": 18,
+                                "psi_intensity": 24
+                            },
+                            "5": {
+                                "hp": 944,
+                                "pollution_resist": 21,
+                                "psi_intensity": 37
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1001,
+                                "pollution_resist": 21,
+                                "psi_intensity": 39
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 1067,
+                                "pollution_resist": 21,
+                                "psi_intensity": 42
+                            }
+                        }
+                    },
+                    "4": {
+                        "levels": {
+                            "1": {
+                                "hp": 114,
+                                "pollution_resist": 9,
+                                "psi_intensity": 7
+                            },
+                            "2": {
+                                "hp": 152,
+                                "pollution_resist": 12,
+                                "psi_intensity": 12
+                            },
+                            "3": {
+                                "hp": 305,
+                                "pollution_resist": 15,
+                                "psi_intensity": 18
+                            },
+                            "4": {
+                                "hp": 609,
+                                "pollution_resist": 18,
+                                "psi_intensity": 29
+                            },
+                            "5": {
+                                "hp": 1123,
+                                "pollution_resist": 21,
+                                "psi_intensity": 44
+                            }
+                        }
+                    }
+                }
+            },
+            "common": {
+                "stars": {
+                    "1": {
+                        "levels": {
+                            "1": {
+                                "hp": 84,
+                                "pollution_resist": 9,
+                                "psi_intensity": 6
+                            },
+                            "2": {
+                                "hp": 112,
+                                "pollution_resist": 12,
+                                "psi_intensity": 8
+                            },
+                            "3": {
+                                "hp": 224,
+                                "pollution_resist": 15,
+                                "psi_intensity": 13
+                            },
+                            "4": {
+                                "hp": 448,
+                                "pollution_resist": 18,
+                                "psi_intensity": 21
+                            },
+                            "5": {
+                                "hp": 826,
+                                "pollution_resist": 21,
+                                "psi_intensity": 32
+                            }
+                        }
+                    },
+                    "2": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 884,
+                                "pollution_resist": 21,
+                                "psi_intensity": 34
+                            }
+                        }
+                    },
+                    "3": {
+                        "levels": {
+                            "1": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "2": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "3": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "4": {
+                                "hp": 0,
+                                "pollution_resist": 0,
+                                "psi_intensity": 0
+                            },
+                            "5": {
+                                "hp": 942,
+                                "pollution_resist": 21,
+                                "psi_intensity": 36
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "calibration_bonuses": {
+        "hp": {
+            "0": 0.0,
+            "1": 0.18,
+            "2": 0.36,
+            "3": 0.48,
+            "4": 0.6,
+            "5": 0.7,
+            "6": 0.8
+        },
+        "psi_intensity": {
+            "0": 0.0,
+            "1": 0.08,
+            "2": 0.16,
+            "3": 0.24,
+            "4": 0.3,
+            "5": 0.35,
+            "6": 0.4
+        }
+    }
+}
