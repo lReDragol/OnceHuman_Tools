@@ -45,11 +45,25 @@ WEAPON_SLUG_ALIASES = {
     "sn700": ["sn700-dark-snowflake"],
 }
 MOD_SLUG_ALIASES = {
+    "mod_gloves": {
+        # Legacy calculator names vs current OnceHumanDB naming.
+        "Munitions Amplifier": ["weapon-amplifier-general"],
+    },
+    "mod_helmet": {
+        # Legacy calculator names vs current OnceHumanDB naming.
+        "Fateful Strike": ["fortunes-favor-general"],
+        "Mag Expansion": ["overflow-general"],
+    },
     "mod_pants": {
         # Legacy calculator names vs current OnceHumanDB naming.
         "Abnormal Increase": ["status-amplification"],
         "Precision Charge": ["precise-charge", "precision-charge"],
         "Unstoppable": ["distant-strike"],
+    },
+    "mod_mask": {
+        # Legacy calculator names vs current OnceHumanDB naming.
+        "Lingering Frost": ["frostwave-wither-frost-vortex"],
+        "Point Detonation": ["pinpoint-strike-unstable-bomber"],
     },
     "mod_weapon": {
         # These two old entries are not present by name in the public DB.
