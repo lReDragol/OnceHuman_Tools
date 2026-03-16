@@ -124,14 +124,13 @@ class Player:
             self.recalculate_stats()
 
     def equip_mod(self, mod, item_type):
-        category = mod.get('category', item_type)
-        self.equipped_mods[category] = mod
+        self.equipped_mods[item_type] = mod
         self.effect_sources_dirty = True
         self.recalculate_stats()
 
-    def remove_mod(self, category):
-        if category in self.equipped_mods:
-            del self.equipped_mods[category]
+    def remove_mod(self, item_type):
+        if item_type in self.equipped_mods:
+            del self.equipped_mods[item_type]
             self.effect_sources_dirty = True
             self.recalculate_stats()
 

@@ -776,11 +776,6 @@ class Context:
                                pmin=[icon_x, icon_y],
                                pmax=[icon_x + 10, icon_y + 10],
                                parent="damage_layer")
-            else:
-                dpg.draw_rectangle(pmin=[icon_x, icon_y], pmax=[icon_x + 10, icon_y + 10],
-                                   color=[255, 255, 255, 255],
-                                   fill=[255, 255, 255, 255],
-                                   parent="damage_layer")
 
         angle = random.uniform(angle_min, angle_max)
         vx = speed * math.cos(angle)
@@ -1082,17 +1077,29 @@ class Context:
         """
         # Попробуем найти файл "[mod_name_key].png" в папке data/icons/mods/[mod_key]
         folder = os.path.join('data', 'icons', 'mods', mod_key)
-        filename = mod_name_key + '.png'
-        full_path = os.path.join(folder, filename)
+        if not os.path.isdir(folder):
+            return None
 
-        if os.path.isfile(full_path):
-            # Загрузим и зарегистрируем текстуру
+        candidates = [
+            mod_name_key + '.png',
+            mod_name_key.replace('_', ' ') + '.png',
+        ]
+        for filename in os.listdir(folder):
+            normalized = os.path.splitext(filename)[0].lower().replace(' ', '_')
+            if normalized == mod_name_key:
+                candidates.append(filename)
+                break
+
+        for filename in candidates:
+            full_path = os.path.join(folder, filename)
+            if not os.path.isfile(full_path):
+                continue
             width, height, channels, data = dpg.load_image(full_path)
             with dpg.texture_registry():
                 texture_id = dpg.add_static_texture(width, height, data)
             return texture_id
-        else:
-            return None  # не нашли, будет fallback
+
+        return None
 
     def remove_mod_from_slot(self, sender, app_data, user_data):
         """

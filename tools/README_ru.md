@@ -35,14 +35,27 @@ python tools/sync_once_human_db_icons.py
 python tools/sync_once_human_db_icons.py --force
 ```
 
+`extract_once_human_mod_icons.py`
+- Вытаскивает настоящие mod-глифы из локальных `.npk` клиента Once Human.
+- Использует QuickBMS для извлечения `mods_icon_cbt2/*.pvr`, затем PVRTexToolCLI для конвертации в PNG.
+- Сопоставляет извлечённые игровые глифы с локальными иконками калькулятора и перезаписывает совпавшие файлы.
+
+Использование:
+```powershell
+python tools/extract_once_human_mod_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human"
+python tools/extract_once_human_mod_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --dry-run --keep-temp
+```
+
 ## Типовой порядок работы
 
 1. Запусти `once_human_game_probe.py` на локальных файлах игры, чтобы найти полезные таблицы.
 2. Запусти `import_once_human_db.py --write`, чтобы обновить JSON-данные калькулятора.
-3. Запусти `sync_once_human_db_icons.py`, чтобы подтянуть подходящие иконки.
+3. Запусти `sync_once_human_db_icons.py`, чтобы подтянуть оружие/броню и базовые mod-иконки.
+4. Запусти `extract_once_human_mod_icons.py`, если хочешь заменить mod-иконки на прямые ассеты из локального клиента.
 
 ## Примечания
 
 - `once_human_game_probe.py` сейчас нужен как инструмент разведки. Он помогает найти полезные файлы, но ещё не декодирует полностью каждый bindict payload.
 - `import_once_human_db.py` пока использует публичный датамайн как мост, пока прямой импорт из клиента не завершён.
 - `sync_once_human_db_icons.py` берёт иконки из синхронизированного публичного датасета, основанного на игровых ассетах.
+- `extract_once_human_mod_icons.py` требует локально доступные `quickbms.exe`, `Once_Human_Beta_NPK.bms` и `PVRTexToolCLI.exe`. Скрипт сначала пытается найти их автоматически во временной папке.

@@ -1,0 +1,93 @@
+{
+  "builds": [
+    {
+      "id": "empty",
+      "name": {
+        "ru": "Пустой пресет",
+        "en": "Empty preset"
+      },
+      "description": {
+        "ru": "Снимает всё оружие, броню и моды, чтобы можно было начать сборку с нуля.",
+        "en": "Clears all equipped weapons, armor pieces, and mods so you can start from scratch."
+      },
+      "weapon": null,
+      "items": {},
+      "mods": {},
+      "source": {
+        "title": "Built-in reset preset"
+      }
+    },
+    {
+      "id": "de50_unstable_bomber",
+      "name": {
+        "ru": "DE.50 - Jaws / Unstable Bomber",
+        "en": "DE.50 - Jaws / Unstable Bomber"
+      },
+      "description": {
+        "ru": "Пример по гайду Game8 для Unstable Bomber. В локальной базе пока нет Shaman Vulture Top и Bastille Shoes, поэтому пресет использует ближайшие доступные предметы для быстрого теста синергии Jaws.",
+        "en": "Example preset based on the Game8 Unstable Bomber guide. The local database does not include Shaman Vulture Top or Bastille Shoes yet, so the preset uses the closest available pieces for quick Jaws synergy testing."
+      },
+      "weapon": {
+        "id": "de50_jaws",
+        "name": "DE.50 - Jaws"
+      },
+      "items": {
+        "helmet": "lonewolf_hood",
+        "mask": "lonewolf_mask",
+        "top": "lonewolf_jacket",
+        "gloves": "lonewolf_gloves",
+        "pants": "lonewolf_pants",
+        "boots": "bastille_boots"
+      },
+      "mods": {
+        "weapon": "Bombardier Souvenir",
+        "helmet": "Momentum Up",
+        "mask": "Point Detonation",
+        "top": "Rejuvenating",
+        "gloves": "Crit Amplifier",
+        "pants": "Deadshot",
+        "boots": "Slow And Steady General"
+      },
+      "source": {
+        "title": "Game8 Best Unstable Bomber Build, Weapons, and Mods",
+        "url": "https://game8.co/games/Once-Human/archives/466957"
+      }
+    },
+    {
+      "id": "socr_shrapnel",
+      "name": {
+        "ru": "SOCR / Shrapnel",
+        "en": "SOCR / Shrapnel"
+      },
+      "description": {
+        "ru": "Новичковый шрапнель-билд по гайду Game8. В базе нет точного Bastille Shoes-слота, поэтому используется ближайший доступный предмет обуви и только один основной ствол без вторички.",
+        "en": "Beginner-friendly Shrapnel preset based on the Game8 guide. The local database does not include the exact Bastille Shoes entry yet, so the preset uses the closest available boots and only the primary weapon."
+      },
+      "weapon": {
+        "id": "socr_the_last_valor",
+        "name": "SOCR - The Last Valor"
+      },
+      "items": {
+        "helmet": "beret",
+        "mask": "lonewolf_mask",
+        "top": "lonewolf_jacket",
+        "gloves": "lonewolf_gloves",
+        "pants": "lonewolf_pants",
+        "boots": "bastille_boots"
+      },
+      "mods": {
+        "weapon": "Shatter Them All",
+        "helmet": "Momentum Up",
+        "mask": "Targeted Strike",
+        "top": "Healing Fortification",
+        "gloves": "Crit Amplifier",
+        "pants": "Bullet Siphon",
+        "boots": "Covered Advance General"
+      },
+      "source": {
+        "title": "Game8 Best Shrapnel Build, Weapons, and Mods",
+        "url": "https://game8.co/games/Once-Human/archives/466935"
+      }
+    }
+  ]
+}
