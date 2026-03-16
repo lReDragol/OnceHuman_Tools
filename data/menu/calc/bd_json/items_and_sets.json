@@ -1,6 +1,942 @@
 {
   "items": [
     {
+      "id": "agent_shoes",
+      "name": "Agent Shoes",
+      "type": "boots",
+      "rarity": "epic",
+      "set_id": "agent_set",
+      "base_stat_hint": {
+        "hp": 108.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 7.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/agent-shoes"
+    },
+    {
+      "id": "earthly_boots",
+      "name": "Earthly Boots",
+      "type": "boots",
+      "rarity": "epic",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 108.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 7.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/earthly-boots"
+    },
+    {
+      "id": "falcon_shoes",
+      "name": "Falcon Shoes",
+      "type": "boots",
+      "rarity": "epic",
+      "set_id": "falcon_set",
+      "base_stat_hint": {
+        "hp": 108.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 7.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/falcon-shoes"
+    },
+    {
+      "id": "heavy_duty_shoes",
+      "name": "Heavy Duty Shoes",
+      "type": "boots",
+      "rarity": "epic",
+      "set_id": "heavy_duty_set",
+      "base_stat_hint": {
+        "hp": 108.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 7.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/heavy-duty-shoes"
+    },
+    {
+      "id": "leather_boots",
+      "name": "Leather Boots",
+      "type": "boots",
+      "rarity": "epic",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 108.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 7.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/leather-boots"
+    },
+    {
+      "id": "snow_panther_boots",
+      "name": "Snow Panther Boots",
+      "type": "boots",
+      "rarity": "epic",
+      "set_id": "snow_panther_set",
+      "base_stat_hint": {
+        "hp": 108.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 7.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snow-panther-boots"
+    },
+    {
+      "id": "bastille_boots",
+      "name": "Bastille Boots",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "bastille_set",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/bastille-boots"
+    },
+    {
+      "id": "blackstone_boots",
+      "name": "Blackstone Boots",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "blackstone_set",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-boots"
+    },
+    {
+      "id": "blackstone_boots_cold",
+      "name": "Blackstone Boots - Cold",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_cold",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-boots-cold"
+    },
+    {
+      "id": "blackstone_boots_heat",
+      "name": "Blackstone Boots - Heat",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_heat",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-boots-heat"
+    },
+    {
+      "id": "bloodstained_tracker_boots",
+      "name": "Bloodstained Tracker Boots",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/bloodstained-tracker-boots"
+    },
+    {
+      "id": "cowboy_boots",
+      "name": "Cowboy Boots",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/cowboy-boots"
+    },
+    {
+      "id": "dark_resonance_shoes",
+      "name": "Dark Resonance Shoes",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/dark-resonance-shoes"
+    },
+    {
+      "id": "fire_rune_boots",
+      "name": "Fire Rune Boots",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/fire-rune-boots"
+    },
+    {
+      "id": "gravity_tide_shoes",
+      "name": "Gravity Tide Shoes",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "gravity_tide_set",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/gravity-tide-shoes"
+    },
+    {
+      "id": "lonewolf_shoes",
+      "name": "Lonewolf Shoes",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "lonewolf_set",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/lonewolf-shoes"
+    },
+    {
+      "id": "old_huntsman_boots",
+      "name": "Old Huntsman Boots",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/old-huntsman-boots"
+    },
+    {
+      "id": "pivot_step_leather_boots",
+      "name": "Pivot Step Leather Boots",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/pivot-step-leather-boots"
+    },
+    {
+      "id": "renegade_shoes",
+      "name": "Renegade Shoes",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "renegade_set",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/renegade-shoes"
+    },
+    {
+      "id": "savior_shoes",
+      "name": "Savior Shoes",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "savior_set",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/savior-shoes"
+    },
+    {
+      "id": "shelterer_shoes",
+      "name": "Shelterer Shoes",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "shelterer_set",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/shelterer-shoes"
+    },
+    {
+      "id": "stormweaver_shoes",
+      "name": "Stormweaver Shoes",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "stormweaver_set",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/stormweaver-shoes"
+    },
+    {
+      "id": "tactical_combat_boots",
+      "name": "Tactical Combat Boots",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/tactical-combat-boots"
+    },
+    {
+      "id": "tactical_combat_shoes",
+      "name": "Tactical Combat Shoes",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/tactical-combat-shoes"
+    },
+    {
+      "id": "treacherous_tides_shoes",
+      "name": "Treacherous Tides Shoes",
+      "type": "boots",
+      "rarity": "legendary",
+      "set_id": "treacherous_tides_set",
+      "base_stat_hint": {
+        "hp": 120.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/treacherous-tides-shoes"
+    },
+    {
+      "id": "blast_shoes",
+      "name": "Blast Shoes",
+      "type": "boots",
+      "rarity": "rare",
+      "set_id": "blast_set",
+      "base_stat_hint": {
+        "hp": 96.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 6.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blast-shoes"
+    },
+    {
+      "id": "raid_shoes",
+      "name": "Raid Shoes",
+      "type": "boots",
+      "rarity": "rare",
+      "set_id": "raid_set",
+      "base_stat_hint": {
+        "hp": 96.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 6.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/raid-shoes"
+    },
+    {
+      "id": "scout_survival_shoes",
+      "name": "Scout Survival Shoes",
+      "type": "boots",
+      "rarity": "rare",
+      "set_id": "scout_set",
+      "base_stat_hint": {
+        "hp": 96.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 6.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/scout-survival-shoes"
+    },
+    {
+      "id": "rustic_shoes",
+      "name": "Rustic Shoes",
+      "type": "boots",
+      "rarity": "uncommon",
+      "set_id": "rustic_set",
+      "base_stat_hint": {
+        "hp": 84.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 6.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/rustic-shoes"
+    },
+    {
+      "id": "snowland_rustic_shoes",
+      "name": "Snowland Rustic Shoes",
+      "type": "boots",
+      "rarity": "uncommon",
+      "set_id": "snowland_rustic_set",
+      "base_stat_hint": {
+        "hp": 84.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 6.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snowland-rustic-shoes"
+    },
+    {
+      "id": "agent_gloves",
+      "name": "Agent Gloves",
+      "type": "gloves",
+      "rarity": "epic",
+      "set_id": "agent_set",
+      "base_stat_hint": {
+        "hp": 81.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/agent-gloves"
+    },
+    {
+      "id": "bbq_gloves",
+      "name": "BBQ Gloves",
+      "type": "gloves",
+      "rarity": "epic",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 81.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/bbq-gloves"
+    },
+    {
+      "id": "falcon_gloves",
+      "name": "Falcon Gloves",
+      "type": "gloves",
+      "rarity": "epic",
+      "set_id": "falcon_set",
+      "base_stat_hint": {
+        "hp": 81.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/falcon-gloves"
+    },
+    {
+      "id": "heavy_duty_gloves",
+      "name": "Heavy Duty Gloves",
+      "type": "gloves",
+      "rarity": "epic",
+      "set_id": "heavy_duty_set",
+      "base_stat_hint": {
+        "hp": 81.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/heavy-duty-gloves"
+    },
+    {
+      "id": "snow_panther_gloves",
+      "name": "Snow Panther Gloves",
+      "type": "gloves",
+      "rarity": "epic",
+      "set_id": "snow_panther_set",
+      "base_stat_hint": {
+        "hp": 81.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snow-panther-gloves"
+    },
+    {
+      "id": "bastille_gloves",
+      "name": "Bastille Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "bastille_set",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/bastille-gloves"
+    },
+    {
+      "id": "blackstone_gloves",
+      "name": "Blackstone Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "blackstone_set",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-gloves"
+    },
+    {
+      "id": "blackstone_gloves_cold",
+      "name": "Blackstone Gloves - Cold",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_cold",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-gloves-cold"
+    },
+    {
+      "id": "blackstone_gloves_heat",
+      "name": "Blackstone Gloves - Heat",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_heat",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-gloves-heat"
+    },
+    {
+      "id": "dark_resonance_gloves",
+      "name": "Dark Resonance Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/dark-resonance-gloves"
+    },
+    {
+      "id": "drifter_gauntlets",
+      "name": "Drifter Gauntlets",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/drifter-gauntlets"
+    },
+    {
+      "id": "gilded_palm_shield",
+      "name": "Gilded Palm Shield",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/gilded-palm-shield"
+    },
+    {
+      "id": "gravity_tide_gloves",
+      "name": "Gravity Tide Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "gravity_tide_set",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/gravity-tide-gloves"
+    },
+    {
+      "id": "hardy_gloves",
+      "name": "Hardy Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/hardy-gloves"
+    },
+    {
+      "id": "lonewolf_gloves",
+      "name": "Lonewolf Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "lonewolf_set",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/lonewolf-gloves"
+    },
+    {
+      "id": "renegade_gloves",
+      "name": "Renegade Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "renegade_set",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/renegade-gloves"
+    },
+    {
+      "id": "savior_gloves",
+      "name": "Savior Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "savior_set",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/savior-gloves"
+    },
+    {
+      "id": "shelterer_gloves",
+      "name": "Shelterer Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "shelterer_set",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/shelterer-gloves"
+    },
+    {
+      "id": "snow_camo_gloves",
+      "name": "Snow Camo Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snow-camo-gloves"
+    },
+    {
+      "id": "stormweaver_gloves",
+      "name": "Stormweaver Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "stormweaver_set",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/stormweaver-gloves"
+    },
+    {
+      "id": "treacherous_tides_gloves",
+      "name": "Treacherous Tides Gloves",
+      "type": "gloves",
+      "rarity": "legendary",
+      "set_id": "treacherous_tides_set",
+      "base_stat_hint": {
+        "hp": 90.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/treacherous-tides-gloves"
+    },
+    {
+      "id": "blast_gloves",
+      "name": "Blast Gloves",
+      "type": "gloves",
+      "rarity": "rare",
+      "set_id": "blast_set",
+      "base_stat_hint": {
+        "hp": 72.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blast-gloves"
+    },
+    {
+      "id": "raid_gloves",
+      "name": "Raid Gloves",
+      "type": "gloves",
+      "rarity": "rare",
+      "set_id": "raid_set",
+      "base_stat_hint": {
+        "hp": 72.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/raid-gloves"
+    },
+    {
+      "id": "scout_gloves",
+      "name": "Scout Gloves",
+      "type": "gloves",
+      "rarity": "rare",
+      "set_id": "scout_set",
+      "base_stat_hint": {
+        "hp": 72.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/scout-gloves"
+    },
+    {
+      "id": "rustic_gloves",
+      "name": "Rustic Gloves",
+      "type": "gloves",
+      "rarity": "uncommon",
+      "set_id": "rustic_set",
+      "base_stat_hint": {
+        "hp": 63.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/rustic-gloves"
+    },
+    {
+      "id": "snowland_rustic_gloves",
+      "name": "Snowland Rustic Gloves",
+      "type": "gloves",
+      "rarity": "uncommon",
+      "set_id": "snowland_rustic_set",
+      "base_stat_hint": {
+        "hp": 63.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snowland-rustic-gloves"
+    },
+    {
+      "id": "agent_helmet",
+      "name": "Agent Helmet",
+      "type": "helmet",
+      "rarity": "epic",
+      "set_id": "agent_set",
+      "base_stat_hint": {
+        "hp": 54.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 14.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/agent-helmet"
+    },
+    {
+      "id": "beret",
+      "name": "Beret",
+      "type": "helmet",
+      "rarity": "epic",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 54.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 14.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/beret"
+    },
+    {
+      "id": "falcon_cap",
+      "name": "Falcon Cap",
+      "type": "helmet",
+      "rarity": "epic",
+      "set_id": "falcon_set",
+      "base_stat_hint": {
+        "hp": 54.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 14.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/falcon-cap"
+    },
+    {
+      "id": "heavy_duty_helmet",
+      "name": "Heavy Duty Helmet",
+      "type": "helmet",
+      "rarity": "epic",
+      "set_id": "heavy_duty_set",
+      "base_stat_hint": {
+        "hp": 54.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 14.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/heavy-duty-helmet"
+    },
+    {
+      "id": "mayfly_goggles",
+      "name": "Mayfly Goggles",
+      "type": "helmet",
+      "rarity": "epic",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 54.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 14.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/mayfly-goggles"
+    },
+    {
+      "id": "snow_panther_helmet",
+      "name": "Snow Panther Helmet",
+      "type": "helmet",
+      "rarity": "epic",
+      "set_id": "snow_panther_set",
+      "base_stat_hint": {
+        "hp": 54.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 14.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snow-panther-helmet"
+    },
+    {
+      "id": "bastille_helmet",
+      "name": "Bastille Helmet",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "bastille_set",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/bastille-helmet"
+    },
+    {
+      "id": "blackstone_hood",
+      "name": "Blackstone Hood",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "blackstone_set",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-hood"
+    },
+    {
+      "id": "blackstone_hood_cold",
+      "name": "Blackstone Hood - Cold",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_cold",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-hood-cold"
+    },
+    {
+      "id": "blackstone_hood_heat",
+      "name": "Blackstone Hood - Heat",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_heat",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-hood-heat"
+    },
+    {
+      "id": "cage_helmet",
+      "name": "Cage Helmet",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/cage-helmet"
+    },
+    {
+      "id": "dark_resonance_helmet",
+      "name": "Dark Resonance Helmet",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/dark-resonance-helmet"
+    },
+    {
+      "id": "gas_mask_hood",
+      "name": "Gas Mask Hood",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/gas-mask-hood"
+    },
+    {
+      "id": "gas_tight_helmet",
+      "name": "Gas-tight Helmet",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/gas-tight-helmet"
+    },
+    {
+      "id": "gravity_tide_cap",
+      "name": "Gravity Tide Cap",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "gravity_tide_set",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/gravity-tide-cap"
+    },
+    {
+      "id": "lonewolf_hat",
+      "name": "Lonewolf Hat",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "lonewolf_set",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/lonewolf-hat"
+    },
+    {
       "id": "lonewolf_hood",
       "name": "Lonewolf Hood",
       "type": "helmet",
@@ -8,42 +944,1434 @@
       "set_id": "lonewolf_set"
     },
     {
+      "id": "renegade_hood",
+      "name": "Renegade Hood",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "renegade_set",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/renegade-hood"
+    },
+    {
+      "id": "savior_helmet",
+      "name": "Savior Helmet",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "savior_set",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/savior-helmet"
+    },
+    {
+      "id": "shelterer_hat",
+      "name": "Shelterer Hat",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "shelterer_set",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/shelterer-hat"
+    },
+    {
+      "id": "stormweaver_helmet",
+      "name": "Stormweaver Helmet",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "stormweaver_set",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/stormweaver-helmet"
+    },
+    {
+      "id": "treacherous_tides_helmet",
+      "name": "Treacherous Tides Helmet",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": "treacherous_tides_set",
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/treacherous-tides-helmet"
+    },
+    {
+      "id": "yellow_painted_mask",
+      "name": "Yellow Painted Mask",
+      "type": "helmet",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 60.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/yellow-painted-mask"
+    },
+    {
+      "id": "blast_helmet",
+      "name": "Blast Helmet",
+      "type": "helmet",
+      "rarity": "rare",
+      "set_id": "blast_set",
+      "base_stat_hint": {
+        "hp": 48.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blast-helmet"
+    },
+    {
+      "id": "raid_helmet",
+      "name": "Raid Helmet",
+      "type": "helmet",
+      "rarity": "rare",
+      "set_id": "raid_set",
+      "base_stat_hint": {
+        "hp": 48.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/raid-helmet"
+    },
+    {
+      "id": "scout_hood",
+      "name": "Scout Hood",
+      "type": "helmet",
+      "rarity": "rare",
+      "set_id": "scout_set",
+      "base_stat_hint": {
+        "hp": 48.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/scout-hood"
+    },
+    {
+      "id": "rustic_hat",
+      "name": "Rustic Hat",
+      "type": "helmet",
+      "rarity": "uncommon",
+      "set_id": "rustic_set",
+      "base_stat_hint": {
+        "hp": 42.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/rustic-hat"
+    },
+    {
+      "id": "snowland_rustic_hat",
+      "name": "Snowland Rustic Hat",
+      "type": "helmet",
+      "rarity": "uncommon",
+      "set_id": "snowland_rustic_set",
+      "base_stat_hint": {
+        "hp": 42.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snowland-rustic-hat"
+    },
+    {
+      "id": "agent_mask",
+      "name": "Agent Mask",
+      "type": "mask",
+      "rarity": "epic",
+      "set_id": "agent_set",
+      "base_stat_hint": {
+        "hp": 27.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 18.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/agent-mask"
+    },
+    {
+      "id": "falcon_mask",
+      "name": "Falcon Mask",
+      "type": "mask",
+      "rarity": "epic",
+      "set_id": "falcon_set",
+      "base_stat_hint": {
+        "hp": 27.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 18.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/falcon-mask"
+    },
+    {
+      "id": "heavy_duty_mask",
+      "name": "Heavy Duty Mask",
+      "type": "mask",
+      "rarity": "epic",
+      "set_id": "heavy_duty_set",
+      "base_stat_hint": {
+        "hp": 27.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 18.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/heavy-duty-mask"
+    },
+    {
+      "id": "precise_shot_mask",
+      "name": "Precise Shot Mask",
+      "type": "mask",
+      "rarity": "epic",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 27.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 18.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/precise-shot-mask"
+    },
+    {
+      "id": "snow_panther_mask",
+      "name": "Snow Panther Mask",
+      "type": "mask",
+      "rarity": "epic",
+      "set_id": "snow_panther_set",
+      "base_stat_hint": {
+        "hp": 27.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 18.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snow-panther-mask"
+    },
+    {
+      "id": "bastille_mask",
+      "name": "Bastille Mask",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": "bastille_set",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/bastille-mask"
+    },
+    {
+      "id": "blackstone_mask",
+      "name": "Blackstone Mask",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": "blackstone_set",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-mask"
+    },
+    {
+      "id": "blackstone_mask_cold",
+      "name": "Blackstone Mask - Cold",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_cold",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-mask-cold"
+    },
+    {
+      "id": "blackstone_mask_heat",
+      "name": "Blackstone Mask - Heat",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_heat",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-mask-heat"
+    },
+    {
+      "id": "dark_resonance_mask",
+      "name": "Dark Resonance Mask",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/dark-resonance-mask"
+    },
+    {
+      "id": "desert_dust_mask",
+      "name": "Desert Dust Mask",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/desert-dust-mask"
+    },
+    {
+      "id": "gravity_tide_facewear",
+      "name": "Gravity Tide Facewear",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": "gravity_tide_set",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/gravity-tide-facewear"
+    },
+    {
       "id": "lonewolf_mask",
       "name": "Lonewolf Mask",
       "type": "mask",
       "rarity": "legendary",
-      "set_id": "lonewolf_set"
+      "set_id": "lonewolf_set",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/lonewolf-mask"
     },
     {
-      "id": "lonewolf_jacket",
-      "name": "Lonewolf Jacket",
-      "type": "top",
+      "id": "oasis_mask",
+      "name": "Oasis Mask",
+      "type": "mask",
       "rarity": "legendary",
-      "set_id": "lonewolf_set"
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/oasis-mask"
     },
     {
-      "id": "lonewolf_gloves",
-      "name": "Lonewolf Gloves",
-      "type": "gloves",
+      "id": "renegade_mask",
+      "name": "Renegade Mask",
+      "type": "mask",
       "rarity": "legendary",
-      "set_id": "lonewolf_set"
+      "set_id": "renegade_set",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/renegade-mask"
+    },
+    {
+      "id": "savior_mask",
+      "name": "Savior Mask",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": "savior_set",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/savior-mask"
+    },
+    {
+      "id": "shelterer_mask",
+      "name": "Shelterer Mask",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": "shelterer_set",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/shelterer-mask"
+    },
+    {
+      "id": "stormweaver_mask",
+      "name": "Stormweaver Mask",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": "stormweaver_set",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/stormweaver-mask"
+    },
+    {
+      "id": "treacherous_tides_mask",
+      "name": "Treacherous Tides Mask",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": "treacherous_tides_set",
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/treacherous-tides-mask"
+    },
+    {
+      "id": "viper_mask",
+      "name": "Viper Mask",
+      "type": "mask",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 30.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 20.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/viper-mask"
+    },
+    {
+      "id": "blast_mask",
+      "name": "Blast Mask",
+      "type": "mask",
+      "rarity": "rare",
+      "set_id": "blast_set",
+      "base_stat_hint": {
+        "hp": 24.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blast-mask"
+    },
+    {
+      "id": "raid_mask",
+      "name": "Raid Mask",
+      "type": "mask",
+      "rarity": "rare",
+      "set_id": "raid_set",
+      "base_stat_hint": {
+        "hp": 24.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/raid-mask"
+    },
+    {
+      "id": "scout_mask",
+      "name": "Scout Mask",
+      "type": "mask",
+      "rarity": "rare",
+      "set_id": "scout_set",
+      "base_stat_hint": {
+        "hp": 24.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 16.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/scout-mask"
+    },
+    {
+      "id": "agent_pants",
+      "name": "Agent Pants",
+      "type": "pants",
+      "rarity": "epic",
+      "set_id": "agent_set",
+      "base_stat_hint": {
+        "hp": 130.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/agent-pants"
+    },
+    {
+      "id": "falcon_pants",
+      "name": "Falcon Pants",
+      "type": "pants",
+      "rarity": "epic",
+      "set_id": "falcon_set",
+      "base_stat_hint": {
+        "hp": 130.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/falcon-pants"
+    },
+    {
+      "id": "heavy_duty_pants",
+      "name": "Heavy Duty Pants",
+      "type": "pants",
+      "rarity": "epic",
+      "set_id": "heavy_duty_set",
+      "base_stat_hint": {
+        "hp": 130.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/heavy-duty-pants"
+    },
+    {
+      "id": "hot_dog_shorts",
+      "name": "Hot Dog Shorts",
+      "type": "pants",
+      "rarity": "epic",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 130.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/hot-dog-shorts"
+    },
+    {
+      "id": "snow_panther_pants",
+      "name": "Snow Panther Pants",
+      "type": "pants",
+      "rarity": "epic",
+      "set_id": "snow_panther_set",
+      "base_stat_hint": {
+        "hp": 130.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 12.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snow-panther-pants"
+    },
+    {
+      "id": "bastille_pants",
+      "name": "Bastille Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "bastille_set",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/bastille-pants"
+    },
+    {
+      "id": "blackstone_pants",
+      "name": "Blackstone Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "blackstone_set",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-pants"
+    },
+    {
+      "id": "blackstone_pants_cold",
+      "name": "Blackstone Pants - Cold",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_cold",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-pants-cold"
+    },
+    {
+      "id": "blackstone_pants_heat",
+      "name": "Blackstone Pants - Heat",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_heat",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-pants-heat"
+    },
+    {
+      "id": "dark_resonance_pants",
+      "name": "Dark Resonance Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/dark-resonance-pants"
+    },
+    {
+      "id": "gravity_tide_pants",
+      "name": "Gravity Tide Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "gravity_tide_set",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/gravity-tide-pants"
     },
     {
       "id": "lonewolf_pants",
       "name": "Lonewolf Pants",
       "type": "pants",
       "rarity": "legendary",
-      "set_id": "lonewolf_set"
+      "set_id": "lonewolf_set",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/lonewolf-pants"
     },
     {
-      "id": "lonewolf_shoes",
-      "name": "Lonewolf Shoes",
-      "type": "boots",
+      "id": "overloaded_pants",
+      "name": "Overloaded Pants",
+      "type": "pants",
       "rarity": "legendary",
-      "set_id": "lonewolf_set"
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/overloaded-pants"
+    },
+    {
+      "id": "renegade_pants",
+      "name": "Renegade Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "renegade_set",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/renegade-pants"
+    },
+    {
+      "id": "savior_pants",
+      "name": "Savior Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "savior_set",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/savior-pants"
+    },
+    {
+      "id": "sharp_blade_pants",
+      "name": "Sharp Blade Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/sharp-blade-pants"
+    },
+    {
+      "id": "shelterer_pants",
+      "name": "Shelterer Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "shelterer_set",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/shelterer-pants"
+    },
+    {
+      "id": "stormweaver_pants",
+      "name": "Stormweaver Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "stormweaver_set",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/stormweaver-pants"
+    },
+    {
+      "id": "tattoo_pants",
+      "name": "Tattoo Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/tattoo-pants"
+    },
+    {
+      "id": "treacherous_tides_pants",
+      "name": "Treacherous Tides Pants",
+      "type": "pants",
+      "rarity": "legendary",
+      "set_id": "treacherous_tides_set",
+      "base_stat_hint": {
+        "hp": 144.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 13.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/treacherous-tides-pants"
+    },
+    {
+      "id": "blast_pants",
+      "name": "Blast Pants",
+      "type": "pants",
+      "rarity": "rare",
+      "set_id": "blast_set",
+      "base_stat_hint": {
+        "hp": 115.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blast-pants"
+    },
+    {
+      "id": "raid_pants",
+      "name": "Raid Pants",
+      "type": "pants",
+      "rarity": "rare",
+      "set_id": "raid_set",
+      "base_stat_hint": {
+        "hp": 115.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/raid-pants"
+    },
+    {
+      "id": "scout_pants",
+      "name": "Scout Pants",
+      "type": "pants",
+      "rarity": "rare",
+      "set_id": "scout_set",
+      "base_stat_hint": {
+        "hp": 115.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/scout-pants"
+    },
+    {
+      "id": "rustic_pants",
+      "name": "Rustic Pants",
+      "type": "pants",
+      "rarity": "uncommon",
+      "set_id": "rustic_set",
+      "base_stat_hint": {
+        "hp": 101.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 9.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/rustic-pants"
+    },
+    {
+      "id": "snowland_rustic_pants",
+      "name": "Snowland Rustic Pants",
+      "type": "pants",
+      "rarity": "uncommon",
+      "set_id": "snowland_rustic_set",
+      "base_stat_hint": {
+        "hp": 101.0,
+        "pollution_resist": 9.0,
+        "psi_intensity": 9.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snowland-rustic-pants"
+    },
+    {
+      "id": "agent_top",
+      "name": "Agent Top",
+      "type": "top",
+      "rarity": "epic",
+      "set_id": "agent_set",
+      "base_stat_hint": {
+        "hp": 140.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/agent-top"
+    },
+    {
+      "id": "falcon_jacket",
+      "name": "Falcon Jacket",
+      "type": "top",
+      "rarity": "epic",
+      "set_id": "falcon_set",
+      "base_stat_hint": {
+        "hp": 140.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/falcon-jacket"
+    },
+    {
+      "id": "heavy_duty_top",
+      "name": "Heavy Duty Top",
+      "type": "top",
+      "rarity": "epic",
+      "set_id": "heavy_duty_set",
+      "base_stat_hint": {
+        "hp": 140.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/heavy-duty-top"
+    },
+    {
+      "id": "sleek_leather_jacket",
+      "name": "Sleek Leather Jacket",
+      "type": "top",
+      "rarity": "epic",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 140.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/sleek-leather-jacket"
+    },
+    {
+      "id": "snow_panther_top",
+      "name": "Snow Panther Top",
+      "type": "top",
+      "rarity": "epic",
+      "set_id": "snow_panther_set",
+      "base_stat_hint": {
+        "hp": 140.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snow-panther-top"
+    },
+    {
+      "id": "bastille_top",
+      "name": "Bastille Top",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "bastille_set",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/bastille-top"
+    },
+    {
+      "id": "blackstone_top",
+      "name": "Blackstone Top",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "blackstone_set",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-top"
+    },
+    {
+      "id": "blackstone_top_cold",
+      "name": "Blackstone Top - Cold",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_cold",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-top-cold"
+    },
+    {
+      "id": "blackstone_top_heat",
+      "name": "Blackstone Top - Heat",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "blackstone_set_heat",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blackstone-top-heat"
+    },
+    {
+      "id": "charmed_mag_top",
+      "name": "Charmed Mag Top",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/charmed-mag-top"
+    },
+    {
+      "id": "covert_walker_shirt",
+      "name": "Covert Walker Shirt",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/covert-walker-shirt"
+    },
+    {
+      "id": "dark_resonance_vest",
+      "name": "Dark Resonance Vest",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/dark-resonance-vest"
+    },
+    {
+      "id": "doyens_cloak",
+      "name": "Doyen's Cloak",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/doyens-cloak"
+    },
+    {
+      "id": "explosive_front_top",
+      "name": "Explosive Front Top",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/explosive-front-top"
+    },
+    {
+      "id": "gravity_tide_top",
+      "name": "Gravity Tide Top",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "gravity_tide_set",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/gravity-tide-top"
+    },
+    {
+      "id": "lonewolf_jacket",
+      "name": "Lonewolf Jacket",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "lonewolf_set",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/lonewolf-jacket"
+    },
+    {
+      "id": "renegade_jacket",
+      "name": "Renegade Jacket",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "renegade_set",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/renegade-jacket"
+    },
+    {
+      "id": "savior_top",
+      "name": "Savior Top",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "savior_set",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/savior-top"
+    },
+    {
+      "id": "shelterer_top",
+      "name": "Shelterer Top",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "shelterer_set",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/shelterer-top"
+    },
+    {
+      "id": "snowdrift_top",
+      "name": "Snowdrift Top",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snowdrift-top"
+    },
+    {
+      "id": "stormweaver_top",
+      "name": "Stormweaver Top",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "stormweaver_set",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/stormweaver-top"
+    },
+    {
+      "id": "treacherous_tides_top",
+      "name": "Treacherous Tides Top",
+      "type": "top",
+      "rarity": "legendary",
+      "set_id": "treacherous_tides_set",
+      "base_stat_hint": {
+        "hp": 156.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 11.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/treacherous-tides-top"
+    },
+    {
+      "id": "blast_top",
+      "name": "Blast Top",
+      "type": "top",
+      "rarity": "rare",
+      "set_id": "blast_set",
+      "base_stat_hint": {
+        "hp": 125.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 9.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/blast-top"
+    },
+    {
+      "id": "raid_top",
+      "name": "Raid Top",
+      "type": "top",
+      "rarity": "rare",
+      "set_id": "raid_set",
+      "base_stat_hint": {
+        "hp": 125.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 9.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/raid-top"
+    },
+    {
+      "id": "scout_jacket",
+      "name": "Scout Jacket",
+      "type": "top",
+      "rarity": "rare",
+      "set_id": "scout_set",
+      "base_stat_hint": {
+        "hp": 125.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 9.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/scout-jacket"
+    },
+    {
+      "id": "frost_tactical_vest",
+      "name": "Frost Tactical Vest",
+      "type": "top",
+      "rarity": "uncommon",
+      "set_id": null,
+      "base_stat_hint": {
+        "hp": 140.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 10.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/frost-tactical-vest"
+    },
+    {
+      "id": "rustic_jacket",
+      "name": "Rustic Jacket",
+      "type": "top",
+      "rarity": "uncommon",
+      "set_id": "rustic_set",
+      "base_stat_hint": {
+        "hp": 109.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/rustic-jacket"
+    },
+    {
+      "id": "snowland_rustic_jacket",
+      "name": "Snowland Rustic Jacket",
+      "type": "top",
+      "rarity": "uncommon",
+      "set_id": "snowland_rustic_set",
+      "base_stat_hint": {
+        "hp": 109.0,
+        "pollution_resist": 12.0,
+        "psi_intensity": 8.0
+      },
+      "source_url": "https://www.oncehumandb.com/armor/snowland-rustic-jacket"
     }
   ],
   "sets": [
+    {
+      "set_id": "agent_set",
+      "name": "Agent Set",
+      "rarity": "epic",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Head DMG Reduction +10%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "damage_reduction_percent",
+              "value": 10.0
+            }
+          ]
+        },
+        {
+          "required_items": 2,
+          "description": "Weakspot DMG +10%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weakspot_damage_percent",
+              "value": 10.0
+            }
+          ]
+        },
+        {
+          "required_items": 3,
+          "description": "Get Bullet Saver effect with every precise kill, Weakspot DMG +15% for 8s. Effect can stack up to 3 times.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "After killing an enemy, gain Reload Efficiency +20%. If it is a Weakspot kill, also gain Fire Rate +10%. Lasts until you reload.",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Head DMG Reduction +10% | 2-Piece: Weakspot DMG +10% | 3-Piece: Get Bullet Saver effect with every precise kill, Weakspot DMG +15% for 8s. Effect can stack up to 3 times. | 4-Piece: After killing an enemy, gain Reload Efficiency +20%. If it is a Weakspot kill, also gain Fire Rate +10%. Lasts until you reload.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/agent-set"
+    },
+    {
+      "set_id": "bastille_set",
+      "name": "Bastille Set",
+      "rarity": "legendary",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "When HP is above 70%, Weapon DMG +10%",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Reload Efficiency +15%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "reload_speed_percent",
+              "value": 15.0
+            }
+          ]
+        },
+        {
+          "required_items": 3,
+          "description": "Stay crouched and immobile for 0.5s to enter the Bastille state. While in the Bastille state, gain Weapon DMG +40%. After exiting the Bastille state, you cannot sprint and your Stamina consumption is increased by 100% for 3s.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "3s after exiting Bastille state, gain 1 stack of Armor per second, up to 60 stacks. While in Bastille state, each stack of Armor provides a Shield equal to 1% of max HP.",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: When HP is above 70%, Weapon DMG +10% | 2-Piece: Reload Efficiency +15% | 3-Piece: Stay crouched and immobile for 0.5s to enter the Bastille state. While in the Bastille state, gain Weapon DMG +40%. After exiting the Bastille state, you cannot sprint and your Stamina consumption is increased by 100% for 3s. | 4-Piece: 3s after exiting Bastille state, gain 1 stack of Armor per second, up to 60 stacks. While in Bastille state, each stack of Armor provides a Shield equal to 1% of max HP.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/bastille-set"
+    },
+    {
+      "set_id": "blackstone_set",
+      "name": "Blackstone Set",
+      "rarity": "legendary",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Cold Resist and Heat Resist +2.5",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Upon dealing Elemental DMG, gain 1 stack(s) of Warm Sensation (Elemental DMG +2%) for 2s. Triggers 1 time every 0.5s, up to a maximum of 5 stacks.",
+          "effects": []
+        },
+        {
+          "required_items": 3,
+          "description": "When the temperature is between 10°C and 30°C, you gain the Warm status (Elemental DMG +18%).",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "At 5 stacks of Warm Sensation, you are considered to be in the Warm status. When the environmental temperature is between 10°C and 30°C, gain Elemental DMG +7%.",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Cold Resist and Heat Resist +2.5 | 2-Piece: Upon dealing Elemental DMG, gain 1 stack(s) of Warm Sensation (Elemental DMG +2%) for 2s. Triggers 1 time every 0.5s, up to a maximum of 5 stacks. | 3-Piece: When the temperature is between 10°C and 30°C, you gain the Warm status (Elemental DMG +18%). | 4-Piece: At 5 stacks of Warm Sensation, you are considered to be in the Warm status. When the environmental temperature is between 10°C and 30°C, gain Elemental DMG +7%.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/blackstone-set"
+    },
+    {
+      "set_id": "blackstone_set_cold",
+      "name": "Blackstone Set (Cold)",
+      "rarity": "legendary",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Cold Resist +5",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Upon dealing Elemental DMG, gain 1 stack(s) of Warm Sensation (Elemental DMG +2%) for 2s. Triggers 1 time every 0.5s, up to a maximum of 5 stacks.",
+          "effects": []
+        },
+        {
+          "required_items": 3,
+          "description": "When the temperature is below 10°C, you gain Cold status (Elemental DMG +10%). For every additional degree below that, gain Elemental DMG +0.5%, up to 20%.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "At 5 stacks of Warm Sensation, the environmental temperature drops by 5°C, the DMG bonus provided by the Cold status is doubled, and its cap is increased to 40%.",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Cold Resist +5 | 2-Piece: Upon dealing Elemental DMG, gain 1 stack(s) of Warm Sensation (Elemental DMG +2%) for 2s. Triggers 1 time every 0.5s, up to a maximum of 5 stacks. | 3-Piece: When the temperature is below 10°C, you gain Cold status (Elemental DMG +10%). For every additional degree below that, gain Elemental DMG +0.5%, up to 20%. | 4-Piece: At 5 stacks of Warm Sensation, the environmental temperature drops by 5°C, the DMG bonus provided by the Cold status is doubled, and its cap is increased to 40%.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/blackstone-set-cold"
+    },
+    {
+      "set_id": "blackstone_set_heat",
+      "name": "Blackstone Set (Heat)",
+      "rarity": "legendary",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Heat Resist +5",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Upon dealing Elemental DMG, gain 1 stack(s) of Warm Sensation (Elemental DMG +2%) for 2s. Triggers 1 time every 0.5s, up to a maximum of 5 stacks.",
+          "effects": []
+        },
+        {
+          "required_items": 3,
+          "description": "When the temperature is above 30°C, you gain Passion status (Elemental DMG +10%). For every additional degree above that, gain Elemental DMG +0.5%, up to 20%.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "At 5 stacks of Warm Sensation, the environmental temperature rises by 5°C, the DMG bonus provided by the Passion status is doubled, and its cap is increased to 40%.",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Heat Resist +5 | 2-Piece: Upon dealing Elemental DMG, gain 1 stack(s) of Warm Sensation (Elemental DMG +2%) for 2s. Triggers 1 time every 0.5s, up to a maximum of 5 stacks. | 3-Piece: When the temperature is above 30°C, you gain Passion status (Elemental DMG +10%). For every additional degree above that, gain Elemental DMG +0.5%, up to 20%. | 4-Piece: At 5 stacks of Warm Sensation, the environmental temperature rises by 5°C, the DMG bonus provided by the Passion status is doubled, and its cap is increased to 40%.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/blackstone-set-heat"
+    },
+    {
+      "set_id": "blast_set",
+      "name": "Blast Set",
+      "rarity": "rare",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Heavy Melee DMG +20%",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Torso DMG Reduction +12%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "damage_reduction_percent",
+              "value": 12.0
+            }
+          ]
+        },
+        {
+          "required_items": 3,
+          "description": "After using Melee attack to Kill an enemy, instantly gain 5 Prime Energy, and increase DMG of your next Melee attack by 20% within 5 seconds.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "Melee kill an enemy to instantly recover 30 Stamina and increase Movement Speed by 20% for 2s (cooldown: 3s).",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Heavy Melee DMG +20% | 2-Piece: Torso DMG Reduction +12% | 3-Piece: After using Melee attack to Kill an enemy, instantly gain 5 Prime Energy, and increase DMG of your next Melee attack by 20% within 5 seconds. | 4-Piece: Melee kill an enemy to instantly recover 30 Stamina and increase Movement Speed by 20% for 2s (cooldown: 3s).",
+      "source_url": "https://www.oncehumandb.com/armor-sets/blast-set"
+    },
+    {
+      "set_id": "falcon_set",
+      "name": "Falcon Set",
+      "rarity": "epic",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Rolling Stamina cost -20%.",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Crit DMG +12%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "crit_damage_percent",
+              "value": 12.0
+            }
+          ]
+        },
+        {
+          "required_items": 3,
+          "description": "When Stamina is over 90%, increase Crit Rate by 5% and Crit DMG by 20%.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "After killing an enemy, immediately recover 30 Stamina and gain 20% increased Movement Speed for 2s. Cooldown: 3s.",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Rolling Stamina cost -20%. | 2-Piece: Crit DMG +12% | 3-Piece: When Stamina is over 90%, increase Crit Rate by 5% and Crit DMG by 20%. | 4-Piece: After killing an enemy, immediately recover 30 Stamina and gain 20% increased Movement Speed for 2s. Cooldown: 3s.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/falcon-set"
+    },
+    {
+      "set_id": "gravity_tide_set",
+      "name": "Gravity Tide Set",
+      "rarity": "legendary",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Jump Height +10%.",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Magazine Capacity +15%",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Jump Height +10%. | 2-Piece: Magazine Capacity +15%",
+      "source_url": "https://www.oncehumandb.com/armor-sets/gravity-tide-set"
+    },
+    {
+      "set_id": "heavy_duty_set",
+      "name": "Heavy Duty Set",
+      "rarity": "epic",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Max HP +10%",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Element DMG (Blaze, Frost, Shock, Blast) +8%",
+          "effects": []
+        },
+        {
+          "required_items": 3,
+          "description": "After killing an enemy, increase Movement Speed by 20% for 2s and Elemental DMG (Blaze, Frost, Shock, Blast) by 40%, decay over 8s.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "Within 5m, each enemy grants you DMG Reduction +4%. Effect can stack up to 4 times.",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "damage_reduction_percent",
+              "value": 4.0
+            }
+          ]
+        }
+      ],
+      "description": "1-Piece: Max HP +10% | 2-Piece: Element DMG (Blaze, Frost, Shock, Blast) +8% | 3-Piece: After killing an enemy, increase Movement Speed by 20% for 2s and Elemental DMG (Blaze, Frost, Shock, Blast) by 40%, decay over 8s. | 4-Piece: Within 5m, each enemy grants you DMG Reduction +4%. Effect can stack up to 4 times.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/heavy-duty-set"
+    },
     {
       "set_id": "lonewolf_set",
       "name": "Lonewolf Set",
@@ -57,7 +2385,8 @@
               "stat": "magazine_capacity_percent",
               "value": 10.0
             }
-          ]
+          ],
+          "description": "Magazine Capacity +10%"
         },
         {
           "required_items": 2,
@@ -67,7 +2396,8 @@
               "stat": "crit_rate_percent",
               "value": 5.0
             }
-          ]
+          ],
+          "description": "Crit Rate +5%"
         },
         {
           "required_items": 3,
@@ -97,7 +2427,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "description": "Gain 1 stack of Lone Shadow for every 4 Crit shots landed with a weapon. Lone Shadow: Crit DMG +6% for 20s, stacking up to 8 times."
         },
         {
           "required_items": 4,
@@ -122,9 +2453,340 @@
                 }
               ]
             }
+          ],
+          "description": "Increases maximum Lonewolf stacks to 10. After reloading, gain Crit Rate +10% for 2s."
+        }
+      ],
+      "description": "1-Piece: Magazine Capacity +10% | 2-Piece: Crit Rate +5% | 3-Piece: Gain 1 stack of Lone Shadow for every 4 Crit shots landed with a weapon. Lone Shadow: Crit DMG +6% for 20s, stacking up to 8 times. | 4-Piece: Increases maximum Lonewolf stacks to 10. After reloading, gain Crit Rate +10% for 2s.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/lonewolf-set"
+    },
+    {
+      "set_id": "raid_set",
+      "name": "Raid Set",
+      "rarity": "rare",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Gathering Speed +15%",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Max Load +20",
+          "effects": []
+        },
+        {
+          "required_items": 3,
+          "description": "When the load is over 80, DMG taken -10%, Weapon and Tactical Item DMG +15%",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "Stamina cost -30% when gliding and rolling",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Gathering Speed +15% | 2-Piece: Max Load +20 | 3-Piece: When the load is over 80, DMG taken -10%, Weapon and Tactical Item DMG +15% | 4-Piece: Stamina cost -30% when gliding and rolling",
+      "source_url": "https://www.oncehumandb.com/armor-sets/raid-set"
+    },
+    {
+      "set_id": "renegade_set",
+      "name": "Renegade Set",
+      "rarity": "legendary",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Reload Efficiency +10%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "reload_speed_percent",
+              "value": 10.0
+            }
+          ]
+        },
+        {
+          "required_items": 2,
+          "description": "Weakspot DMG +10%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weakspot_damage_percent",
+              "value": 10.0
+            }
+          ]
+        },
+        {
+          "required_items": 3,
+          "description": "Gain 1 stack of Archer's Focus upon hitting the same enemy consecutively. Archer's Focus: Weakspot DMG +4%, stacking up to 10 times. Archer's Focus stacks are halved upon changing targets.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "When reloading, for every 1% of shots from the previous magazine that were Weakspot hits, load an extra 0.6% ammunition, capped at an extra 30%.",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Reload Efficiency +10% | 2-Piece: Weakspot DMG +10% | 3-Piece: Gain 1 stack of Archer's Focus upon hitting the same enemy consecutively. Archer's Focus: Weakspot DMG +4%, stacking up to 10 times. Archer's Focus stacks are halved upon changing targets. | 4-Piece: When reloading, for every 1% of shots from the previous magazine that were Weakspot hits, load an extra 0.6% ammunition, capped at an extra 30%.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/renegade-set"
+    },
+    {
+      "set_id": "rustic_set",
+      "name": "Rustic Set",
+      "rarity": "uncommon",
+      "max_items": 5,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Movement Speed +8%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "movement_speed_percent",
+              "value": 8.0
+            }
+          ]
+        },
+        {
+          "required_items": 2,
+          "description": "Melee DMG +15%",
+          "effects": []
+        },
+        {
+          "required_items": 3,
+          "description": "HP +600",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "Gathering Speed +20%",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Movement Speed +8% | 2-Piece: Melee DMG +15% | 3-Piece: HP +600 | 4-Piece: Gathering Speed +20%",
+      "source_url": "https://www.oncehumandb.com/armor-sets/rustic-set"
+    },
+    {
+      "set_id": "savior_set",
+      "name": "Savior Set",
+      "rarity": "legendary",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Medicine CD Reduction +20%",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "While shielded, Weapon DMG and Status DMG dealt increases by +10%.",
+          "effects": []
+        },
+        {
+          "required_items": 3,
+          "description": "Consumes 6% of current HP on hit to generate a temporary shield equal to 6% of Max HP, lasting 30s (Cooldown: 0.5s; does not trigger if Shield exceeds 60%)",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "Automatically uses the lowest-grade Treatment in the backpack when HP is below 30% (Cooldown: 40s).",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Medicine CD Reduction +20% | 2-Piece: While shielded, Weapon DMG and Status DMG dealt increases by +10%. | 3-Piece: Consumes 6% of current HP on hit to generate a temporary shield equal to 6% of Max HP, lasting 30s (Cooldown: 0.5s; does not trigger if Shield exceeds 60%) | 4-Piece: Automatically uses the lowest-grade Treatment in the backpack when HP is below 30% (Cooldown: 40s).",
+      "source_url": "https://www.oncehumandb.com/armor-sets/savior-set"
+    },
+    {
+      "set_id": "scout_set",
+      "name": "Scout Set",
+      "rarity": "rare",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Max HP +10%",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Weapon DMG +8%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weapon_damage_percent",
+              "value": 8.0
+            }
+          ]
+        },
+        {
+          "required_items": 3,
+          "description": "Weapon and Tactical Item DMG +20% when not spotted by enemies",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "Sprint Speed +12% and Stamina Recovery Speed +20% when HP is below 50%",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Max HP +10% | 2-Piece: Weapon DMG +8% | 3-Piece: Weapon and Tactical Item DMG +20% when not spotted by enemies | 4-Piece: Sprint Speed +12% and Stamina Recovery Speed +20% when HP is below 50%",
+      "source_url": "https://www.oncehumandb.com/armor-sets/scout-set"
+    },
+    {
+      "set_id": "shelterer_set",
+      "name": "Shelterer Set",
+      "rarity": "legendary",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Status DMG Reduction +15%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "damage_reduction_percent",
+              "value": 15.0
+            }
+          ]
+        },
+        {
+          "required_items": 2,
+          "description": "Element DMG (Blaze, Frost, Shock, Blast) +8%",
+          "effects": []
+        },
+        {
+          "required_items": 3,
+          "description": "Each weapon hit grants 1 stack of Deviant Energy. Every stack of Deviant Energy grants 1% Elemental DMG (Blaze, Frost, Shock, Blast). Effect can stack up to 20 times. Reloading removes half of the total stacks.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "Increase max Deviant Energy stack by 10. Grant 2 additional stacks when hitting a weakspot.",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Status DMG Reduction +15% | 2-Piece: Element DMG (Blaze, Frost, Shock, Blast) +8% | 3-Piece: Each weapon hit grants 1 stack of Deviant Energy. Every stack of Deviant Energy grants 1% Elemental DMG (Blaze, Frost, Shock, Blast). Effect can stack up to 20 times. Reloading removes half of the total stacks. | 4-Piece: Increase max Deviant Energy stack by 10. Grant 2 additional stacks when hitting a weakspot.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/shelterer-set"
+    },
+    {
+      "set_id": "snow_panther_set",
+      "name": "Snow Panther Set",
+      "rarity": "epic",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Torso DMG Reduction +10%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "damage_reduction_percent",
+              "value": 10.0
+            }
           ]
         }
-      ]
+      ],
+      "description": "1-Piece: Torso DMG Reduction +10%",
+      "source_url": "https://www.oncehumandb.com/armor-sets/snow-panther-set"
+    },
+    {
+      "set_id": "snowland_rustic_set",
+      "name": "Snowland Rustic Set",
+      "rarity": "uncommon",
+      "max_items": 5,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Movement Speed +8%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "movement_speed_percent",
+              "value": 8.0
+            }
+          ]
+        },
+        {
+          "required_items": 2,
+          "description": "Cold Resist +5",
+          "effects": []
+        },
+        {
+          "required_items": 3,
+          "description": "HP +600",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "Gathering Speed +20%",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Movement Speed +8% | 2-Piece: Cold Resist +5 | 3-Piece: HP +600 | 4-Piece: Gathering Speed +20%",
+      "source_url": "https://www.oncehumandb.com/armor-sets/snowland-rustic-set"
+    },
+    {
+      "set_id": "stormweaver_set",
+      "name": "Stormweaver Set",
+      "rarity": "legendary",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 1,
+          "description": "Rolling Stamina cost -20%.",
+          "effects": []
+        },
+        {
+          "required_items": 2,
+          "description": "Magazine Capacity +15%",
+          "effects": []
+        },
+        {
+          "required_items": 3,
+          "description": "Taking DMG grants a stack of Powered Armor, DMG Reduction +4% for 10s. Effect can stack up to 6 times.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "Rolling consumes 3 stacks of Powered Armor and triggers an explosion that knocks back surrounding enemies. For each enemy hit, HP +5%, up to 20% (cooldown: 10s).",
+          "effects": []
+        }
+      ],
+      "description": "1-Piece: Rolling Stamina cost -20%. | 2-Piece: Magazine Capacity +15% | 3-Piece: Taking DMG grants a stack of Powered Armor, DMG Reduction +4% for 10s. Effect can stack up to 6 times. | 4-Piece: Rolling consumes 3 stacks of Powered Armor and triggers an explosion that knocks back surrounding enemies. For each enemy hit, HP +5%, up to 20% (cooldown: 10s).",
+      "source_url": "https://www.oncehumandb.com/armor-sets/stormweaver-set"
+    },
+    {
+      "set_id": "treacherous_tides_set",
+      "name": "Treacherous Tides Set",
+      "rarity": "legendary",
+      "max_items": 6,
+      "bonuses": [
+        {
+          "required_items": 2,
+          "description": "Movement Speed +8%",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "movement_speed_percent",
+              "value": 8.0
+            }
+          ]
+        },
+        {
+          "required_items": 3,
+          "description": "Max Load +40.",
+          "effects": []
+        },
+        {
+          "required_items": 4,
+          "description": "Logging and Mining Speed +25%.",
+          "effects": []
+        }
+      ],
+      "description": "2-Piece: Movement Speed +8% | 3-Piece: Max Load +40. | 4-Piece: Logging and Mining Speed +25%.",
+      "source_url": "https://www.oncehumandb.com/armor-sets/treacherous-tides-set"
     }
   ],
   "multipliers": {
