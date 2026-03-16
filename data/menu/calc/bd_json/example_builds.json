@@ -88,6 +88,111 @@
         "title": "Game8 Best Shrapnel Build, Weapons, and Mods",
         "url": "https://game8.co/games/Once-Human/archives/466935"
       }
+    },
+    {
+      "id": "de50_jaws_reloadless_bomber",
+      "name": {
+        "ru": "DE.50 - Jaws / Бомбер без перезарядки",
+        "en": "DE.50 - Jaws / Reloadless Bomber"
+      },
+      "description": {
+        "ru": "Пресет под Jaws с упором на стрельбу без частой перезарядки и проки Unstable Bomber. В локальной базе нет Shaman Vulture Top, поэтому вместо неё используется ближайший доступный нагрудник.",
+        "en": "Jaws preset focused on minimizing reload downtime while cycling Unstable Bomber procs. The local database does not include Shaman Vulture Top yet, so the preset uses the closest available chest piece."
+      },
+      "weapon": {
+        "id": "de50_jaws",
+        "name": "DE.50 - Jaws"
+      },
+      "items": {
+        "helmet": "lonewolf_hood",
+        "mask": "lonewolf_mask",
+        "top": "heavy_duty_top",
+        "gloves": "lonewolf_gloves",
+        "pants": "lonewolf_pants",
+        "boots": "bastille_boots"
+      },
+      "mods": {
+        "weapon": "Bombardier Souvenir Unstable Bomber",
+        "helmet": "Deviation Expert",
+        "mask": "Point Detonation",
+        "top": "Critical Rescue",
+        "gloves": "Crit Boost",
+        "pants": "Deadshot",
+        "boots": "Slow And Steady General"
+      },
+      "source": {
+        "title": "Gameplay.tips Reloadless Jaws / Unstable Bomber build"
+      }
+    },
+    {
+      "id": "mps7_power_surge",
+      "name": {
+        "ru": "MPS7 - Outer Space / Power Surge",
+        "en": "MPS7 - Outer Space / Power Surge"
+      },
+      "description": {
+        "ru": "Сборка по мотивам Power Surge-гайдов с акцентом на Outer Space, Thunderclap и Static Shock. Подходит как готовый пример элементального пресета для новичка.",
+        "en": "Preset inspired by Power Surge guides, built around Outer Space, Thunderclap, and Static Shock. It works as a ready-made elemental example build for newer players."
+      },
+      "weapon": {
+        "id": "mps7_outer_space",
+        "name": "MPS7 - Outer Space"
+      },
+      "items": {
+        "helmet": "mayfly_goggles",
+        "mask": "scout_mask",
+        "top": "heavy_duty_top",
+        "gloves": "shelterer_gloves",
+        "pants": "shelterer_pants",
+        "boots": "heavy_duty_shoes"
+      },
+      "mods": {
+        "weapon": "Static Shock Power Surge",
+        "helmet": "Deviation Expert",
+        "mask": "Thunderclap Power Surge",
+        "top": "Critical Rescue",
+        "gloves": "Elemental Overload",
+        "pants": "Critical Surge General",
+        "boots": "Covered Advance General"
+      },
+      "source": {
+        "title": "GameSkinny Best Power Surge Build Guide"
+      }
+    },
+    {
+      "id": "dbsg_doombringer_fortress",
+      "name": {
+        "ru": "DBSG - Doombringer / Fortress Warfare",
+        "en": "DBSG - Doombringer / Fortress Warfare"
+      },
+      "description": {
+        "ru": "Ближний Fortress Warfare-пресет на базе Doombringer. Основан на публичных рекомендациях под Savior + utility pieces и собран как тестовая дробовиковая сборка для новичков.",
+        "en": "Close-range Fortress Warfare preset built around Doombringer. It follows public Savior-based recommendations and acts as a beginner-friendly shotgun test build."
+      },
+      "weapon": {
+        "id": "dbsg_doombringer",
+        "name": "DBSG - Doombringer"
+      },
+      "items": {
+        "helmet": "savior_helmet",
+        "mask": "savior_mask",
+        "top": "savior_top",
+        "gloves": "bastille_gloves",
+        "pants": "savior_pants",
+        "boots": "earthly_boots"
+      },
+      "mods": {
+        "weapon": "Portable Territory Fortress Warfare",
+        "helmet": "Precise Strike",
+        "mask": "Unbreakable Fortress Warfare",
+        "top": "Healing Fortification",
+        "gloves": "Crit Amplifier",
+        "pants": "Unstoppable",
+        "boots": "Covered Advance General"
+      },
+      "source": {
+        "title": "Game8 Best Doombringer Build, Weapons, and Mods"
+      }
     }
   ]
 }

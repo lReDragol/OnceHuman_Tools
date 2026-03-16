@@ -10,7 +10,7 @@ from data.menu.calc.player import Player
 from data.menu.calc.context_module import Context
 from data.menu.calc.config_manager import ConfigManager
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 class CalcAndModTab:
@@ -39,6 +39,12 @@ class CalcAndModTab:
         self.item_images = {}
         self.weapon_images = {}
         self.weapon_type_icons = {}
+        self.item_search_query = ""
+        self.weapon_search_query = ""
+        self.mod_search_query = ""
+        self.current_item_selection_type = None
+        self.current_mod_selection_type = None
+        self.active_handler_tags = {}
 
         self.mouse_pressed = False
         self.scheduled_deletions = []
@@ -83,7 +89,40 @@ class CalcAndModTab:
     def get_target_image_path(self):
         return os.path.join("data", "icons", "target_image.png")
 
+    @staticmethod
+    def normalize_search_value(value):
+        return " ".join(str(value or "").lower().split())
+
+    def matches_search_query(self, query, *parts):
+        normalized_query = self.normalize_search_value(query)
+        if not normalized_query:
+            return True
+        searchable = " ".join(
+            self.normalize_search_value(part)
+            for part in parts
+            if part
+        )
+        return normalized_query in searchable
+
+    def on_item_search_changed(self, sender, app_data, user_data):
+        self.item_search_query = app_data or ""
+        if self.current_item_selection_type:
+            self.populate_item_selection_list(self.current_item_selection_type)
+
+    def on_weapon_search_changed(self, sender, app_data, user_data):
+        self.weapon_search_query = app_data or ""
+        self.populate_weapon_selection_list()
+
+    def on_mod_search_changed(self, sender, app_data, user_data):
+        self.mod_search_query = app_data or ""
+        if self.current_mod_selection_type:
+            self.populate_mod_selection_list(self.current_mod_selection_type)
+
     def open_mod_selection(self, sender, app_data, user_data):
+        self.current_mod_selection_type = user_data
+        self.mod_search_query = ""
+        if dpg.does_item_exist("mod_search_input"):
+            dpg.set_value("mod_search_input", "")
         self.populate_mod_selection_list(user_data)
         dpg.configure_item("mod_selection_window", show=True)
 
@@ -112,13 +151,18 @@ class CalcAndModTab:
             category_folder = os.path.join('data', 'icons', 'mods', mod_key)
             if os.path.exists(category_folder):
                 mod_images[mod_key] = {}
-                for filename in os.listdir(category_folder):
+                best_areas = {}
+                for filename in sorted(os.listdir(category_folder)):
                     if filename.endswith('.png'):
                         mod_name_key = os.path.splitext(filename)[0].lower().replace(' ', '_')
                         image_path = os.path.join(category_folder, filename)
                         width, height, channels, data = dpg.load_image(image_path)
+                        area = width * height
+                        if area < best_areas.get(mod_name_key, 0):
+                            continue
                         with dpg.texture_registry():
                             texture_id = dpg.add_static_texture(width, height, data)
+                        best_areas[mod_name_key] = area
                         mod_images[mod_key][mod_name_key] = texture_id
         return mod_images
 
@@ -258,6 +302,21 @@ class CalcAndModTab:
         mod_key = self.context.category_key_mapping.get(item_type, "mod_weapon")
         normalized_name = mod_name.lower().replace(" ", "_")
         return self.mod_images.get(mod_key, {}).get(normalized_name, self.mod_images.get("default"))
+
+    def bind_right_click_handler(self, item_tag, handler_key, callback, user_data=None):
+        previous_tag = self.active_handler_tags.get(handler_key)
+        if previous_tag and dpg.does_item_exist(previous_tag):
+            dpg.delete_item(previous_tag)
+
+        registry_tag = f"{handler_key}_{dpg.generate_uuid()}"
+        with dpg.item_handler_registry(tag=registry_tag):
+            dpg.add_item_clicked_handler(
+                button=dpg.mvMouseButton_Right,
+                callback=callback,
+                user_data=user_data,
+            )
+        self.active_handler_tags[handler_key] = registry_tag
+        dpg.bind_item_handler_registry(item_tag, registry_tag)
 
     def get_current_build(self):
         return next(
@@ -548,9 +607,11 @@ class CalcAndModTab:
                         callback=self.open_weapon_selection,
                         tag="weapon_image",
                     )
-                    with dpg.item_handler_registry(tag="weapon_item_handler") as handler_id:
-                        dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Right, callback=self.open_weapon_config_window)
-                    dpg.bind_item_handler_registry("weapon_image", handler_id)
+                    self.bind_right_click_handler(
+                        "weapon_image",
+                        "weapon_item_handler",
+                        self.open_weapon_config_window,
+                    )
                     dpg.add_text(weapon.name, wrap=230)
                     if weapon_type:
                         dpg.add_text(
@@ -571,13 +632,12 @@ class CalcAndModTab:
                             user_data="weapon",
                             tag="weapon_mod_image",
                         )
-                        with dpg.item_handler_registry(tag="weapon_mod_handler") as handler_id:
-                            dpg.add_item_clicked_handler(
-                                button=dpg.mvMouseButton_Right,
-                                callback=self.open_mod_config_window,
-                                user_data={'mod': equipped_mod, 'type': 'weapon'},
-                            )
-                        dpg.bind_item_handler_registry("weapon_mod_image", handler_id)
+                        self.bind_right_click_handler(
+                            "weapon_mod_image",
+                            "weapon_mod_handler",
+                            self.open_mod_config_window,
+                            {'mod': equipped_mod, 'type': 'weapon'},
+                        )
                         dpg.add_text(equipped_mod["name"], wrap=220)
                     else:
                         dpg.add_button(
@@ -586,10 +646,6 @@ class CalcAndModTab:
                             user_data="weapon",
                             tag="weapon_mod_selector",
                             width=150,
-                        )
-                        dpg.add_text(
-                            self.tr("mod_slot_empty_hint", "No mod equipped"),
-                            wrap=220,
                         )
         else:
             dpg.add_button(
@@ -623,13 +679,12 @@ class CalcAndModTab:
                         user_data=item_type,
                         tag=image_tag,
                     )
-                    with dpg.item_handler_registry(tag=f"{item_type}_item_handler") as handler_id:
-                        dpg.add_item_clicked_handler(
-                            button=dpg.mvMouseButton_Right,
-                            callback=self.open_item_config_window,
-                            user_data=item_type,
-                        )
-                    dpg.bind_item_handler_registry(image_tag, handler_id)
+                    self.bind_right_click_handler(
+                        image_tag,
+                        f"{item_type}_item_handler",
+                        self.open_item_config_window,
+                        item_type,
+                    )
                     dpg.add_text(item.name, wrap=170)
                     dpg.add_text(self.get_item_description(item_data), wrap=220)
                     dpg.set_value(
@@ -644,10 +699,7 @@ class CalcAndModTab:
                         tag=f"{item_type}_item_selector",
                         width=150,
                     )
-                    dpg.set_value(
-                        f"{item_type}_item_hint",
-                        self.tr("slot_empty_hint", "No item equipped"),
-                    )
+                    dpg.set_value(f"{item_type}_item_hint", "")
 
             with dpg.group(tag=f"{item_type}_mod_panel"):
                 equipped_mod = self.player.equipped_mods.get(item_type)
@@ -662,13 +714,12 @@ class CalcAndModTab:
                         user_data=item_type,
                         tag=image_tag,
                     )
-                    with dpg.item_handler_registry(tag=f"{item_type}_mod_handler") as handler_id:
-                        dpg.add_item_clicked_handler(
-                            button=dpg.mvMouseButton_Right,
-                            callback=self.open_mod_config_window,
-                            user_data={'mod': equipped_mod, 'type': item_type},
-                        )
-                    dpg.bind_item_handler_registry(image_tag, handler_id)
+                    self.bind_right_click_handler(
+                        image_tag,
+                        f"{item_type}_mod_handler",
+                        self.open_mod_config_window,
+                        {'mod': equipped_mod, 'type': item_type},
+                    )
                     dpg.add_text(equipped_mod["name"], wrap=170)
                 elif item:
                     dpg.add_button(
@@ -678,12 +729,8 @@ class CalcAndModTab:
                         tag=f"{item_type}_mod_selector",
                         width=150,
                     )
-                    dpg.add_text(
-                        self.tr("mod_slot_empty_hint", "No mod equipped"),
-                        wrap=170,
-                    )
                 else:
-                    dpg.add_text(self.tr("equip_item_for_mod", "Equip an item to unlock the mod slot"), wrap=170)
+                    dpg.add_spacer(height=1)
 
     def refresh_equipment_ui(self):
         self.render_weapon_selector()
@@ -734,13 +781,24 @@ class CalcAndModTab:
 
     def open_item_selection(self, sender, app_data, user_data):
         item_type = user_data
+        self.current_item_selection_type = item_type
+        self.item_search_query = ""
+        if dpg.does_item_exist("item_search_input"):
+            dpg.set_value("item_search_input", "")
         self.populate_item_selection_list(item_type)
         dpg.configure_item("item_selection_window", show=True)
 
     def populate_item_selection_list(self, item_type):
         dpg.delete_item("item_selection_list", children_only=True)
         items = sorted(
-            [itm for itm in self.context.items_data if itm['type'] == item_type],
+            [
+                itm for itm in self.context.items_data
+                if itm['type'] == item_type and self.matches_search_query(
+                    self.item_search_query,
+                    itm.get('name', ''),
+                    self.get_item_description(itm),
+                )
+            ],
             key=lambda item: item['name'],
         )
         dpg.add_button(
@@ -877,12 +935,26 @@ class CalcAndModTab:
             dpg.set_value("stats_display_text", stats_text)
 
     def open_weapon_selection(self, sender, app_data, user_data):
+        self.weapon_search_query = ""
+        if dpg.does_item_exist("weapon_search_input"):
+            dpg.set_value("weapon_search_input", "")
         self.populate_weapon_selection_list()
         dpg.configure_item("weapon_selection_window", show=True)
 
     def populate_weapon_selection_list(self):
         dpg.delete_item("weapon_selection_list", children_only=True)
-        weapons = sorted(self.context.weapons_data, key=lambda weapon: weapon['name'])
+        weapons = sorted(
+            [
+                weapon for weapon in self.context.weapons_data
+                if self.matches_search_query(
+                    self.weapon_search_query,
+                    weapon.get('name', ''),
+                    self.get_weapon_description(weapon),
+                    weapon.get('type', ''),
+                )
+            ],
+            key=lambda weapon: weapon['name'],
+        )
         weapons_by_type = {}
         for wdata in weapons:
             wtype = wdata.get('type', 'Unknown')
@@ -1001,6 +1073,12 @@ class CalcAndModTab:
         with dpg.window(label=self.tr("item_selection_window", "Item selection"), modal=True, show=False,
                         tag="item_selection_window", width=820, height=560):
             dpg.add_text(self.tr("select_item_prompt", "Select an item:"))
+            dpg.add_input_text(
+                label=self.tr("search_items", "Search items"),
+                tag="item_search_input",
+                callback=self.on_item_search_changed,
+                width=780,
+            )
             dpg.add_child_window(tag="item_selection_list", autosize_x=True, autosize_y=True)
             dpg.add_button(label=self.tr("close", "Close"),
                            callback=lambda: dpg.configure_item("item_selection_window", show=False))
@@ -1008,7 +1086,18 @@ class CalcAndModTab:
     def populate_mod_selection_list(self, item_type):
         dpg.delete_item("mod_selection_list", children_only=True)
         mod_key = self.context.category_key_mapping.get(item_type, 'mod_weapon')
-        mods = sorted(self.context.mods_data.get(mod_key, []), key=lambda mod: mod['name'])
+        mods = sorted(
+            [
+                mod for mod in self.context.mods_data.get(mod_key, [])
+                if self.matches_search_query(
+                    self.mod_search_query,
+                    mod.get('name', ''),
+                    mod.get('description', ''),
+                    mod.get('category', ''),
+                )
+            ],
+            key=lambda mod: mod['name'],
+        )
 
         dpg.add_button(
             label=self.tr("clear_mod", "Clear mod"),
@@ -1109,6 +1198,12 @@ class CalcAndModTab:
         with dpg.window(label=self.tr("mod_selection_window", "Mod selection"), modal=True, show=False,
                         tag="mod_selection_window", width=820, height=560):
             dpg.add_text(self.tr("select_mod_prompt", "Select a mod:"))
+            dpg.add_input_text(
+                label=self.tr("search_mods", "Search mods"),
+                tag="mod_search_input",
+                callback=self.on_mod_search_changed,
+                width=780,
+            )
             dpg.add_child_window(tag="mod_selection_list", autosize_x=True, autosize_y=True)
             dpg.add_button(label=self.tr("close", "Close"),
                            callback=lambda: dpg.configure_item("mod_selection_window", show=False))
@@ -1117,6 +1212,12 @@ class CalcAndModTab:
         with dpg.window(label=self.tr("weapon_selection_window", "Weapon selection"), modal=True, show=False,
                         tag="weapon_selection_window", width=820, height=560):
             dpg.add_text(self.tr("select_weapon_prompt", "Select a weapon:"))
+            dpg.add_input_text(
+                label=self.tr("search_weapons", "Search weapons"),
+                tag="weapon_search_input",
+                callback=self.on_weapon_search_changed,
+                width=780,
+            )
             dpg.add_child_window(tag="weapon_selection_list", autosize_x=True, autosize_y=True)
             dpg.add_button(label=self.tr("close", "Close"),
                            callback=lambda: dpg.configure_item("weapon_selection_window", show=False))
@@ -1681,6 +1782,12 @@ class CalcAndModTab:
             dpg.configure_item("calc_load_config_button", label=self.tr("load_config", "Load configuration"))
         if dpg.does_item_exist("apply_build_preset_button"):
             dpg.configure_item("apply_build_preset_button", label=self.tr("apply_preset", "Apply"))
+        if dpg.does_item_exist("item_search_input"):
+            dpg.configure_item("item_search_input", label=self.tr("search_items", "Search items"))
+        if dpg.does_item_exist("weapon_search_input"):
+            dpg.configure_item("weapon_search_input", label=self.tr("search_weapons", "Search weapons"))
+        if dpg.does_item_exist("mod_search_input"):
+            dpg.configure_item("mod_search_input", label=self.tr("search_mods", "Search mods"))
         if dpg.does_item_exist("build_presets_combo"):
             dpg.configure_item(
                 "build_presets_combo",

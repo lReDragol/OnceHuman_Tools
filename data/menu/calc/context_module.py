@@ -8,7 +8,7 @@ from .player import Item, Mannequin, Player
 from .mechanics import Weapon, MechanicsProcessor, normalize_effects, iter_stat_value_pairs
 import logging
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -392,7 +392,6 @@ class Context:
     def update_max_hp(self):
         self.bonus_hp = self.player.stats.get('hp', 0)
         self.max_hp = self.base_hp + self.bonus_hp
-        logging.debug(f"Updated max HP: {self.max_hp}")
 
     def set_language(self, language):
         self.language = language if language in DISPLAY_TEXT else "ru"

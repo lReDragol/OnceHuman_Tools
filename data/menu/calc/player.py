@@ -6,7 +6,7 @@ import logging
 import re
 from .mechanics import add_stats, check_conditions, normalize_effects
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 class Item:
     def __init__(self, item_data, base_stats, calibration_bonuses):

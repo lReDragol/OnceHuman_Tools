@@ -9,7 +9,7 @@ import copy
 import re
 from typing import Dict, Any, Callable, List
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Путь к текущей папке data/menu/calc
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))

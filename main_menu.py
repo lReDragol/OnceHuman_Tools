@@ -67,23 +67,25 @@ class MainApp:
         dpg.set_primary_window("MainWindow", True)
         self.handle_viewport_resize()
 
-        # Главный цикл Dear PyGui
-        while dpg.is_dearpygui_running():
-            for tab in self.tabs:
-                if hasattr(tab, "update"):
-                    tab.update()
+        try:
+            while dpg.is_dearpygui_running():
+                for tab in self.tabs:
+                    if hasattr(tab, "update"):
+                        tab.update()
 
-            dpg.render_dearpygui_frame()
+                dpg.render_dearpygui_frame()
 
-            if not self.game_path:
-                if self.path_finder.found_path and os.path.exists(self.path_finder.found_path):
-                    self.game_path = self.path_finder.found_path
-                else:
-                    if self.path_finder.search_completed and not self.path_finder.found_path:
-                        pass
-
-        self.stop()
-        dpg.destroy_context()
+                if not self.game_path:
+                    if self.path_finder.found_path and os.path.exists(self.path_finder.found_path):
+                        self.game_path = self.path_finder.found_path
+                    else:
+                        if self.path_finder.search_completed and not self.path_finder.found_path:
+                            pass
+        except KeyboardInterrupt:
+            print("Application interrupted by user.")
+        finally:
+            self.stop()
+            dpg.destroy_context()
 
     def setup_ui(self):
         with dpg.window(label="Main Window", tag="MainWindow", width=680, height=460, no_resize=True):

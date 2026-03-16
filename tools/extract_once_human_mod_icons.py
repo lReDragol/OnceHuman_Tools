@@ -34,6 +34,10 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 MODS_CONFIG_PATH = REPO_ROOT / "data" / "menu" / "calc" / "bd_json" / "mods_config.json"
 MOD_ICONS_ROOT = REPO_ROOT / "data" / "icons" / "mods"
 DEFAULT_PACK_IDS = [112, 238, 268, 288, 304, 317, 319, 327]
+LEGACY_ICON_FALLBACKS = {
+    ("mod_mask", "Gunslinger.png"): ("mod_mask", "Blitzkrieg Fast Gunner.png"),
+    ("mod_mask", "Obliteration.png"): ("mod_mask", "Frostwave Wither Frost Vortex.png"),
+}
 
 
 def safe_display_filename(name: str) -> str:
@@ -192,6 +196,33 @@ def apply_matches(matched: list[dict[str, object]]) -> None:
         shutil.copy2(source, target)
 
 
+def apply_legacy_fallbacks(skipped: list[dict[str, object]]) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+    recovered: list[dict[str, object]] = []
+    remaining: list[dict[str, object]] = []
+    for entry in skipped:
+        target = Path(str(entry["target"]))
+        fallback = LEGACY_ICON_FALLBACKS.get((target.parent.name, target.name))
+        if not fallback:
+            remaining.append(entry)
+            continue
+
+        source = MOD_ICONS_ROOT / fallback[0] / fallback[1]
+        if not source.exists():
+            remaining.append(entry)
+            continue
+
+        shutil.copy2(source, target)
+        recovered.append(
+            {
+                "target": str(target),
+                "source": str(source),
+                "distance": entry.get("distance", -1),
+                "fallback": True,
+            }
+        )
+    return recovered, remaining
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--game-path", required=True, help="Path to the Once Human game root.")
@@ -261,6 +292,8 @@ def main() -> int:
 
         if not args.dry_run:
             apply_matches(matched)
+            fallback_matches, skipped = apply_legacy_fallbacks(skipped)
+            matched.extend(fallback_matches)
 
         summary = {
             "matched": len(matched),

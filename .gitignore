@@ -14,3 +14,4 @@ onli_fish_bot/screenshot.png
 build/
 dist/
 *.spec
+log.log
