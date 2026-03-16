@@ -10,12 +10,14 @@ from fuzzywuzzy import fuzz
 import pyautogui
 import telebot
 import copy
+import queue
 import dearpygui.dearpygui as dpg
 from config import Config
 import sys
 import webbrowser
 
 from .functions import apply_filter, draw_areas_on_frame, scale_coordinates, press_key, release_key
+from .ocr_manager import DEFAULT_OCR_LANGUAGES, inspect_tesseract, install_tesseract_with_languages
 
 class BotFishTab:
     def __init__(self, main_app):
@@ -54,18 +56,41 @@ class BotFishTab:
         self.telegram_bot_var = self.config.bot_fish_tab.get('telegram_bot_var', False)
         self.zone_settings_visible = False
         self.zone_settings_window = None  # Окно для настроек зон теперь будет создаваться отдельно
+        self.ui_queue = queue.Queue()
+        self.tracking_thread = None
+        self.ocr_install_in_progress = False
+        self.status_message = self.trans.get("status_idle", "Configure OCR and zones, then start tracking.")
+        self.ocr_status_message = self.trans.get("ocr_status_unknown", "OCR status has not been checked yet.")
 
         # Создаем главную группу один раз
         self.main_group = dpg.add_group(horizontal=False)
 
         # Создаем окно предупреждения о Tesseract один раз
-        with dpg.window(label="", modal=True, width=400, height=150, show=False, tag="tesseract_not_found_popup"):
+        with dpg.window(label="", modal=True, width=430, height=180, show=False, tag="tesseract_not_found_popup"):
             self.tesseract_not_found_text = dpg.add_text(default_value=self.trans.get("tesseract_not_installed", "Tesseract OCR is not installed.\nPlease install it or download from the official source."))
-            dpg.add_button(label=self.trans.get("download_tesseract", "Download Tesseract"), callback=self.open_tesseract_link)
-            dpg.add_button(label="OK", callback=lambda: dpg.configure_item("tesseract_not_found_popup", show=False))
+            self.install_tesseract_button = dpg.add_button(
+                label=self.trans.get("auto_install_ocr", "Install OCR automatically"),
+                callback=self.install_ocr_automatically,
+            )
+            self.download_tesseract_button = dpg.add_button(
+                label=self.trans.get("download_tesseract", "Download Tesseract"),
+                callback=self.open_tesseract_link,
+            )
+            self.close_tesseract_popup_button = dpg.add_button(
+                label="OK",
+                callback=lambda: dpg.configure_item("tesseract_not_found_popup", show=False),
+            )
+
+        with dpg.window(label="", modal=True, width=430, height=160, show=False, tag="bot_fish_message_popup"):
+            self.message_popup_text = dpg.add_text(default_value="")
+            self.close_message_popup_button = dpg.add_button(
+                label="OK",
+                callback=lambda: dpg.configure_item("bot_fish_message_popup", show=False),
+            )
 
         # Изначально создаем UI внутри main_group
         self.build_ui()
+        self.refresh_ocr_status()
 
     def update_translations(self):
         self.trans = self.translations.get(self.main_app.current_language, {}).get("bot_fish_tab", {})
@@ -73,42 +98,140 @@ class BotFishTab:
     def open_tesseract_link(self):
         webbrowser.open("https://github.com/UB-Mannheim/tesseract/wiki")
 
-    def check_tesseract_installed(self):
-        try:
-            version = pytesseract.get_tesseract_version()
-            if version:
-                return True
-        except Exception:
-            return False
-        return False
+    def queue_ui_action(self, action, payload=None):
+        self.ui_queue.put((action, payload))
+
+    def set_status_message(self, message):
+        self.status_message = message
+        if hasattr(self, "status_text") and dpg.does_item_exist(self.status_text):
+            dpg.set_value(self.status_text, message)
+
+    def set_ocr_status_message(self, message):
+        self.ocr_status_message = message
+        if hasattr(self, "ocr_status_text") and dpg.does_item_exist(self.ocr_status_text):
+            dpg.set_value(self.ocr_status_text, message)
+
+    def show_message_popup(self, message):
+        dpg.set_value(self.message_popup_text, message)
+        dpg.configure_item("bot_fish_message_popup", show=True)
+
+    def build_ocr_popup_message(self, ocr_status):
+        if not ocr_status["executable_path"]:
+            return self.trans.get(
+                "tesseract_not_installed",
+                "Tesseract OCR is not installed.\nPlease install it or download from the official source.",
+            )
+        if ocr_status["missing_languages"]:
+            return self.trans.get(
+                "tesseract_missing_languages",
+                "Tesseract is installed, but missing OCR languages: {languages}.",
+            ).format(languages=", ".join(ocr_status["missing_languages"]))
+        return ocr_status["error"] or self.trans.get("ocr_status_unknown", "OCR status has not been checked yet.")
+
+    def show_ocr_popup(self, ocr_status=None):
+        ocr_status = ocr_status or inspect_tesseract(DEFAULT_OCR_LANGUAGES)
+        dpg.set_value(self.tesseract_not_found_text, self.build_ocr_popup_message(ocr_status))
+        dpg.configure_item("tesseract_not_found_popup", show=True)
+
+    def describe_ocr_status(self, ocr_status):
+        if ocr_status["ready"]:
+            languages = ", ".join(ocr_status["available_languages"])
+            return self.trans.get(
+                "ocr_status_ready",
+                "OCR is ready. Languages: {languages}.",
+            ).format(languages=languages)
+        return self.build_ocr_popup_message(ocr_status)
+
+    def refresh_ocr_status(self):
+        ocr_status = inspect_tesseract(DEFAULT_OCR_LANGUAGES)
+        self.set_ocr_status_message(self.describe_ocr_status(ocr_status))
+        return ocr_status
+
+    def check_ocr_status(self, sender=None, app_data=None):
+        ocr_status = self.refresh_ocr_status()
+        if ocr_status["ready"]:
+            self.set_status_message(self.trans.get("ocr_check_ok", "OCR check passed."))
+        else:
+            self.set_status_message(self.build_ocr_popup_message(ocr_status))
+            self.show_ocr_popup(ocr_status)
+
+    def install_ocr_automatically(self, sender=None, app_data=None):
+        if self.ocr_install_in_progress:
+            self.set_status_message(self.trans.get("ocr_install_in_progress", "OCR installation is already running."))
+            return
+        self.ocr_install_in_progress = True
+        self.set_status_message(self.trans.get("ocr_install_started", "Installing OCR and language packs..."))
+        threading.Thread(target=self._install_ocr_worker, daemon=True).start()
+
+    def _install_ocr_worker(self):
+        result = install_tesseract_with_languages(DEFAULT_OCR_LANGUAGES)
+        self.ocr_install_in_progress = False
+        self.queue_ui_action("refresh_ocr_status")
+        if result["success"]:
+            self.queue_ui_action("status", self.trans.get("ocr_install_success", "OCR installation completed successfully."))
+        else:
+            error_message = result["error"] or self.trans.get("ocr_install_failed", "OCR installation failed.")
+            self.queue_ui_action("status", error_message)
+            self.queue_ui_action("message_popup", error_message)
 
     def start_tracking(self, sender, app_data):
-        if not self.check_tesseract_installed():
-            dpg.configure_item("tesseract_not_found_popup", show=True)
+        if self.tracking_thread and self.tracking_thread.is_alive():
+            self.set_status_message(self.trans.get("tracking_already_running", "Tracking is already running."))
             return
+        if not self.zones:
+            message = self.trans.get("zones_not_configured", "Create at least one tracking zone before starting.")
+            self.set_status_message(message)
+            self.show_message_popup(message)
+            return
+
+        ocr_status = self.refresh_ocr_status()
+        if not ocr_status["ready"]:
+            message = self.build_ocr_popup_message(ocr_status)
+            self.set_status_message(message)
+            self.show_ocr_popup(ocr_status)
+            return
+
         self.stop_event.clear()
-        threading.Thread(target=self.update_window, daemon=True).start()
+        self.tracking_thread = threading.Thread(target=self.update_window, daemon=True)
+        self.tracking_thread.start()
+        if self.bot_enabled:
+            self.set_status_message(self.trans.get("tracking_started", "Tracking started."))
+        elif not self.frame_visible and not self.text_visible:
+            self.set_status_message(
+                self.trans.get(
+                    "tracking_started_hidden",
+                    "Tracking started, but the bot and all previews are disabled, so no visible action will happen yet.",
+                )
+            )
+        else:
+            self.set_status_message(
+                self.trans.get(
+                    "tracking_started_preview",
+                    "Tracking started. Enable the bot to perform actions automatically.",
+                )
+            )
 
     def stop_tracking(self, sender, app_data):
         self.stop_event.set()
+        self.set_status_message(self.trans.get("tracking_stopped", "Tracking stopped."))
 
     def toggle_frame_visibility(self, sender, app_data):
-        self.frame_visible = not self.frame_visible
+        self.frame_visible = app_data
         self.config.bot_fish_tab['frame_visible'] = self.frame_visible
         self.config.save_to_json()
 
     def toggle_text_visibility(self, sender, app_data):
-        self.text_visible = not self.text_visible
+        self.text_visible = app_data
         self.config.bot_fish_tab['text_visible'] = self.text_visible
         self.config.save_to_json()
 
     def toggle_show_all_text(self, sender, app_data):
-        self.show_all_text = not self.show_all_text
+        self.show_all_text = app_data
         self.config.bot_fish_tab['show_all_text'] = self.show_all_text
         self.config.save_to_json()
 
     def toggle_bot_enabled(self, sender, app_data):
-        self.bot_enabled = not self.bot_enabled
+        self.bot_enabled = app_data
         self.config.bot_fish_tab['bot_enabled'] = self.bot_enabled
         self.config.save_to_json()
         print(f"{time.strftime('%H:%M:%S')} Бот включен: {self.bot_enabled}")
@@ -119,7 +242,7 @@ class BotFishTab:
         self.config.save_to_json()
 
     def toggle_anti_afk(self, sender, app_data):
-        self.anti_afk_enabled = not self.anti_afk_enabled
+        self.anti_afk_enabled = app_data
         self.config.bot_fish_tab['anti_afk_enabled'] = self.anti_afk_enabled
         self.config.save_to_json()
         if self.anti_afk_enabled:
@@ -151,9 +274,10 @@ class BotFishTab:
         self.selected_language = app_data
         self.config.bot_fish_tab['selected_language'] = self.selected_language
         self.config.save_to_json()
+        self.refresh_ocr_status()
 
     def toggle_telegram_bot(self, sender, app_data):
-        self.telegram_bot_var = not self.telegram_bot_var
+        self.telegram_bot_var = app_data
         self.config.bot_fish_tab['telegram_bot_var'] = self.telegram_bot_var
         self.config.save_to_json()
         if self.telegram_bot_var:
@@ -210,15 +334,22 @@ class BotFishTab:
         dpg.add_text(self.trans.get("recognition_threshold", "Recognition threshold (%)") + ":", parent=self.main_group)
         dpg.add_slider_int(min_value=0, max_value=100, default_value=self.recognition_threshold_var, callback=self.update_recognition_threshold, parent=self.main_group)
         dpg.add_text(self.trans.get("ocr_language", "OCR language:"), parent=self.main_group)
-        dpg.add_combo(['eng', 'rus'], default_value=self.selected_language, callback=self.update_selected_language, parent=self.main_group)
+        dpg.add_combo(['eng', 'rus', 'eng+rus'], default_value=self.selected_language, callback=self.update_selected_language, parent=self.main_group)
+        dpg.add_text(self.trans.get("ocr_status_label", "OCR status:"), parent=self.main_group)
+        self.ocr_status_text = dpg.add_text(default_value=self.ocr_status_message, parent=self.main_group)
+        with dpg.group(horizontal=True, parent=self.main_group):
+            dpg.add_button(label=self.trans.get("check_ocr", "Check OCR"), callback=self.check_ocr_status)
+            dpg.add_button(label=self.trans.get("auto_install_ocr", "Install OCR automatically"), callback=self.install_ocr_automatically)
         dpg.add_checkbox(label=self.trans.get("enable_telegram_bot", "Enable Telegram bot"), callback=self.toggle_telegram_bot, default_value=self.telegram_bot_var, parent=self.main_group)
         dpg.add_input_text(label=self.trans.get("bot_token", "Bot Token:"), default_value=self.telegram_bot_token, callback=self.update_telegram_bot_token, parent=self.main_group)
         dpg.add_input_text(label=self.trans.get("chat_id", "Chat ID:"), default_value=self.telegram_chat_id, callback=self.update_telegram_chat_id, parent=self.main_group)
         self.zone_settings_checkbox = dpg.add_checkbox(label=self.trans.get("show_zone_settings", "Show zone settings"), callback=self.toggle_zone_settings, default_value=self.zone_settings_visible, parent=self.main_group)
         dpg.add_button(label=self.trans.get("create_zones", "Create zones"), callback=self.add_zone, parent=self.main_group)
+        self.status_text = dpg.add_text(default_value=self.status_message, parent=self.main_group)
 
     def update_window(self):
         if not self.zones:
+            self.queue_ui_action("message_popup", self.trans.get("zones_not_configured", "Create at least one tracking zone before starting."))
             return
 
         scale_x = self.frame_width / self.original_width
@@ -227,127 +358,135 @@ class BotFishTab:
         if not self.last_press_time or len(self.last_press_time) != len(self.zones):
             self.last_press_time = [{} for _ in self.zones]
 
-        with mss.mss() as sct:
-            while not self.stop_event.is_set():
-                monitor = sct.monitors[1]
-                sct_img = sct.grab(monitor)
-                frame = np.array(sct_img)
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2RGB)
-                self.last_frame = frame
+        try:
+            with mss.mss() as sct:
+                while not self.stop_event.is_set():
+                    monitor = sct.monitors[1]
+                    sct_img = sct.grab(monitor)
+                    frame = np.array(sct_img)
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2RGB)
+                    self.last_frame = frame
 
-                display_frame = apply_filter(frame.copy(), self.selected_filter_value)
-                small_frame = cv2.resize(display_frame, (self.frame_width, self.frame_height))
+                    display_frame = apply_filter(frame.copy(), self.selected_filter_value)
+                    small_frame = cv2.resize(display_frame, (self.frame_width, self.frame_height))
 
-                draw_areas_on_frame(small_frame, self.zones, scale_x, scale_y)
+                    draw_areas_on_frame(small_frame, self.zones, scale_x, scale_y)
 
-                if self.frame_visible:
-                    cv2.imshow("Frame", small_frame)
-                    self.frame_open = True
-                    cv2.setWindowProperty("Frame", cv2.WND_PROP_TOPMOST, 1 if self.always_on_top_var else 0)
-                elif self.frame_open:
-                    cv2.destroyWindow("Frame")
-                    self.frame_open = False
+                    if self.frame_visible:
+                        cv2.imshow("Frame", small_frame)
+                        self.frame_open = True
+                        cv2.setWindowProperty("Frame", cv2.WND_PROP_TOPMOST, 1 if self.always_on_top_var else 0)
+                    elif self.frame_open:
+                        cv2.destroyWindow("Frame")
+                        self.frame_open = False
 
-                current_time = time.time()
+                    current_time = time.time()
 
-                for idx, zone_data in enumerate(self.zones):
-                    x1, y1, x2, y2 = map(int, zone_data['c'])
-                    phrases = zone_data.get('p', [])
-                    zone_num = str(idx+1)
-                    keybind = zone_data.get('keybind', 'a')
-                    hold = zone_data.get('hold', False)
-                    hold_duration = zone_data.get('hold_duration', 0)
-                    delay_before = zone_data.get('delay_before', 0) / 1000.0
-                    delay_after = zone_data.get('delay_after', 0) / 1000.0
-                    press_delay = zone_data.get('press_delay', self.scan_delay_var) / 1000.0
-                    hold_lmb = zone_data.get('hold_lmb', False)
-                    hold_lmb_duration = zone_data.get('hold_lmb_duration', 0)
+                    for idx, zone_data in enumerate(self.zones):
+                        x1, y1, x2, y2 = map(int, zone_data['c'])
+                        phrases = zone_data.get('p', [])
+                        zone_num = str(idx+1)
+                        keybind = zone_data.get('keybind', 'a')
+                        hold_duration = zone_data.get('hold_duration', 0)
+                        delay_before = zone_data.get('delay_before', 0) / 1000.0
+                        delay_after = zone_data.get('delay_after', 0) / 1000.0
+                        press_delay = zone_data.get('press_delay', self.scan_delay_var) / 1000.0
+                        hold_lmb = zone_data.get('hold_lmb', False)
+                        hold_lmb_duration = zone_data.get('hold_lmb_duration', 0)
 
-                    zone_last_press_time = self.last_press_time[idx]
+                        zone_last_press_time = self.last_press_time[idx]
 
-                    zone_frame = frame[y1:y2, x1:x2]
-                    zone_frame_filtered = apply_filter(zone_frame, self.selected_filter_value)
-                    ocr_lang = self.selected_language
-                    ocr_result_psm6 = pytesseract.image_to_string(zone_frame_filtered, lang=ocr_lang, config='--psm 6')
-                    ocr_result_psm7 = pytesseract.image_to_string(zone_frame_filtered, lang=ocr_lang, config='--psm 7')
+                        zone_frame = frame[y1:y2, x1:x2]
+                        if zone_frame.size == 0:
+                            continue
+                        zone_frame_filtered = apply_filter(zone_frame, self.selected_filter_value)
+                        ocr_lang = self.selected_language
+                        ocr_result_psm6 = pytesseract.image_to_string(zone_frame_filtered, lang=ocr_lang, config='--psm 6')
+                        ocr_result_psm7 = pytesseract.image_to_string(zone_frame_filtered, lang=ocr_lang, config='--psm 7')
 
-                    matched_text = "-"
-                    threshold = self.recognition_threshold_var
-                    selected_phrase = zone_data.get('selected_phrase', 'All')
+                        matched_text = "-"
+                        threshold = self.recognition_threshold_var
+                        selected_phrase = zone_data.get('selected_phrase', 'All')
 
-                    phrases_to_check = [selected_phrase] if selected_phrase != 'All' else phrases
-                    recognized_text_psm6 = ocr_result_psm6.lower()
-                    recognized_text_psm7 = ocr_result_psm7.lower()
+                        phrases_to_check = [selected_phrase] if selected_phrase != 'All' else phrases
+                        recognized_text_psm6 = ocr_result_psm6.lower()
+                        recognized_text_psm7 = ocr_result_psm7.lower()
 
-                    for phrase in phrases_to_check:
-                        target_phrase = phrase.lower()
-                        if target_phrase in recognized_text_psm6 or target_phrase in recognized_text_psm7:
-                            matched_text = phrase
-                            break
-                        else:
+                        for phrase in phrases_to_check:
+                            target_phrase = phrase.lower()
+                            if target_phrase in recognized_text_psm6 or target_phrase in recognized_text_psm7:
+                                matched_text = phrase
+                                break
                             ratio_psm6 = fuzz.partial_ratio(target_phrase, recognized_text_psm6)
                             ratio_psm7 = fuzz.partial_ratio(target_phrase, recognized_text_psm7)
                             if ratio_psm6 > threshold or ratio_psm7 > threshold:
                                 matched_text = phrase
                                 break
 
-                    if matched_text != "-":
-                        last_press = zone_last_press_time.get(matched_text, 0)
-                        if current_time - last_press >= press_delay:
-                            if self.action_in_progress.is_set():
-                                continue
-                            if self.bot_enabled:
-                                if keybind == 'TGBot':
-                                    if self.telegram_bot_var and self.bot:
-                                        message_text = f"Найдена '{matched_text}' в зоне {zone_num}"
-                                        try:
-                                            self.bot.send_message(self.telegram_chat_id, message_text)
-                                            print(f"{time.strftime('%H:%M:%S')} Отправлено сообщение в Telegram: {message_text}")
-                                        except Exception as e:
-                                            print(f"{time.strftime('%H:%M:%S')} Ошибка отправки сообщения в Telegram: {e}")
+                        if matched_text != "-":
+                            last_press = zone_last_press_time.get(matched_text, 0)
+                            if current_time - last_press >= press_delay:
+                                if self.action_in_progress.is_set():
+                                    continue
+                                if self.bot_enabled:
+                                    if keybind == 'TGBot':
+                                        if self.telegram_bot_var and self.bot:
+                                            message_text = f"Найдена '{matched_text}' в зоне {zone_num}"
+                                            try:
+                                                self.bot.send_message(self.telegram_chat_id, message_text)
+                                                print(f"{time.strftime('%H:%M:%S')} Отправлено сообщение в Telegram: {message_text}")
+                                            except Exception as e:
+                                                print(f"{time.strftime('%H:%M:%S')} Ошибка отправки сообщения в Telegram: {e}")
+                                        else:
+                                            print(f"{time.strftime('%H:%M:%S')} Telegram бот не активирован или не настроен.")
                                     else:
-                                        print(f"{time.strftime('%H:%M:%S')} Telegram бот не активирован или не настроен.")
-                                else:
-                                    threading.Thread(target=self.perform_action, args=(
-                                        keybind, hold_duration, delay_before, delay_after, hold_lmb, hold_lmb_duration), daemon=True).start()
-                                    zone_last_press_time[matched_text] = current_time
-                                    self.last_action_time = current_time
-                                    print(f"{time.strftime('%H:%M:%S')} Распознано '{matched_text}' в зоне {zone_num}")
+                                        threading.Thread(target=self.perform_action, args=(
+                                            keybind, hold_duration, delay_before, delay_after, hold_lmb, hold_lmb_duration), daemon=True).start()
+                                        zone_last_press_time[matched_text] = current_time
+                                        self.last_action_time = current_time
+                                        print(f"{time.strftime('%H:%M:%S')} Распознано '{matched_text}' в зоне {zone_num}")
 
-                    # Отображение OCR текста (если включено)
-                    if self.text_visible:
-                        window_name = f"Текст зоны {zone_num}"
-                        if self.show_all_text:
-                            ocr_text = ocr_result_psm6.strip() + " | " + ocr_result_psm7.strip()
+                        if self.text_visible:
+                            window_name = f"Текст зоны {zone_num}"
+                            if self.show_all_text:
+                                ocr_text = ocr_result_psm6.strip() + " | " + ocr_result_psm7.strip()
+                            else:
+                                ocr_text = matched_text
+                            cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+                            cv2.resizeWindow(window_name, 300, 100)
+                            img = np.zeros((100, 300, 3), dtype=np.uint8)
+                            font = cv2.FONT_HERSHEY_SIMPLEX
+                            font_scale = 0.5
+                            cv2.putText(img, ocr_text, (10, 50), font, font_scale, (255, 255, 255), 1, cv2.LINE_AA)
+                            cv2.imshow(window_name, img)
+                            cv2.setWindowProperty(window_name, cv2.WND_PROP_TOPMOST, 1 if self.always_on_top_var else 0)
                         else:
-                            ocr_text = matched_text
-                        cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-                        cv2.resizeWindow(window_name, 300, 100)
-                        img = np.zeros((100, 300, 3), dtype=np.uint8)
-                        font = cv2.FONT_HERSHEY_SIMPLEX
-                        font_scale = 0.5
-                        cv2.putText(img, ocr_text, (10, 50), font, font_scale, (255, 255, 255), 1, cv2.LINE_AA)
-                        cv2.imshow(window_name, img)
-                        cv2.setWindowProperty(window_name, cv2.WND_PROP_TOPMOST, 1 if self.always_on_top_var else 0)
-                    else:
-                        window_name = f"Текст зоны {zone_num}"
-                        try:
-                            cv2.destroyWindow(window_name)
-                        except cv2.error as e:
-                            print(f"Ошибка при закрытии окна {window_name}: {e}")
+                            window_name = f"Текст зоны {zone_num}"
+                            try:
+                                cv2.destroyWindow(window_name)
+                            except cv2.error as e:
+                                print(f"Ошибка при закрытии окна {window_name}: {e}")
 
-                anti_afk_delay = self.anti_afk_delay_var
-                if self.anti_afk_enabled and (current_time - self.last_action_time > anti_afk_delay):
-                    pyautogui.click()
-                    print(f"{time.strftime('%H:%M:%S')} Выполнен Anti afk ЛКМ после {anti_afk_delay} секунд бездействия")
-                    self.last_action_time = current_time
+                    anti_afk_delay = self.anti_afk_delay_var
+                    if self.anti_afk_enabled and (current_time - self.last_action_time > anti_afk_delay):
+                        pyautogui.click()
+                        print(f"{time.strftime('%H:%M:%S')} Выполнен Anti afk ЛКМ после {anti_afk_delay} секунд бездействия")
+                        self.last_action_time = current_time
 
-                key = cv2.waitKey(1)
-                if key == ord('q'):
-                    self.stop_event.set()
-                    break
-
-        cv2.destroyAllWindows()
+                    key = cv2.waitKey(1)
+                    if key == ord('q'):
+                        self.stop_event.set()
+                        break
+        except Exception as exc:
+            error_message = self.trans.get("tracking_runtime_error", "Tracking stopped because of an error: {error}.").format(error=exc)
+            print(error_message)
+            self.queue_ui_action("status", error_message)
+            self.queue_ui_action("message_popup", error_message)
+            self.stop_event.set()
+        finally:
+            self.tracking_thread = None
+            self.frame_open = False
+            cv2.destroyAllWindows()
 
     def perform_action(self, keybind, hold_duration, delay_before, delay_after, hold_lmb, hold_lmb_duration):
         self.action_in_progress.set()
@@ -380,7 +519,7 @@ class BotFishTab:
 
     def toggle_zone_settings(self, sender, app_data):
         # Если пользователь включает настройки, создаем окно, если выключает — удаляем
-        self.zone_settings_visible = not self.zone_settings_visible
+        self.zone_settings_visible = app_data
         if self.zone_settings_visible:
             self.show_zone_settings()
         else:
@@ -480,7 +619,7 @@ class BotFishTab:
         self.callback = callback
         from PyQt5.QtWidgets import QApplication
         from .functions import MainMenu
-        app = QApplication(sys.argv)
+        app = QApplication.instance() or QApplication(sys.argv)
         main_menu = MainMenu(callback=self.on_zones_created, config=self.config)
         app.exec_()
 
@@ -578,16 +717,37 @@ class BotFishTab:
 
         self.build_ui()
 
-        dpg.set_value(self.tesseract_not_found_text, self.trans.get("tesseract_not_installed", "Tesseract OCR is not installed.\nPlease install it or download from the official source."))
+        current_ocr_status = inspect_tesseract(DEFAULT_OCR_LANGUAGES)
+        dpg.set_value(self.tesseract_not_found_text, self.build_ocr_popup_message(current_ocr_status))
         dpg.configure_item("tesseract_not_found_popup", label=self.trans.get("tesseract_not_found_title", "Tesseract not found"))
-
-        popup_children = dpg.get_item_children("tesseract_not_found_popup", 1)
-        if len(popup_children) > 1:
-            dpg.configure_item(popup_children[1], label=self.trans.get("download_tesseract", "Download Tesseract"))
+        dpg.configure_item(self.install_tesseract_button, label=self.trans.get("auto_install_ocr", "Install OCR automatically"))
+        dpg.configure_item(self.download_tesseract_button, label=self.trans.get("download_tesseract", "Download Tesseract"))
+        dpg.configure_item("bot_fish_message_popup", label=self.trans.get("warning_popup_title", "Attention"))
+        dpg.configure_item(self.close_tesseract_popup_button, label="OK")
+        dpg.configure_item(self.close_message_popup_button, label="OK")
+        self.set_status_message(self.status_message)
+        self.set_ocr_status_message(self.describe_ocr_status(current_ocr_status))
 
         print("UI updated with new translations.")
 
+    def update(self):
+        while True:
+            try:
+                action, payload = self.ui_queue.get_nowait()
+            except queue.Empty:
+                break
+
+            if action == "status":
+                self.set_status_message(payload)
+            elif action == "message_popup":
+                self.show_message_popup(payload)
+            elif action == "refresh_ocr_status":
+                self.refresh_ocr_status()
+
     def stop(self):
         self.stop_event.set()
+        if self.tracking_thread and self.tracking_thread.is_alive():
+            self.tracking_thread.join(timeout=1)
+        self.tracking_thread = None
         cv2.destroyAllWindows()
         print("BotFishTab остановлен.")

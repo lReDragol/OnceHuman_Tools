@@ -563,11 +563,17 @@ class Context:
         item = Item(item_data, self.base_stats, self.calibration_bonuses)
         return item
 
+    def create_item_instance_by_id(self, item_id):
+        for item_data in self.items_data:
+            if item_data.get('id') == item_id:
+                return self.create_item_instance(item_data)
+        logging.warning(f"Item with id '{item_id}' was not found in items data.")
+        return None
+
     def get_set_by_id(self, set_id):
         for game_set in self.sets_data:
-            if 'id' not in game_set:
-                continue
-            if game_set['id'] == set_id:
+            game_set_id = game_set.get('set_id') or game_set.get('id')
+            if game_set_id == set_id:
                 return game_set
         return None
 

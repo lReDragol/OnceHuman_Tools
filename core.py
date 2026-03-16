@@ -5,9 +5,9 @@ import shutil
 import json
 import threading
 import time
+import uuid
 from PIL import Image
 import cv2
-import subprocess
 import ctypes
 import dearpygui.dearpygui as dpg
 from watchdog.events import FileSystemEventHandler
@@ -17,6 +17,14 @@ from tkinter import filedialog
 import concurrent.futures
 
 console = False
+TEMPLATE_SOURCE_NAME = "template_source.png"
+SUPPORTED_PHOTO_EXTENSIONS = {".png", ".jpg", ".jpeg"}
+
+
+def is_valid_photo_local_path(path):
+    if not path or not os.path.isdir(path):
+        return False
+    return os.path.basename(os.path.normpath(path)).lower() == "photo_local"
 
 class PathFinder:
     def __init__(self, config):
@@ -29,10 +37,12 @@ class PathFinder:
 
     def find_game_path_in_config(self):
         """Возвращает путь из конфига, если он существует и валиден."""
-        if self.config.game_path and os.path.exists(self.config.game_path):
+        if is_valid_photo_local_path(self.config.game_path):
             self.found_path = self.config.game_path
             print(f"Используется сохранённый путь к игре: {self.found_path}")
             return self.found_path
+        if self.config.game_path:
+            print(f"Сохранённый путь невалиден и будет проигнорирован: {self.config.game_path}")
         return None
 
     def search_game_path(self):
@@ -109,12 +119,17 @@ class PathFinder:
         root.withdraw()
         game_path = filedialog.askdirectory(title="Выберите папку 'photo_local'")
         if game_path:
+            if not is_valid_photo_local_path(game_path):
+                print(f"Выбран неверный путь, ожидалась папка photo_local: {game_path}")
+                return False
             self.found_path = game_path
             self.config.game_path = game_path
             self.config.save_to_json()
             print(f"Путь к игре выбран вручную и сохранён: {game_path}")
+            return True
         else:
             print("Путь к игре не выбран вручную.")
+        return False
 
 def load_translations():
     file_path = os.path.join(os.path.dirname(__file__), 'translations.json')
@@ -173,47 +188,151 @@ def resize_image(image, size):
 def process_image(file_path, temp_folder):
     try:
         print(f"Processing image: {file_path}")
-        image = Image.open(file_path)
+        os.makedirs(temp_folder, exist_ok=True)
+        with Image.open(file_path) as source_image:
+            image = source_image.convert("RGB")
         if image.size != (1920, 1080):
             image = resize_image(image, (1920, 1080))
-            temp_image = os.path.join(temp_folder, "resized_image.jpg")
-            image.save(temp_image)
-            print(f"Image resized and saved to: {temp_image}")
-            return temp_image
-        else:
-            print(f"Image does not need resizing: {file_path}")
-            return file_path
+        temp_image = os.path.join(temp_folder, TEMPLATE_SOURCE_NAME)
+        image.save(temp_image, format="PNG")
+        print(f"Template image prepared at: {temp_image}")
+        return temp_image
     except Exception as e:
         print(f"Error processing image: {e}")
         raise
 
 def cleanup_temp_files(temp_folder):
-    temp_image = os.path.join(temp_folder, "resized_image.jpg")
-    if os.path.exists(temp_image):
-        os.remove(temp_image)
+    if not os.path.isdir(temp_folder):
+        return
+
+    for filename in os.listdir(temp_folder):
+        if filename == TEMPLATE_SOURCE_NAME or filename.startswith("replacement_"):
+            file_path = os.path.join(temp_folder, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
+
+def render_template_for_destination(template_path, destination_path, temp_folder):
+    os.makedirs(temp_folder, exist_ok=True)
+    extension = os.path.splitext(destination_path)[1].lower()
+    if extension not in SUPPORTED_PHOTO_EXTENSIONS:
+        extension = ".png"
+
+    replacement_path = os.path.join(temp_folder, f"replacement_{uuid.uuid4().hex}{extension}")
+    save_kwargs = {}
+
+    with Image.open(template_path) as source_image:
+        image = source_image
+        if extension in {".jpg", ".jpeg"}:
+            image = image.convert("RGB")
+            save_format = "JPEG"
+            save_kwargs["quality"] = 95
+        else:
+            if image.mode not in {"RGB", "RGBA"}:
+                image = image.convert("RGBA")
+            save_format = "PNG"
+
+        image.save(replacement_path, format=save_format, **save_kwargs)
+    return replacement_path
 
 
 class MyHandler(FileSystemEventHandler):
-    def __init__(self, get_template_path):
+    def __init__(self, get_template_path, temp_folder, cooldown_seconds=1.0, retry_delays=None):
         super().__init__()
         self.get_template_path = get_template_path
-        self.already_replaced = set()
+        self.temp_folder = temp_folder
+        self.cooldown_seconds = cooldown_seconds
+        self.retry_delays = retry_delays or (0.15, 0.3, 0.6, 1.0, 1.5)
+        self.last_replaced_at = {}
+        self.lock = threading.Lock()
+
+    def _is_supported_event_path(self, path):
+        lowered_path = path.lower()
+        if "low" in lowered_path:
+            print(f"Ignored file: {path}")
+            return False
+        extension = os.path.splitext(path)[1].lower()
+        if extension not in SUPPORTED_PHOTO_EXTENSIONS:
+            return False
+        return True
+
+    def _is_on_cooldown(self, path):
+        normalized_path = os.path.normcase(os.path.normpath(path))
+        current_time = time.monotonic()
+        with self.lock:
+            expired_paths = [
+                saved_path
+                for saved_path, replaced_at in self.last_replaced_at.items()
+                if current_time - replaced_at >= self.cooldown_seconds
+            ]
+            for expired_path in expired_paths:
+                self.last_replaced_at.pop(expired_path, None)
+
+            last_replaced_at = self.last_replaced_at.get(normalized_path)
+            if last_replaced_at and current_time - last_replaced_at < self.cooldown_seconds:
+                return True
+
+            self.last_replaced_at[normalized_path] = current_time
+            return False
+
+    def _queue_replacement(self, path):
+        if not self._is_supported_event_path(path):
+            return
+        if self._is_on_cooldown(path):
+            return
+        threading.Thread(target=self._replace_file, args=(path,), daemon=True).start()
+
+    def _replace_file(self, destination_path):
+        template_file = self.get_template_path()
+        if not template_file or not os.path.exists(template_file):
+            print(f"Template file not found: {template_file}")
+            return
+
+        replacement_file = None
+        temp_target = None
+        for delay in self.retry_delays:
+            time.sleep(delay)
+            try:
+                if not os.path.exists(destination_path):
+                    continue
+
+                replacement_file = render_template_for_destination(template_file, destination_path, self.temp_folder)
+                temp_target = os.path.join(
+                    os.path.dirname(destination_path),
+                    f".once_human_{uuid.uuid4().hex}{os.path.splitext(destination_path)[1].lower()}",
+                )
+                shutil.copyfile(replacement_file, temp_target)
+                os.replace(temp_target, destination_path)
+                print(f"Replaced file with template: {destination_path}")
+                return
+            except PermissionError:
+                continue
+            except OSError as exc:
+                print(f"Replacement retry failed for {destination_path}: {exc}")
+            finally:
+                if temp_target and os.path.exists(temp_target):
+                    try:
+                        os.remove(temp_target)
+                    except OSError:
+                        pass
+                if replacement_file and os.path.exists(replacement_file):
+                    try:
+                        os.remove(replacement_file)
+                    except OSError:
+                        pass
+                temp_target = None
+                replacement_file = None
+
+        print(f"Failed to replace file after retries: {destination_path}")
 
     def on_created(self, event):
         if not event.is_directory:
-            if 'low' in event.src_path.lower():
-                print(f'Ignored file: {event.src_path}')
-                return
+            self._queue_replacement(event.src_path)
 
-            if event.src_path in self.already_replaced:
-                return
+    def on_modified(self, event):
+        if not event.is_directory:
+            self._queue_replacement(event.src_path)
 
-            print(f'File created: {event.src_path}')
-            template_file = self.get_template_path()
-            if template_file and os.path.exists(template_file):
-                os.remove(event.src_path)
-                shutil.copy(template_file, event.src_path)
-                self.already_replaced.add(event.src_path)
-                print(f'Заменен на шаблонный файл: {event.src_path}')
-            else:
-                print(f'Шаблонный файл не найден: {template_file}')
+    def on_moved(self, event):
+        if not event.is_directory:
+            self._queue_replacement(event.dest_path)

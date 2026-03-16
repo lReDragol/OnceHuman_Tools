@@ -33,13 +33,14 @@ This program allows players to make the game world more unique and personalized!
 ## How to Use
 
 1. **Launch and Setup**  
-   The program opens a main window with tabs for each component. You can easily switch between tabs to manage bots, the calculator, and the mod editor.
+   Install dependencies with `pip install -r requirements.txt`, then launch the program. It opens a main window with tabs for each component. You can easily switch between tabs to manage bots, the calculator, and the mod editor.
 
 2. **Using the Piano Bot**  
    - In the "Piano Bot" tab, load MIDI files, configure them, and start playback with the "Play" button. Hotkeys for start and stop are also available.
 
 3. **Configuring and Starting the Fishing and Notifications Bot**  
-   - Go to the "Bot Fish" tab and set up tracking parameters (zones, delay, recognition threshold).
+   - Go to the "Bot Fish" tab and check OCR first. If Tesseract or the `eng/rus` language packs are missing, use the built-in automatic install button.
+   - Create at least one tracking zone, then set up delay and recognition threshold parameters.
    - Click "Start Tracking" to activate the bot and "Stop Tracking" to end it.
 
 4. **Using the Damage Calculator and Mod Creation**  

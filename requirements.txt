@@ -1,0 +1,15 @@
+dearpygui
+fuzzywuzzy
+keyboard
+mido
+mss
+numpy
+opencv-python
+Pillow
+psutil
+PyAutoGUI
+PyQt5
+pytesseract
+pyTelegramBotAPI
+python-Levenshtein
+watchdog

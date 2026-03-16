@@ -3,18 +3,13 @@
 import cv2
 import pyautogui
 import json
-import pytesseract
 import os
 import ctypes
 from ctypes import wintypes
 from data.file.vk_codes import VK_CODE
-import pyautogui
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QPushButton
 from PyQt5.QtGui import QPixmap, QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, QRect, QPoint
-
-
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 PUL = ctypes.POINTER(ctypes.c_ulong)
 

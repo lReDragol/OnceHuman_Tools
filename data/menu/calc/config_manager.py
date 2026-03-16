@@ -101,35 +101,44 @@ class ConfigManager:
         equipped_items = config_data.get('equipped_items', {})
         for item_type, item_data in equipped_items.items():
             item_instance = self.context.create_item_instance_by_id(item_data['id'])
-            if item_instance:
-                item_instance.star = item_data.get('star', 1)
-                item_instance.level = item_data.get('level', 1)
-                item_instance.calibration = item_data.get('calibration', 0)
-                self.player.equip_item(item_instance)
-                # Обновляем GUI для этого предмета
-                button_tag = f"{item_type}_item_selector"
+            if not item_instance:
+                continue
+
+            item_instance.star = item_data.get('star', 1)
+            item_instance.level = item_data.get('level', 1)
+            item_instance.calibration = item_data.get('calibration', 0)
+            self.player.equip_item(item_instance)
+
+            button_tag = f"{item_type}_item_selector"
+            if dpg.does_item_exist(button_tag):
                 dpg.configure_item(button_tag, label=f"Изменить {item_type.capitalize()}")
-                group_tag = f"{item_type}_upgrade_group"
-                if dpg.does_item_exist(group_tag):
-                    dpg.delete_item(group_tag)
-                with dpg.group(horizontal=True, tag=group_tag, parent=f"{item_type}_item_mod_group"):
-                    with dpg.group():
-                        dpg.add_text(f"{item_instance.name} ({item_type.capitalize()})")
-                        dpg.add_slider_int(label="Количество звёзд", min_value=1, max_value=item_instance.max_stars,
-                                           default_value=item_instance.star, callback=self.update_item_stats_callback,
-                                           user_data={'item': item_instance, 'item_type': item_type}, tag=f"{item_type}_star_slider")
-                        dpg.add_slider_int(label="Уровень", min_value=1, max_value=5,
-                                           default_value=item_instance.level, callback=self.update_item_stats_callback,
-                                           user_data={'item': item_instance, 'item_type': item_type}, tag=f"{item_type}_level_slider")
-                        dpg.add_slider_int(label="Уровень калибровки", min_value=0, max_value=item_instance.get_max_calibration(),
-                                           default_value=item_instance.calibration, callback=self.update_item_stats_callback,
-                                           user_data={'item': item_instance, 'item_type': item_type}, tag=f"{item_type}_calibration_slider")
-                # Обновляем моды для предмета
-                mod_button_tag = f"{item_type}_mod_selector"
-                if dpg.does_item_exist(mod_button_tag):
-                    dpg.delete_item(mod_button_tag)
-                dpg.add_button(label=f"Выберите мод для {item_type.capitalize()}", callback=self.open_mod_selection_callback,
-                               user_data=item_type, tag=mod_button_tag, parent=f"{item_type}_item_mod_group")
+
+            group_tag = f"{item_type}_upgrade_group"
+            if dpg.does_item_exist(group_tag):
+                dpg.delete_item(group_tag)
+
+            parent_tag = f"{item_type}_item_mod_group"
+            if not dpg.does_item_exist(parent_tag):
+                continue
+
+            with dpg.group(horizontal=True, tag=group_tag, parent=parent_tag):
+                with dpg.group():
+                    dpg.add_text(f"{item_instance.name} ({item_type.capitalize()})")
+                    dpg.add_slider_int(label="Количество звёзд", min_value=1, max_value=item_instance.max_stars,
+                                       default_value=item_instance.star, callback=self.update_item_stats_callback,
+                                       user_data={'item': item_instance, 'item_type': item_type}, tag=f"{item_type}_star_slider")
+                    dpg.add_slider_int(label="Уровень", min_value=1, max_value=5,
+                                       default_value=item_instance.level, callback=self.update_item_stats_callback,
+                                       user_data={'item': item_instance, 'item_type': item_type}, tag=f"{item_type}_level_slider")
+                    dpg.add_slider_int(label="Уровень калибровки", min_value=0, max_value=item_instance.get_max_calibration(),
+                                       default_value=item_instance.calibration, callback=self.update_item_stats_callback,
+                                       user_data={'item': item_instance, 'item_type': item_type}, tag=f"{item_type}_calibration_slider")
+
+            mod_button_tag = f"{item_type}_mod_selector"
+            if dpg.does_item_exist(mod_button_tag):
+                dpg.delete_item(mod_button_tag)
+            dpg.add_button(label=f"Выберите мод для {item_type.capitalize()}", callback=self.open_mod_selection_callback,
+                           user_data=item_type, tag=mod_button_tag, parent=parent_tag)
 
         # Устанавливаем экипированные моды
         equipped_mods = config_data.get('equipped_mods', {})

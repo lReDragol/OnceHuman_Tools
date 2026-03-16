@@ -1,20 +1,21 @@
 # data/menu/foto_video_tab.py
 
 import dearpygui.dearpygui as dpg
-from PIL import Image
-import cv2
 import os
 import threading
-import shutil
-import numpy as np
 from watchdog.observers import Observer
-from core import process_image, MyHandler, cleanup_temp_files, hide_console_after_delay
+from core import (
+    process_image,
+    MyHandler,
+    cleanup_temp_files,
+    hide_console_after_delay,
+    is_valid_photo_local_path,
+)
 from config import Config
 import tkinter as tk
 from tkinter import filedialog
 import re
 import time
-import queue
 
 def camel_to_snake(name):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
@@ -36,11 +37,10 @@ class FotoVideoTab:
 
         self.path_finder = self.main_app.path_finder
 
-        self.game_path = self.config.game_path if (self.config.game_path and os.path.exists(self.config.game_path)) else None
+        self.game_path = self.config.game_path if is_valid_photo_local_path(self.config.game_path) else None
 
         hide_console_after_delay()
-
-        self.frame_queue = queue.Queue()
+        self.current_status_message = ""
 
         with dpg.group(horizontal=False):
             self.create_canvas()
@@ -49,6 +49,7 @@ class FotoVideoTab:
             self.create_buttons()
             self.drag_drop_label = dpg.add_text(
                 default_value=self.trans.get("drag_drop_label", "Please select a file to display"))
+            self.status_text = dpg.add_text(default_value="")
 
         self.selected_file_path = ""
 
@@ -59,6 +60,7 @@ class FotoVideoTab:
             self.game_path_manual_btn = dpg.add_button(label="Указать вручную", callback=self.set_path_manually_callback)
             self.game_path_continue_btn = dpg.add_button(label="Продолжить поиск", callback=self.continue_search_callback)
             self.game_path_cancel_btn = dpg.add_button(label="Отмена", callback=lambda: dpg.configure_item("game_path_not_found_popup", show=False))
+        self._set_status(self.trans.get("status_idle", "Select a photo_local folder and an image template."))
 
     def create_canvas(self):
         with dpg.group():
@@ -85,7 +87,7 @@ class FotoVideoTab:
             self.create_select_folder_button()
 
     def create_select_folder_button(self):
-        icon_path = os.path.join("data", "icons", "folder_icon.png")
+        icon_path = self.get_folder_icon_path()
         if os.path.exists(icon_path):
             width, height, channels, data = dpg.load_image(icon_path)
             with dpg.texture_registry():
@@ -105,7 +107,7 @@ class FotoVideoTab:
             self.create_select_file_button()
 
     def create_select_file_button(self):
-        icon_path = os.path.join("data", "icons", "folder_icon.png")
+        icon_path = self.get_folder_icon_path()
         if os.path.exists(icon_path):
             width, height, channels, data = dpg.load_image(icon_path)
             with dpg.texture_registry():
@@ -120,18 +122,21 @@ class FotoVideoTab:
                                              callback=self.on_use_clicked)
 
     def on_use_clicked(self):
-        if self.verify_paths():
-            self.set_template()
-        else:
-            # Путь неизвестен или поиск ещё не дал результата
+        if not self.verify_paths():
             dpg.configure_item("game_path_not_found_popup", show=True)
+            return
+        if not self.template_path or not os.path.exists(self.template_path):
+            self._set_status(self.trans.get("template_not_selected", "Select an image template first."))
+            return
+        self.set_template()
 
     def set_path_manually_callback(self):
         dpg.configure_item("game_path_not_found_popup", show=False)
-        self.path_finder.choose_game_path_manually()
-        self.game_path = self.path_finder.found_path
-        if self.game_path:
-            dpg.set_value(self.photo_local_input, self.game_path)
+        if self.path_finder.choose_game_path_manually():
+            self.game_path = self.path_finder.found_path
+            self.apply_game_path(self.game_path)
+        else:
+            self._set_status(self.trans.get("photo_local_invalid", "Select the game's photo_local folder."))
 
     def continue_search_callback(self):
         dpg.configure_item("game_path_not_found_popup", show=False)
@@ -140,6 +145,7 @@ class FotoVideoTab:
             self.path_finder.search_completed = False
             self.path_finder.search_start_time = time.time()
             threading.Thread(target=self.path_finder.search_game_path_with_timeout, daemon=True).start()
+            self._set_status(self.trans.get("searching_photo_local", "Searching for photo_local..."))
 
     def open_folder_dialog(self, sender, app_data):
         # Убираем проверку уже известного пути, всегда даём возможность изменить путь
@@ -149,12 +155,8 @@ class FotoVideoTab:
         root.destroy()
 
         if folder_path:
-            self.path_finder.found_path = folder_path
-            self.config.game_path = folder_path
-            self.config.save_to_json()
-            self.game_path = folder_path
-            dpg.set_value(self.photo_local_input, self.game_path)
-            print(f"Game path manually selected: {self.game_path}")
+            if self.apply_game_path(folder_path):
+                print(f"Game path manually selected: {self.game_path}")
         else:
             print("User canceled folder selection.")
 
@@ -177,29 +179,37 @@ class FotoVideoTab:
             self.process_selected_file(file_path)
 
     def verify_paths(self):
-        if self.game_path and os.path.exists(self.game_path):
+        is_valid = self.is_valid_photo_local_path(self.game_path)
+        if is_valid:
             print("Paths verified successfully.")
             return True
-        else:
-            print("Game path verification failed.")
-            return False
+        print("Game path verification failed.")
+        self._set_status(self.trans.get("photo_local_invalid", "Select the game's photo_local folder."))
+        return False
 
     def set_template(self):
-        if self.template_path:
-            self.used = True
-            print(f"Template set: {self.template_path}")
-            if self.observer:
-                self.observer.stop()
-                self.observer.join()
-            self.start_observer()
+        if not self.template_path or not os.path.exists(self.template_path):
+            self._set_status(self.trans.get("template_not_selected", "Select an image template first."))
+            return
+        if not self.verify_paths():
+            return
+
+        self.used = True
+        print(f"Template set: {self.template_path}")
+        self.stop_observer()
+        self.start_observer()
+        self._set_status(
+            self.trans.get("replacement_enabled", "Replacement is enabled. Take a photo in game to apply the template.")
+        )
 
     def process_selected_file(self, file_path):
         if file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
             self.template_path = process_image(file_path, self.temp_folder)
             self.display_image(self.template_path)
+            self._set_status(self.trans.get("template_ready", "Template is ready for replacement."))
             print(f"Image processed and displayed:  {self.template_path}")
         else:
-            dpg.add_text(default_value=self.trans.get("file_error", "Unsupported file type"), parent="canvas")
+            self._set_status(self.trans.get("file_error", "Unsupported file type"))
             print(f"Unsupported file type: {file_path}")
 
     def display_image(self, image_path):
@@ -215,9 +225,9 @@ class FotoVideoTab:
     def start_observer(self):
         if not self.game_path:
             return
-        event_handler = MyHandler(get_template_path=self.get_template_path)
+        event_handler = MyHandler(get_template_path=self.get_template_path, temp_folder=self.temp_folder)
         self.observer = Observer()
-        self.observer.schedule(event_handler, self.game_path, recursive=False)
+        self.observer.schedule(event_handler, self.game_path, recursive=True)
         self.observer.start()
         print(f"File observer started at: {self.game_path}")
 
@@ -251,11 +261,49 @@ class FotoVideoTab:
         dpg.configure_item(self.game_path_manual_btn, label=self.trans.get("game_path_manual_btn", "Specify manually"))
         dpg.configure_item(self.game_path_continue_btn, label=self.trans.get("game_path_continue_btn", "Continue searching"))
         dpg.configure_item(self.game_path_cancel_btn, label=self.trans.get("game_path_cancel_btn", "Cancel"))
+        self._set_status(self.current_status_message)
 
-    def stop(self):
+    def update(self):
+        discovered_path = self.path_finder.found_path
+        if discovered_path and discovered_path != self.game_path and self.is_valid_photo_local_path(discovered_path):
+            self.apply_game_path(discovered_path)
+
+    def get_folder_icon_path(self):
+        for icon_name in ("folder_icon.png", "1folder_icon.png"):
+            icon_path = os.path.join("data", "icons", icon_name)
+            if os.path.exists(icon_path):
+                return icon_path
+        return os.path.join("data", "icons", "folder_icon.png")
+
+    def _set_status(self, message):
+        self.current_status_message = message
+        if hasattr(self, "status_text") and dpg.does_item_exist(self.status_text):
+            dpg.set_value(self.status_text, message)
+
+    def is_valid_photo_local_path(self, folder_path):
+        return is_valid_photo_local_path(folder_path)
+
+    def apply_game_path(self, folder_path):
+        if not self.is_valid_photo_local_path(folder_path):
+            self._set_status(self.trans.get("photo_local_invalid", "Select the game's photo_local folder."))
+            return False
+
+        self.path_finder.found_path = folder_path
+        self.config.game_path = folder_path
+        self.config.save_to_json()
+        self.game_path = folder_path
+        dpg.set_value(self.photo_local_input, self.game_path)
+        self._set_status(self.trans.get("photo_local_ready", "photo_local folder is configured."))
+        return True
+
+    def stop_observer(self):
         if self.observer:
             self.observer.stop()
             self.observer.join()
+            self.observer = None
+
+    def stop(self):
+        self.stop_observer()
         cleanup_temp_files(self.temp_folder)
         print("Application stopped and temporary files cleaned up.")
 

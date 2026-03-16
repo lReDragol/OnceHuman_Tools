@@ -63,10 +63,8 @@ class MainApp:
 
         # Главный цикл Dear PyGui
         while dpg.is_dearpygui_running():
-            # ВАЖНО: Вызываем обновление для вкладки CalcAndModTab
-            # чтобы работала стрельба и т.д.
             for tab in self.tabs:
-                if isinstance(tab, CalcAndModTab):
+                if hasattr(tab, "update"):
                     tab.update()
 
             dpg.render_dearpygui_frame()
