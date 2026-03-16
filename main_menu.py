@@ -38,12 +38,13 @@ class MainApp:
             title=self.trans.get("app_title", "Default Title"),
             width=700,
             height=500,
-            resizable=False,
+            resizable=True,
             decorated=True
         )
 
         self.apply_settings()
         dpg.setup_dearpygui()
+        dpg.set_viewport_resize_callback(self.handle_viewport_resize)
 
         self.path_finder = PathFinder(self.config)
         self.game_path = self.path_finder.find_game_path_in_config()
@@ -64,6 +65,7 @@ class MainApp:
 
         dpg.show_viewport()
         dpg.set_primary_window("MainWindow", True)
+        self.handle_viewport_resize()
 
         # Главный цикл Dear PyGui
         while dpg.is_dearpygui_running():
@@ -84,7 +86,7 @@ class MainApp:
         dpg.destroy_context()
 
     def setup_ui(self):
-        with dpg.window(label="Main Window", tag="MainWindow", width=650, height=450, no_resize=True):
+        with dpg.window(label="Main Window", tag="MainWindow", width=680, height=460, no_resize=True):
             # ▼▼▼ Вместо обычного tab_bar, ставим колбэк ▼▼▼
             with dpg.tab_bar(tag="MainTabBar", callback=self.handle_tab_change):
                 self.create_tab('Foto and Video', FotoVideoTab)
@@ -106,22 +108,17 @@ class MainApp:
         """
         tab_label = dpg.get_item_label(app_data)
         print(f"handle_tab_change: Выбрана вкладка: {tab_label}")
+        self.handle_viewport_resize()
 
-        # При переключении на Calc and Mod — при желании меняем размер
-        if tab_label == "Calc and Mod":
-            # Можно сделать окно пошире
-            dpg.configure_viewport(
-                item="Dear PyGui Platform",
-                width=1200,
-                height=800
-            )
-        else:
-            # Возвращаем обратно (или ничего не делаем)
-            dpg.configure_viewport(
-                item="Dear PyGui Platform",
-                width=700,
-                height=500
-            )
+    def handle_viewport_resize(self, sender=None, app_data=None, user_data=None):
+        viewport_width = max(700, dpg.get_viewport_client_width())
+        viewport_height = max(500, dpg.get_viewport_client_height())
+        if dpg.does_item_exist("MainWindow"):
+            dpg.configure_item("MainWindow", width=viewport_width, height=viewport_height)
+
+        for tab in self.tabs:
+            if hasattr(tab, "handle_viewport_resize"):
+                tab.handle_viewport_resize(viewport_width, viewport_height)
 
     def create_tab(self, tab_name, tab_class):
         with dpg.tab(label=tab_name) as tab_id:
@@ -194,6 +191,7 @@ class MainApp:
             settings_button.update_ui()
 
         dpg.set_viewport_title(self.trans.get("app_title", "Default Title"))
+        self.handle_viewport_resize()
         print("UI updated with new translations.")
 
     def apply_settings(self):

@@ -212,6 +212,7 @@ class CalcAndModTab:
         if not self.context.mannequin.show_hotbar:
             if dpg.does_item_exist("hotbar_group"):
                 dpg.configure_item("hotbar_group", show=False)
+        self.handle_viewport_resize()
 
     def update(self):
         self.context.update()
@@ -223,6 +224,10 @@ class CalcAndModTab:
         self.update_stats_display()
 
         active_effects = list(self.context.mannequin.effects.keys())
+        active_effects.extend(
+            f"{status} x{count}" if count > 1 else status
+            for status, count in self.context.status_stack_counts.items()
+        )
         effects_str = ", ".join(active_effects) if active_effects else self.tr("no_active_statuses", "No active statuses")
         if dpg.does_item_exist("active_statuses_text"):
             dpg.set_value("active_statuses_text", f"{self.tr('active_statuses', 'Active statuses')}: {effects_str}")
@@ -230,10 +235,12 @@ class CalcAndModTab:
         self.draw_mannequin_hp_bar()
 
     def create_calc_tab(self):
-        with dpg.tab(label=self.tr("calc_tab", "Calc")):
-            with dpg.group(horizontal=True):
-                self.create_parameters_section()
-                self.create_combat_section()
+        with dpg.tab(label=self.tr("calc_tab", "Calc"), tag="calc_tab_root"):
+            with dpg.group(horizontal=True, tag="calc_layout_group"):
+                with dpg.child_window(tag="calc_parameters_panel", width=460, height=720, horizontal_scrollbar=True):
+                    self.create_parameters_section()
+                with dpg.child_window(tag="calc_combat_panel", width=620, height=720):
+                    self.create_combat_section()
 
     def create_create_tab(self):
         with dpg.tab(label=self.tr("create_tab", "Create")):
@@ -251,80 +258,79 @@ class CalcAndModTab:
                 self.create_set_creation_section()
 
     def create_parameters_section(self):
-        with dpg.child_window(width=600, height=760, horizontal_scrollbar=True):
-            dpg.add_text(self.tr("parameters_title", "Parameters:"))
-            dpg.add_spacer(height=5)
-            dpg.add_separator()
-            dpg.add_spacer(height=5)
-            self.create_parameters_table(self.tr("base_stats_header", "Base stats:"), [
-                (self.tr("base_damage", "Damage (DMG):"), 0, "base_damage_input", True),
-                (self.tr("psi_intensity", "PSI intensity:"), 125, "psi_intensity_input", True),
-                (self.tr("hp_label", "HP:"), 700, "hp_input", True),
-                (self.tr("pollution_resist", "Pollution resistance:"), 15, "contamination_resistance_input", True)
-            ])
-            self.create_parameters_table(self.tr("combat_stats_header", "Combat stats:"), [
-                (self.tr("crit_rate", "Critical hit chance %:"), 0, "crit_chance_input", True),
-                (self.tr("crit_damage", "Critical damage %:"), 0, "crit_dmg_input", True),
-                (self.tr("weakspot_damage", "Weakspot damage %:"), 0, "weakspot_damage_bonus_input", True),
-                (self.tr("weapon_damage_bonus", "Weapon damage bonus %:"), 0, "weapon_damage_bonus_input", True),
-                (self.tr("status_damage_bonus", "Status damage bonus %:"), 4, "status_damage_bonus_input", True),
-                (self.tr("damage_bonus_normal", "Damage vs normal %:"), 0, "damage_bonus_normal_input", True),
-                (self.tr("damage_bonus_elite", "Damage vs elite %:"), 0, "damage_bonus_elite_input", True),
-                (self.tr("damage_bonus_boss", "Damage vs bosses %:"), 0, "damage_bonus_boss_input", True),
-                (self.tr("fire_rate", "Fire rate (shots/min):"), 0, "fire_rate_input", True),
-                (self.tr("magazine_capacity", "Magazine capacity:"), 0, "magazine_capacity_input", True),
-                (self.tr("reload_speed", "Reload speed (sec):"), 0, "reload_speed_input", True)
-            ])
-            self.create_parameters_table(self.tr("defense_stats_header", "Defense stats:"), [
-                (self.tr("damage_reduction", "Damage reduction %:"), 0, "damage_reduction_input", True),
-                (self.tr("pollution_resist", "Pollution resistance:"), 15, "resistance_to_pollution", True)
-            ])
-            dpg.add_input_int(label=self.tr("enemies_within_distance", "Enemies nearby (m):"), default_value=0,
-                              tag="enemies_within_distance_input", width=100,
-                              callback=self.on_parameter_change)
-            dpg.add_text(self.tr("weapon_selection", "Weapon selection:"), color=[255, 255, 255], bullet=True)
-            with dpg.group(horizontal=True, tag="weapon_selection_group"):
-                weapon = self.player.weapon
-                if weapon:
-                    weapon_id = weapon.id
-                    texture_id = self.weapon_images.get(weapon_id, self.weapon_images['default'])
-                    image_tag = "weapon_image"
-                    dpg.add_image_button(texture_id, width=85, height=85,
-                                         callback=self.open_weapon_selection,
-                                         tag=image_tag)
-                    with dpg.item_handler_registry(tag="weapon_item_handler") as handler_id:
-                        dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Right, callback=self.open_weapon_config_window)
-                    dpg.bind_item_handler_registry(image_tag, handler_id)
-                else:
-                    button_tag = "weapon_selector"
-                    dpg.add_button(label=self.tr("select_weapon", "Select weapon"), callback=self.open_weapon_selection, tag=button_tag)
-            dpg.add_text(self.tr("armor_selection", "Armor selection:"), color=[255, 255, 255], bullet=True)
-            with dpg.group(horizontal=True, tag="armor_selection_group"):
-                armor_types = ['helmet', 'mask', 'top', 'gloves', 'pants', 'boots']
-                for armor_type in armor_types:
-                    parent_tag = f"{armor_type}_item_mod_group"
-                    with dpg.group(tag=parent_tag):
-                        item = self.player.equipped_items.get(armor_type)
-                        if item:
-                            item_id = item.id
-                            texture_id = self.item_images.get(item_id, self.item_images['default'])
-                            image_tag = f"{armor_type}_item_image"
-                            dpg.add_image_button(texture_id, width=85, height=85,
-                                                 callback=self.open_item_selection,
-                                                 user_data=armor_type, tag=image_tag,
-                                                 parent=parent_tag)
-                            with dpg.item_handler_registry(tag=f"{armor_type}_item_handler") as handler_id:
-                                dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Right,
-                                                             callback=self.open_item_config_window,
-                                                             user_data=armor_type)
-                            dpg.bind_item_handler_registry(image_tag, handler_id)
-                        else:
-                            button_tag = f"{armor_type}_item_selector"
-                            item_type_name = armor_type.capitalize()
-                            dpg.add_button(label=f"{item_type_name}",
-                                           callback=self.open_item_selection,
-                                           user_data=armor_type,
-                                           tag=button_tag)
+        dpg.add_text(self.tr("parameters_title", "Parameters:"))
+        dpg.add_spacer(height=5)
+        dpg.add_separator()
+        dpg.add_spacer(height=5)
+        self.create_parameters_table(self.tr("base_stats_header", "Base stats:"), [
+            (self.tr("base_damage", "Damage (DMG):"), 0, "base_damage_input", True),
+            (self.tr("psi_intensity", "PSI intensity:"), 125, "psi_intensity_input", True),
+            (self.tr("hp_label", "HP:"), 700, "hp_input", True),
+            (self.tr("pollution_resist", "Pollution resistance:"), 15, "contamination_resistance_input", True)
+        ])
+        self.create_parameters_table(self.tr("combat_stats_header", "Combat stats:"), [
+            (self.tr("crit_rate", "Critical hit chance %:"), 0, "crit_chance_input", True),
+            (self.tr("crit_damage", "Critical damage %:"), 0, "crit_dmg_input", True),
+            (self.tr("weakspot_damage", "Weakspot damage %:"), 0, "weakspot_damage_bonus_input", True),
+            (self.tr("weapon_damage_bonus", "Weapon damage bonus %:"), 0, "weapon_damage_bonus_input", True),
+            (self.tr("status_damage_bonus", "Status damage bonus %:"), 4, "status_damage_bonus_input", True),
+            (self.tr("damage_bonus_normal", "Damage vs normal %:"), 0, "damage_bonus_normal_input", True),
+            (self.tr("damage_bonus_elite", "Damage vs elite %:"), 0, "damage_bonus_elite_input", True),
+            (self.tr("damage_bonus_boss", "Damage vs bosses %:"), 0, "damage_bonus_boss_input", True),
+            (self.tr("fire_rate", "Fire rate (shots/min):"), 0, "fire_rate_input", True),
+            (self.tr("magazine_capacity", "Magazine capacity:"), 0, "magazine_capacity_input", True),
+            (self.tr("reload_speed", "Reload speed (sec):"), 0, "reload_speed_input", True)
+        ])
+        self.create_parameters_table(self.tr("defense_stats_header", "Defense stats:"), [
+            (self.tr("damage_reduction", "Damage reduction %:"), 0, "damage_reduction_input", True),
+            (self.tr("pollution_resist", "Pollution resistance:"), 15, "resistance_to_pollution", True)
+        ])
+        dpg.add_input_int(label=self.tr("enemies_within_distance", "Enemies nearby (m):"), default_value=0,
+                          tag="enemies_within_distance_input", width=100,
+                          callback=self.on_parameter_change)
+        dpg.add_text(self.tr("weapon_selection", "Weapon selection:"), color=[255, 255, 255], bullet=True)
+        with dpg.group(horizontal=True, tag="weapon_selection_group"):
+            weapon = self.player.weapon
+            if weapon:
+                weapon_id = weapon.id
+                texture_id = self.weapon_images.get(weapon_id, self.weapon_images['default'])
+                image_tag = "weapon_image"
+                dpg.add_image_button(texture_id, width=85, height=85,
+                                     callback=self.open_weapon_selection,
+                                     tag=image_tag)
+                with dpg.item_handler_registry(tag="weapon_item_handler") as handler_id:
+                    dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Right, callback=self.open_weapon_config_window)
+                dpg.bind_item_handler_registry(image_tag, handler_id)
+            else:
+                button_tag = "weapon_selector"
+                dpg.add_button(label=self.tr("select_weapon", "Select weapon"), callback=self.open_weapon_selection, tag=button_tag)
+        dpg.add_text(self.tr("armor_selection", "Armor selection:"), color=[255, 255, 255], bullet=True)
+        with dpg.group(horizontal=True, tag="armor_selection_group"):
+            armor_types = ['helmet', 'mask', 'top', 'gloves', 'pants', 'boots']
+            for armor_type in armor_types:
+                parent_tag = f"{armor_type}_item_mod_group"
+                with dpg.group(tag=parent_tag):
+                    item = self.player.equipped_items.get(armor_type)
+                    if item:
+                        item_id = item.id
+                        texture_id = self.item_images.get(item_id, self.item_images['default'])
+                        image_tag = f"{armor_type}_item_image"
+                        dpg.add_image_button(texture_id, width=85, height=85,
+                                             callback=self.open_item_selection,
+                                             user_data=armor_type, tag=image_tag,
+                                             parent=parent_tag)
+                        with dpg.item_handler_registry(tag=f"{armor_type}_item_handler") as handler_id:
+                            dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Right,
+                                                         callback=self.open_item_config_window,
+                                                         user_data=armor_type)
+                        dpg.bind_item_handler_registry(image_tag, handler_id)
+                    else:
+                        button_tag = f"{armor_type}_item_selector"
+                        item_type_name = armor_type.capitalize()
+                        dpg.add_button(label=f"{item_type_name}",
+                                       callback=self.open_item_selection,
+                                       user_data=armor_type,
+                                       tag=button_tag)
 
     def create_parameters_table(self, title, params):
         with dpg.collapsing_header(label=title, default_open=False):
@@ -342,43 +348,42 @@ class CalcAndModTab:
         dpg.add_spacer(height=5)
 
     def create_combat_section(self):
-        with dpg.child_window(width=600, height=760):
-                with dpg.group(horizontal=False):
-                    dpg.add_spacer(height=10)
-                    dpg.add_text("DPS: 0    Total DMG: 0", color=[120, 219, 226], tag="dps_text")
-                    dpg.add_text(f"{self.tr('ammo', 'Ammo')}: 0/0", tag="ammo_text")
+        with dpg.group(horizontal=False):
+            dpg.add_spacer(height=10)
+            dpg.add_text("DPS: 0    Total DMG: 0", color=[120, 219, 226], tag="dps_text")
+            dpg.add_text(f"{self.tr('ammo', 'Ammo')}: 0/0", tag="ammo_text")
 
-                target_img = self.get_target_image_path()
-                if os.path.exists(target_img):
-                    width_img, height_img, channels, data = dpg.load_image(target_img)
-                else:
-                    width_img, height_img = 300, 300
-                    data = [255] * width_img * height_img * 4
+        target_img = self.get_target_image_path()
+        if os.path.exists(target_img):
+            width_img, height_img, channels, data = dpg.load_image(target_img)
+        else:
+            width_img, height_img = 300, 300
+            data = [255] * width_img * height_img * 4
 
-                with dpg.texture_registry():
-                    texture_id = dpg.add_static_texture(width_img, height_img, data)
+        with dpg.texture_registry():
+            texture_id = dpg.add_static_texture(width_img, height_img, data)
 
-                with dpg.drawlist(width=300, height=330, tag="damage_layer"):
-                    dpg.draw_image(texture_id, pmin=[0, 30], pmax=[300, 330])
-                    dpg.draw_rectangle(pmin=[90, 80], pmax=[210, 320],
-                                       color=[0, 0, 255, 100], fill=[0, 0, 255, 50])
-                    dpg.draw_rectangle(pmin=[130, 40], pmax=[170, 80],
-                                       color=[255, 0, 0, 100], fill=[255, 0, 0, 50])
-                    with dpg.draw_layer(tag="hp_bar_layer", parent="damage_layer"):
-                        pass
+        with dpg.drawlist(width=300, height=330, tag="damage_layer"):
+            dpg.draw_image(texture_id, pmin=[0, 30], pmax=[300, 330])
+            dpg.draw_rectangle(pmin=[90, 80], pmax=[210, 320],
+                               color=[0, 0, 255, 100], fill=[0, 0, 255, 50])
+            dpg.draw_rectangle(pmin=[130, 40], pmax=[170, 80],
+                               color=[255, 0, 0, 100], fill=[255, 0, 0, 50])
+            with dpg.draw_layer(tag="hp_bar_layer", parent="damage_layer"):
+                pass
 
-                with dpg.item_handler_registry(tag="damage_layer_handlers") as handler_id:
-                    dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Left, callback=self.mouse_down_callback)
-                    dpg.add_item_deactivated_handler(callback=self.mouse_up_callback)
-                    dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Right,
-                                                 callback=self.open_mannequin_settings_window)
-                dpg.bind_item_handler_registry("damage_layer", "damage_layer_handlers")
+        with dpg.item_handler_registry(tag="damage_layer_handlers") as handler_id:
+            dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Left, callback=self.mouse_down_callback)
+            dpg.add_item_deactivated_handler(callback=self.mouse_up_callback)
+            dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Right,
+                                         callback=self.open_mannequin_settings_window)
+        dpg.bind_item_handler_registry("damage_layer", "damage_layer_handlers")
 
-                with dpg.group(tag="hotbar_group"):
-                    dpg.add_text(f"{self.tr('active_statuses', 'Active statuses')}:",
-                                 tag="active_statuses_text")
+        with dpg.group(tag="hotbar_group"):
+            dpg.add_text(f"{self.tr('active_statuses', 'Active statuses')}:",
+                         tag="active_statuses_text")
 
-                dpg.add_text("", tag="stats_display_text")
+        dpg.add_text("", tag="stats_display_text", wrap=540)
 
     def on_parameter_change(self, sender, app_data, user_data):
         self.context.update_parameter(sender, app_data)
@@ -1173,6 +1178,7 @@ class CalcAndModTab:
         if current_hp <= 0:
             self.context.mannequin.current_hp = max_hp
             current_hp = max_hp
+            self.context.enemy_defeated_pending_reset = False
         hp_percentage = current_hp / max_hp if max_hp > 0 else 0
         bar_width = 150
         bar_height = 15
@@ -1196,6 +1202,26 @@ class CalcAndModTab:
                            color=[255, 255, 255, 255], fill=[0, 0, 0, 0],
                            thickness=1, parent="hp_bar_layer")
 
+    def handle_viewport_resize(self, width=None, height=None):
+        try:
+            if width is None:
+                width = dpg.get_viewport_client_width()
+            if height is None:
+                height = dpg.get_viewport_client_height()
+        except Exception:
+            return
+
+        panel_height = max(560, height - 120)
+        left_width = min(max(420, int(width * 0.36)), 560)
+        right_width = max(420, width - left_width - 70)
+
+        if dpg.does_item_exist("calc_parameters_panel"):
+            dpg.configure_item("calc_parameters_panel", width=left_width, height=panel_height)
+        if dpg.does_item_exist("calc_combat_panel"):
+            dpg.configure_item("calc_combat_panel", width=right_width, height=panel_height)
+        if dpg.does_item_exist("stats_display_text"):
+            dpg.configure_item("stats_display_text", wrap=max(360, right_width - 30))
+
     def save_config_callback(self):
         self.config_manager.save_config()
 
@@ -1207,6 +1233,10 @@ class CalcAndModTab:
         self.update_dps_display()
         self.update_stats_display()
         active_effects = list(self.context.mannequin.effects.keys())
+        active_effects.extend(
+            f"{status} x{count}" if count > 1 else status
+            for status, count in self.context.status_stack_counts.items()
+        )
         effects_str = ", ".join(active_effects) if active_effects else self.tr("no_active_statuses", "No active statuses")
         if dpg.does_item_exist("active_statuses_text"):
             dpg.set_value("active_statuses_text", f"{self.tr('active_statuses', 'Active statuses')}: {effects_str}")
@@ -1214,3 +1244,4 @@ class CalcAndModTab:
             dpg.configure_item("calc_save_config_button", label=self.tr("save_config", "Save configuration"))
         if dpg.does_item_exist("calc_load_config_button"):
             dpg.configure_item("calc_load_config_button", label=self.tr("load_config", "Load configuration"))
+        self.handle_viewport_resize()

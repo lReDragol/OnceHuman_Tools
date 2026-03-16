@@ -5,6 +5,8 @@ import json
 import random
 import time
 import logging
+import copy
+import re
 from typing import Dict, Any, Callable, List
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -15,6 +17,119 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 EffectHandler = Callable[[Dict[str, Any], Dict[str, Any]], None]
 CONDITION_HANDLERS: Dict[str, Callable[[Any, Dict[str, Any]], bool or int]] = {}
 EFFECT_HANDLERS: Dict[str, EffectHandler] = {}
+
+EVENT_ALIAS_GROUPS = [
+    {'shot_fired', 'fire_weapon'},
+    {'hit_target', 'hit'},
+    {'weakspot_hit', 'hit_weakspot'},
+    {'reload', 'reload_weapon'},
+    {'reload_empty_mag', 'reload_empty_magazine'},
+    {'kill', 'defeat_enemy'},
+]
+
+COUNTER_EVENT_ALIASES = {
+    'shots': ['shot_fired', 'fire_weapon'],
+    'shot': ['shot_fired', 'fire_weapon'],
+    'hits': ['hit_target', 'hit'],
+    'weapon_hits': ['hit_target', 'hit'],
+    'weapon_crit_hits': ['crit_hit', 'non_melee_crit_hit'],
+    'crit_hits': ['crit_hit', 'non_melee_crit_hit'],
+    'reload': ['reload', 'reload_weapon'],
+    'reload_empty_mag': ['reload_empty_mag', 'reload_empty_magazine'],
+    'reload_empty_magazine': ['reload_empty_mag', 'reload_empty_magazine'],
+    'kill': ['kill', 'defeat_enemy'],
+    'kills': ['kill', 'defeat_enemy'],
+}
+
+
+def get_equivalent_events(event_name: str) -> List[str]:
+    equivalents = {event_name}
+    for group in EVENT_ALIAS_GROUPS:
+        if event_name in group:
+            equivalents.update(group)
+    return list(equivalents)
+
+
+def resolve_counter_base_events(base_name: str) -> List[str]:
+    return COUNTER_EVENT_ALIASES.get(base_name, get_equivalent_events(base_name))
+
+
+def parse_counter_event(event_name: str, explicit_n: int | None = None) -> Dict[str, Any] | None:
+    if explicit_n is not None:
+        if event_name.startswith('every_n_'):
+            base_name = event_name[len('every_n_'):]
+            return {
+                'counter_name': event_name,
+                'required_count': explicit_n,
+                'base_events': resolve_counter_base_events(base_name),
+            }
+        if event_name.endswith('_n_times'):
+            base_name = event_name[:-len('_n_times')]
+            return {
+                'counter_name': event_name,
+                'required_count': explicit_n,
+                'base_events': resolve_counter_base_events(base_name),
+            }
+
+    match = re.match(r'^every_(\d+)_(.+)$', event_name)
+    if match:
+        required_count = int(match.group(1))
+        base_name = match.group(2)
+        return {
+            'counter_name': event_name,
+            'required_count': required_count,
+            'base_events': resolve_counter_base_events(base_name),
+        }
+    return None
+
+
+def normalize_effects(effects: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    if not effects:
+        return []
+
+    group_duration = None
+    group_max_stacks = None
+    normalized: List[Dict[str, Any]] = []
+
+    for effect in effects:
+        if effect.get('type') == 'set_duration':
+            group_duration = effect.get('duration_seconds', group_duration)
+        elif effect.get('type') == 'set_max_stacks':
+            group_max_stacks = effect.get('value', group_max_stacks)
+
+    for effect in effects:
+        effect_type = effect.get('type')
+        if effect_type in {'set_duration', 'set_max_stacks'}:
+            continue
+
+        prepared = copy.deepcopy(effect)
+        if group_duration is not None and effect_type in {'increase_stat', 'apply_status', 'conditional_stat_bonus', 'apply_buff'}:
+            prepared.setdefault('duration_seconds', group_duration)
+        if group_max_stacks is not None and effect_type in {'increase_stat', 'apply_status', 'conditional_stat_bonus', 'gain_stack'}:
+            prepared.setdefault('max_stacks', group_max_stacks)
+
+        nested_effects = prepared.get('effects')
+        if isinstance(nested_effects, list):
+            prepared['effects'] = normalize_effects(nested_effects)
+
+        nested_effect = prepared.get('effect')
+        if isinstance(nested_effect, dict) and isinstance(nested_effect.get('effects'), list):
+            prepared['effect'] = copy.deepcopy(nested_effect)
+            prepared['effect']['effects'] = normalize_effects(nested_effect['effects'])
+
+        normalized.append(prepared)
+
+    return normalized
+
+
+def iter_stat_value_pairs(effect: Dict[str, Any]) -> List[tuple[Any, Any]]:
+    stats = effect.get('stat')
+    values = effect.get('value', 0)
+    if isinstance(stats, list):
+        if isinstance(values, list):
+            return list(zip(stats, values))
+        return [(stat, values) for stat in stats]
+    return [(stats, values)]
 
 def register_effect_handler(effect_type: str):
     def decorator(func: EffectHandler):
@@ -141,13 +256,15 @@ def handle_increment_counter(effect: Dict[str, Any], context: Dict[str, Any]):
 
 @register_effect_handler("increase_stat")
 def handle_increase_stat(effect: Dict[str, Any], context: Dict[str, Any]):
-    stat = effect.get('stat')
-    value = effect.get('value', 0)
     duration = effect.get('duration_seconds', 0)
     max_stacks = effect.get('max_stacks')
     ctx = context.get('mechanics_context')
-    if ctx and stat:
-        ctx.apply_temporary_stat_bonus(stat, value, duration, max_stacks)
+    source = effect.get('source')
+    if not ctx:
+        return
+    for stat, value in iter_stat_value_pairs(effect):
+        if stat:
+            ctx.apply_temporary_stat_bonus(stat, value, duration, max_stacks, source=source)
 
 @register_effect_handler("apply_status")
 def handle_apply_status(effect: Dict[str, Any], context: Dict[str, Any]):
@@ -155,7 +272,16 @@ def handle_apply_status(effect: Dict[str, Any], context: Dict[str, Any]):
     duration = effect.get('duration_seconds', 0)
     ctx = context.get('mechanics_context')
     if ctx and status:
-        kwargs = {k:v for k,v in effect.items() if k not in ['type','status','duration_seconds']}
+        nested_effects = effect.get('effects', [])
+        if not duration and nested_effects:
+            duration_candidates = [nested.get('duration_seconds', 0) for nested in nested_effects if nested.get('duration_seconds')]
+            if duration_candidates:
+                duration = max(duration_candidates)
+        kwargs = {k: v for k, v in effect.items() if k not in ['type', 'status', 'duration_seconds']}
+        if 'max_stacks' not in kwargs and nested_effects:
+            max_stack_candidates = [nested.get('max_stacks') for nested in nested_effects if nested.get('max_stacks') is not None]
+            if max_stack_candidates:
+                kwargs['max_stacks'] = max(max_stack_candidates)
         ctx.apply_status(status, duration, **kwargs)
 
 @register_effect_handler("spread_effect")
@@ -179,7 +305,9 @@ def handle_passive_effect(effect: Dict[str, Any], context: Dict[str, Any]):
     if ctx:
         for prop, val in properties.items():
             if isinstance(val, (int, float)):
-                ctx.apply_temporary_stat_bonus(prop, val, 999999)
+                ctx.apply_temporary_stat_bonus(prop, val, 999999, source=effect.get('effect_name', prop))
+            elif isinstance(val, bool):
+                ctx.player.stats[prop] = val
             else:
                 logging.info(f"Complex property {prop}={val} encountered. Handle later.")
     logging.debug(f"Applied passive_effect {effect.get('effect_name','')}")
@@ -277,24 +405,34 @@ def handle_modify_trigger_factor(effect: Dict[str, Any], context: Dict[str, Any]
 @register_effect_handler("conditional_stat_bonus")
 def handle_conditional_stat_bonus(effect: Dict[str, Any], context: Dict[str, Any]):
     condition = effect.get('condition')
-    stat = effect.get('stat')
-    value = effect.get('value', 0)
     increment = effect.get('increment')
     max_stacks = effect.get('max_stacks')
     duration = effect.get('duration_seconds', 0)
     ctx = context.get('mechanics_context')
-    if not ctx or not stat or not condition:
+    if not ctx or not condition:
         return
     if condition in CONDITION_HANDLERS:
-        result = CONDITION_HANDLERS[condition](value, context)
+        result = CONDITION_HANDLERS[condition](effect.get('value', 0), context)
         if isinstance(result, bool):
             if result:
-                val_to_apply = increment if increment else value
-                ctx.apply_temporary_stat_bonus(stat, val_to_apply, duration, max_stacks)
+                for stat, value in iter_stat_value_pairs(effect):
+                    val_to_apply = increment if increment is not None else value
+                    ctx.apply_temporary_stat_bonus(stat, val_to_apply, duration, max_stacks, source=effect.get('source'))
         elif isinstance(result, int):
             if result > 0:
-                val_to_apply = increment if increment else value
-                ctx.apply_temporary_stat_bonus(stat, val_to_apply * result, duration, max_stacks)
+                for stat, value in iter_stat_value_pairs(effect):
+                    val_to_apply = increment if increment is not None else value
+                    ctx.apply_temporary_stat_bonus(stat, val_to_apply * result, duration, max_stacks, source=effect.get('source'))
+
+
+@register_effect_handler("set_duration")
+def handle_set_duration(effect: Dict[str, Any], context: Dict[str, Any]):
+    return
+
+
+@register_effect_handler("set_max_stacks")
+def handle_set_max_stacks(effect: Dict[str, Any], context: Dict[str, Any]):
+    return
 
 @register_effect_handler("generate_ice_crystal")
 def handle_generate_ice_crystal(effect: Dict[str, Any], context: Dict[str, Any]):
@@ -368,6 +506,7 @@ def handle_remove_buff(effect: Dict[str, Any], context: Dict[str, Any]):
 class Mechanic:
     def __init__(self, description: str, effects: List[Dict[str, Any]]):
         self.description = description
+        self.last_trigger_times: Dict[str, float] = {}
         self.events = self.parse_effects(effects)
 
     def parse_effects(self, effects_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -375,28 +514,30 @@ class Mechanic:
         for effect_block in effects_data:
             block_type = effect_block.get('type')
             if block_type == 'on_event':
+                counter_event = parse_counter_event(effect_block['event'], effect_block.get('n'))
                 parsed_events.append({
                     'type': 'on_event',
                     'event': effect_block['event'],
+                    'counter_event': counter_event,
                     'conditions': effect_block.get('conditions', {}),
                     'chance_percent': effect_block.get('chance_percent', 100),
                     'n': effect_block.get('n'),
                     'cooldown_seconds': effect_block.get('cooldown_seconds'),
                     'interval_seconds': effect_block.get('interval_seconds'),
                     'distance_meters': effect_block.get('distance_meters'),
-                    'effects': effect_block.get('effects', [])
+                    'effects': normalize_effects(effect_block.get('effects', []))
                 })
             elif block_type == 'passive_effect':
                 parsed_events.append({
                     'type': 'passive_effect',
                     'conditions': effect_block.get('conditions', {}),
-                    'effects': [effect_block]
+                    'effects': normalize_effects([effect_block])
                 })
             else:
                 parsed_events.append({
                     'type': block_type,
                     'conditions': effect_block.get('conditions', {}),
-                    'effects': [effect_block]
+                    'effects': normalize_effects([effect_block])
                 })
         return parsed_events
 
@@ -409,30 +550,47 @@ class Mechanic:
 
     def trigger_event(self, event_name: str, context: Dict[str, Any]):
         current_time = time.time()
-        for event_block in self.events:
-            if event_block['type'] == 'on_event' and event_block['event'] == event_name:
-                if not check_conditions(event_block['conditions'], context):
+        mec_ctx = context.get('mechanics_context')
+        for index, event_block in enumerate(self.events):
+            if event_block['type'] != 'on_event':
+                continue
+
+            counter_event = event_block.get('counter_event')
+            if counter_event:
+                if event_name not in counter_event['base_events']:
                     continue
-                cooldown = event_block.get('cooldown_seconds')
-                last_trigger_time_key = f"last_trigger_time_{event_name}"
-                if cooldown and context.get(last_trigger_time_key):
-                    if current_time - context[last_trigger_time_key] < cooldown:
-                        continue
-                chance = event_block.get('chance_percent', 100)
-                if random.uniform(0,100)<=chance:
-                    n = event_block.get('n')
-                    if (event_name.startswith('every_n_') or event_name.endswith('_n_times')) and n is not None:
-                        mec_ctx = context.get('mechanics_context')
-                        if mec_ctx and mec_ctx.check_counter(event_name, n):
-                            for eff in event_block['effects']:
-                                apply_effect(eff, context)
-                            if cooldown:
-                                context[last_trigger_time_key] = current_time
-                    else:
-                        for eff in event_block['effects']:
-                            apply_effect(eff, context)
-                        if cooldown:
-                            context[last_trigger_time_key] = current_time
+            else:
+                if event_name not in get_equivalent_events(event_block['event']):
+                    continue
+
+            if not check_conditions(event_block['conditions'], context):
+                continue
+
+            cooldown = event_block.get('cooldown_seconds')
+            cooldown_key = f"{index}:{event_block['event']}"
+            if cooldown:
+                last_trigger_time = self.last_trigger_times.get(cooldown_key)
+                if last_trigger_time and current_time - last_trigger_time < cooldown:
+                    continue
+
+            chance = event_block.get('chance_percent', 100)
+            if mec_ctx:
+                chance = mec_ctx.event_chance_modifiers.get(event_block['event'], chance)
+            if random.uniform(0, 100) > chance:
+                continue
+
+            if counter_event:
+                if not mec_ctx:
+                    continue
+                mec_ctx.increment_counter(counter_event['counter_name'])
+                if not mec_ctx.check_counter(counter_event['counter_name'], counter_event['required_count']):
+                    continue
+
+            for eff in event_block['effects']:
+                apply_effect(eff, context)
+
+            if cooldown:
+                self.last_trigger_times[cooldown_key] = current_time
 
 def add_stats(stats_dict, new_stats):
     for stat, value in new_stats.items():
@@ -495,20 +653,23 @@ class Weapon:
 
     def trigger_event(self, event_name: str, context=None, **kwargs):
         if self.mechanics:
-            eff_context = {
-                'mechanics_context': context,
-                'is_crit': kwargs.get('is_crit',False),
-                'is_weakspot': kwargs.get('is_weakspot',False),
-                'target_statuses': context.mannequin_status_effects if context else [],
-                'counters': self.counters,
-                'all_projectiles_hit': getattr(context,'all_projectiles_hit',False),
-                'last_extra_ammo_consumed': getattr(context,'last_extra_ammo_consumed',False),
-                'ice_crystal_shattered': getattr(context,'ice_crystal_shattered',False),
-                'player_hp_ratio': context.get_player_hp_ratio() if context else 1.0,
-                'enemy_type': context.enemy_type if context else 'Обычный',
-                'current_mode': context.current_mode if context else None,
-                'event_name': event_name
-            }
+            if context and hasattr(context, 'build_effect_context'):
+                eff_context = context.build_effect_context(event_name=event_name, **kwargs)
+            else:
+                eff_context = {
+                    'mechanics_context': context,
+                    'is_crit': kwargs.get('is_crit', False),
+                    'is_weakspot': kwargs.get('is_weakspot', False),
+                    'target_statuses': context.mannequin_status_effects if context else [],
+                    'counters': self.counters,
+                    'all_projectiles_hit': getattr(context, 'all_projectiles_hit', False),
+                    'last_extra_ammo_consumed': getattr(context, 'last_extra_ammo_consumed', False),
+                    'ice_crystal_shattered': getattr(context, 'ice_crystal_shattered', False),
+                    'player_hp_ratio': context.get_player_hp_ratio() if context else 1.0,
+                    'enemy_type': context.enemy_type if context else 'Обычный',
+                    'current_mode': context.current_mode if context else None,
+                    'event_name': event_name
+                }
             self.mechanics.trigger_event(event_name, eff_context)
 
 class MechanicsProcessor:
@@ -516,11 +677,27 @@ class MechanicsProcessor:
         self.weapons_data = load_weapon_data()
         self.weapons = {data['id']: Weapon(data) for data in self.weapons_data}
         self.context = context
+        self.external_mechanics: List[Mechanic] = []
+
+    def set_external_mechanics(self, effect_sources: List[Dict[str, Any]] | None):
+        self.external_mechanics = []
+        for index, source in enumerate(effect_sources or []):
+            effects = source.get('effects', [])
+            if any(effect.get('type') == 'on_event' for effect in effects):
+                description = source.get('source', f'external_{index}')
+                self.external_mechanics.append(Mechanic(description, effects))
 
     def get_weapon(self, weapon_id: str) -> Weapon:
         return self.weapons.get(weapon_id)
 
-    def process_weapon_event(self, event_name: str, **kwargs):
+    def process_event(self, event_name: str, **kwargs):
         weapon = self.context.player.weapon if self.context else None
         if weapon:
             weapon.trigger_event(event_name, context=self.context, **kwargs)
+        if self.context and hasattr(self.context, 'build_effect_context'):
+            eff_context = self.context.build_effect_context(event_name=event_name, **kwargs)
+            for mechanic in self.external_mechanics:
+                mechanic.trigger_event(event_name, eff_context)
+
+    def process_weapon_event(self, event_name: str, **kwargs):
+        self.process_event(event_name, **kwargs)

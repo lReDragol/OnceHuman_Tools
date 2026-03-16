@@ -5,7 +5,7 @@ import random
 import os
 import dearpygui.dearpygui as dpg
 from .player import Item, Mannequin, Player
-from .mechanics import Weapon, MechanicsProcessor
+from .mechanics import Weapon, MechanicsProcessor, normalize_effects, iter_stat_value_pairs
 import logging
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -174,6 +174,8 @@ class DamageCalculator:
 class Context:
     def __init__(self, player):
         self.player = player
+        self.player.context = self
+        self.player.effect_sources_dirty = True
         self.language = "ru"
         self.total_damage = 0
         self.dps = 0
@@ -197,6 +199,7 @@ class Context:
         self.selected_mods = []
         self.selected_items = {}
         self.mannequin_status_effects = {}
+        self.player_status_expirations = []
         self.status_stack_counts = {}
         self.max_fire_stacks = 16
         self.stats_display_timer = 0.0
@@ -212,6 +215,10 @@ class Context:
         self.alternate_ammo_until_reload = False
         self.charge_stacks = 0
         self.current_mode = None
+        self.magazine_bullets_fired = 0
+        self.magazine_weakspot_hits = 0
+        self.last_magazine_weakspot_rate = 0.0
+        self.enemy_defeated_pending_reset = False
 
         # Путь с JSON
         self.bd_json_path = os.path.join(CURRENT_DIR, 'bd_json')
@@ -347,16 +354,24 @@ class Context:
             self.player.base_stats['crit_rate_percent'] = value
         elif parameter == "crit_dmg_input":
             self.player.base_stats['crit_damage_percent'] = value
+        elif parameter == "psi_intensity_input":
+            self.player.base_stats['psi_intensity'] = value
         elif parameter == "magazine_capacity_input":
             self.player.base_stats['magazine_capacity'] = value
         elif parameter == "fire_rate_input":
             self.player.base_stats['fire_rate'] = value
         elif parameter == "reload_speed_input":
             self.player.base_stats['reload_time_seconds'] = value
+        elif parameter == "weapon_damage_bonus_input":
+            self.player.base_stats['weapon_damage_percent'] = value
         elif parameter == "status_damage_bonus_input":
             self.player.base_stats['status_damage_percent'] = value
         elif parameter == "weakspot_damage_bonus_input":
             self.player.base_stats['weakspot_damage_percent'] = value
+        elif parameter == "damage_reduction_input":
+            self.player.base_stats['damage_reduction_percent'] = value
+        elif parameter in {"contamination_resistance_input", "resistance_to_pollution"}:
+            self.player.base_stats['pollution_resist'] = value
         elif parameter == "damage_bonus_normal_input":
             self.player.base_stats['damage_bonus_normal'] = value
         elif parameter == "damage_bonus_elite_input":
@@ -370,7 +385,7 @@ class Context:
             self.update_max_hp()
         else:
             setattr(self, parameter, value)
-        self.player.recalculate_stats()
+        self.refresh_player_stats()
         self.current_ammo = self.player.stats.get('magazine_capacity', 0)
         self.update_max_hp()
 
@@ -405,6 +420,48 @@ class Context:
                 return str(int(rounded))
             return f"{rounded:.{digits}f}".rstrip("0").rstrip(".")
         return str(value)
+
+    def build_effect_context(self, event_name=None, **overrides):
+        target_statuses = [{'status': status} for status in self.mannequin.effects.keys()]
+        for status in self.mannequin_status_effects.keys():
+            if {'status': status} not in target_statuses:
+                target_statuses.append({'status': status})
+
+        effect_context = {
+            'mechanics_context': self,
+            'target_statuses': target_statuses,
+            'all_projectiles_hit': getattr(self, 'all_projectiles_hit', False),
+            'last_extra_ammo_consumed': getattr(self, 'last_extra_ammo_consumed', False),
+            'ice_crystal_shattered': getattr(self, 'ice_crystal_shattered', False),
+            'player_hp_ratio': self.get_player_hp_ratio(),
+            'target_hp_ratio': (self.mannequin.current_hp / self.mannequin.max_hp) if self.mannequin.max_hp else 1.0,
+            'enemy_type': self.mannequin.enemy_type,
+            'current_mode': self.current_mode,
+            'event_name': event_name,
+        }
+        effect_context.update(overrides)
+        return effect_context
+
+    def is_status_active(self, status):
+        if not status:
+            return False
+        return (
+            status in self.mannequin_status_effects
+            or status in self.mannequin.effects
+            or self.status_stack_counts.get(status, 0) > 0
+            or self.stacks.get(status, 0) > 0
+            or status in self.buffs
+        )
+
+    def get_stack_count(self, stack_source):
+        return self.status_stack_counts.get(stack_source, self.stacks.get(stack_source, 0))
+
+    def refresh_player_stats(self):
+        self.player.recalculate_stats(self)
+        self.update_max_hp()
+        max_mag = self.player.stats.get('magazine_capacity', 0)
+        if self.current_ammo > max_mag:
+            self.current_ammo = max_mag
 
     def get_stats_display_text(self, player):
         stats_text = f"{self.get_text('stats_title', 'Current character stats')}:\n\n"
@@ -455,6 +512,8 @@ class Context:
         return stats_text
 
     def initialize(self):
+        self.player.effect_sources_dirty = True
+        self.refresh_player_stats()
         self.update_max_hp()
         self.current_hp = self.max_hp
         self.current_ammo = self.player.stats.get('magazine_capacity', 0)
@@ -468,7 +527,8 @@ class Context:
             self.current_ammo = self.player.stats.get('magazine_capacity', 0)
             logging.info(f"Reload complete. Ammo replenished to {self.current_ammo}")
         self.dps = self.calculate_dps()
-        self.player.update_active_stat_bonuses()  # <<<
+        self.player.update_active_stat_bonuses()
+        self.update_max_hp()
 
     def update_dps_display(self):
         dps_text = f"DPS: {int(self.dps)}    Total DMG: {int(self.total_damage)}"
@@ -514,7 +574,11 @@ class Context:
                     self.reload_weapon()
                     return
                 self.current_ammo -= 1
+                self.magazine_bullets_fired += 1
                 self.last_fire_time = current_time
+                self.process_combat_event('shot_fired')
+                if self.current_ammo == 0:
+                    self.process_combat_event('mag_empty')
                 projectiles_per_shot = int(self.player.weapon.get_stats().get('projectiles_per_shot', 1))
                 total_shot_damage = 0
                 damage_list = []
@@ -526,6 +590,11 @@ class Context:
                     damage, is_crit = self.damage_calculator.calculate_damage_per_projectile(weakspot_hit)
                     total_shot_damage += damage
                     damage_list.append((damage, hit_pos, is_crit, weakspot_hit))
+                self.all_projectiles_hit = all(self.is_within_target_area(entry[1]) for entry in damage_list)
+                if self.all_projectiles_hit:
+                    self.process_combat_event('all_projectiles_hit')
+                if any(entry[3] for entry in damage_list):
+                    self.magazine_weakspot_hits += 1
                 self.total_damage += total_shot_damage
                 self.damage_history.append((current_time, total_shot_damage))
                 if self.mannequin.show_unified_shotgun_damage:
@@ -538,6 +607,7 @@ class Context:
                         self.display_damage_number(dmg_val, hit_pos, is_crit, weakspot_hit)
                 self.mannequin.receive_damage(total_shot_damage)
                 self.process_hit(any(d[2] for d in damage_list), any(d[3] for d in damage_list))
+                self.handle_target_defeat(any(d[2] for d in damage_list), any(d[3] for d in damage_list))
 
     def get_center_of_hit_area(self):
         normal_zone = {
@@ -548,15 +618,21 @@ class Context:
         }
         x_center = (normal_zone['left'] + normal_zone['right']) / 2
         y_center = (normal_zone['top'] + normal_zone['bottom']) / 2
+        if not dpg.does_item_exist("damage_layer"):
+            return (x_center, y_center)
         window_pos = dpg.get_item_rect_min("damage_layer")
         return (window_pos[0] + x_center, window_pos[1] + y_center)
 
     def process_hit(self, is_crit, is_weakspot):
-        self.mechanics_processor.process_weapon_event('hit_target', is_crit=is_crit, is_weakspot=is_weakspot)
+        self.process_combat_event('hit_target', is_crit=is_crit, is_weakspot=is_weakspot)
         if is_crit:
-            self.mechanics_processor.process_weapon_event('crit_hit')
+            self.process_combat_event('crit_hit', is_crit=True, is_weakspot=is_weakspot)
         if is_weakspot:
-            self.mechanics_processor.process_weapon_event('weakspot_hit')
+            self.process_combat_event('weakspot_hit', is_crit=is_crit, is_weakspot=True)
+
+    def process_combat_event(self, event_name, **kwargs):
+        self.mechanics_processor.process_event(event_name, **kwargs)
+        self.refresh_player_stats()
 
     def is_within_target_area(self, mouse_pos):
         normal_zone = {
@@ -600,9 +676,19 @@ class Context:
     def reload_weapon(self):
         if not self.reloading:
             reload_time = self.player.stats.get('reload_time_seconds', 1.0)
+            if self.magazine_bullets_fired > 0:
+                self.last_magazine_weakspot_rate = (self.magazine_weakspot_hits / self.magazine_bullets_fired) * 100.0
+            else:
+                self.last_magazine_weakspot_rate = 0.0
             self.reloading = True
             self.reload_end_time = time.time() + reload_time
             self.current_ammo = 0
+            self.process_combat_event('reload_weapon')
+            self.process_combat_event('reload')
+            self.process_combat_event('reload_empty_magazine')
+            self.process_combat_event('reload_empty_mag')
+            self.magazine_bullets_fired = 0
+            self.magazine_weakspot_hits = 0
             logging.info(f"Reloading weapon. It will take {reload_time} seconds.")
 
     def calculate_dps(self):
@@ -614,6 +700,7 @@ class Context:
     def update_status_effects(self):
         current_time = time.time()
         expired_effects = []
+        changed = False
         for status, end_time in self.mannequin_status_effects.items():
             if current_time >= end_time:
                 expired_effects.append(status)
@@ -622,6 +709,20 @@ class Context:
             if status in self.mannequin.effects:
                 del self.mannequin.effects[status]
             logging.debug(f"Status effect '{status}' expired.")
+            changed = True
+
+        expired_player_effects = [entry for entry in self.player_status_expirations if current_time >= entry['end_time']]
+        for entry in expired_player_effects:
+            status = entry['status']
+            self.player_status_expirations.remove(entry)
+            current_stacks = self.status_stack_counts.get(status, 0)
+            if current_stacks <= 1:
+                self.status_stack_counts.pop(status, None)
+            else:
+                self.status_stack_counts[status] = current_stacks - 1
+            changed = True
+        if changed:
+            self.refresh_player_stats()
 
     def simulate_projectile_hit(self, mouse_pos):
         spread_radius = 15
@@ -634,6 +735,8 @@ class Context:
         return hit_pos
 
     def display_damage_number(self, damage, hit_pos, is_crit, weakspot_hit, ability_name=None):
+        if not dpg.does_item_exist("damage_layer"):
+            return
         window_pos = dpg.get_item_rect_min("damage_layer")
         local_x = hit_pos[0] - window_pos[0]
         local_y = hit_pos[1] - window_pos[1]
@@ -716,6 +819,70 @@ class Context:
         return None
 
     def apply_status(self, status, duration, **kwargs):
+        nested_effects = kwargs.get('effects', [])
+        normalized_effects = normalize_effects(nested_effects) if nested_effects else []
+        if not normalized_effects and kwargs.get('stat_bonuses'):
+            normalized_effects = []
+            for stat_name, stat_value in kwargs['stat_bonuses'].items():
+                if isinstance(stat_value, bool):
+                    normalized_effects.append({
+                        'type': 'set_flag',
+                        'flag': stat_name,
+                        'value': stat_value,
+                    })
+                else:
+                    normalized_effects.append({
+                        'type': 'increase_stat',
+                        'stat': stat_name,
+                        'value': stat_value,
+                    })
+        if normalized_effects:
+            end_time = time.time() + duration
+            max_stacks = kwargs.get('max_stacks')
+            stat_cap = self.player.stats.get(f"max_{status}_stacks")
+            if stat_cap is not None:
+                max_stacks = max(max_stacks or 0, int(stat_cap))
+
+            current_stacks = self.status_stack_counts.get(status, 0)
+            if max_stacks and current_stacks >= max_stacks:
+                matching_entries = [entry for entry in self.player_status_expirations if entry['status'] == status]
+                if matching_entries:
+                    oldest_entry = min(matching_entries, key=lambda entry: entry['end_time'])
+                    oldest_entry['end_time'] = end_time
+                return
+
+            applied_bonus = False
+            for effect in normalized_effects:
+                if effect.get('type') == 'increase_stat':
+                    source_name = effect.get('source', status)
+                    for stat, value in iter_stat_value_pairs(effect):
+                        if stat:
+                            was_added = self.player.apply_stat_bonus(
+                                stat,
+                                value,
+                                duration,
+                                max_stacks=max_stacks,
+                                source=source_name,
+                            )
+                            applied_bonus = applied_bonus or was_added
+                elif effect.get('type') == 'set_flag':
+                    source_name = effect.get('source', status)
+                    flag_name = effect.get('flag')
+                    if flag_name:
+                        was_added = self.player.apply_stat_bonus(
+                            flag_name,
+                            1 if effect.get('value') else 0,
+                            duration,
+                            max_stacks=max_stacks,
+                            source=source_name,
+                        )
+                        applied_bonus = applied_bonus or was_added
+            if applied_bonus or status not in self.status_stack_counts:
+                self.status_stack_counts[status] = min(current_stacks + 1, max_stacks or current_stacks + 1)
+                self.player_status_expirations.append({'status': status, 'end_time': end_time})
+            logging.debug(f"Player status {status} applied for {duration} seconds.")
+            return
+
         self.mannequin.apply_status(status, duration, **kwargs)
         end_time = time.time() + duration
         self.mannequin_status_effects[status] = end_time
@@ -724,26 +891,42 @@ class Context:
 
     def remove_buff(self, buff_name):
         if buff_name in self.buffs:
-            buff_data = self.buffs[buff_name]
-            stat_bonuses = buff_data.get('stat_bonuses', {})
-            for stat, val in stat_bonuses.items():
-                # Безопасно уменьшаем стат (если нет ключа, пропускаем)
-                if stat in self.player.stats:
-                    self.player.stats[stat] -= val
             del self.buffs[buff_name]
+            self.refresh_player_stats()
             logging.info(f"Buff {buff_name} removed.")
 
     def trigger_ability(self, ability_name, **kwargs):
         ability_lower = ability_name.lower()
         logging.info(f"Triggered ability: {ability_name} with {kwargs}")
         if ability_lower == 'unstable_bomber':
-            psi_intensity = self.player.stats.get('psi_intensity', 100)
-            dmg = psi_intensity
-            self.apply_direct_damage(dmg, is_crit=False, weakspot_hit=False, ability_name='unstable_bomber')
+            damage_formula = kwargs.get('damage_formula', {'type': 'psi_intensity', 'multiplier': 1.0})
+            dmg = self.resolve_damage_formula(damage_formula)
+            dmg *= 1 + self.player.stats.get('status_damage_percent', 0) / 100.0
+            dmg *= 1 + self.player.stats.get('psi_intensity_damage_percent', 0) / 100.0
+            dmg *= 1 + self.player.stats.get('elemental_damage_percent', 0) / 100.0
+            dmg *= 1 + self.player.stats.get('explosion_elemental_damage_percent', 0) / 100.0
+            dmg *= 1 + self.player.stats.get('unstable_bomber_damage_percent', 0) / 100.0
+            dmg *= 1 + self.player.stats.get('unstable_bomber_final_damage_percent', 0) / 100.0
+
+            trigger_bonus = self.trigger_factors.get(ability_lower) or self.trigger_factors.get(ability_name)
+            if trigger_bonus:
+                end_time = trigger_bonus.get('end_time')
+                if end_time is None or end_time >= time.time():
+                    dmg *= 1 + trigger_bonus.get('bonus', 0) / 100.0
+
+            additional_info = kwargs.get('additional_info', {})
+            can_crit = kwargs.get('can_crit', additional_info.get('can_crit', False)) or self.player.stats.get('can_crit', False)
+            is_crit = False
+            if can_crit and random.uniform(0, 100) <= self.player.stats.get('crit_rate_percent', 0):
+                is_crit = True
+                dmg *= 1 + self.player.stats.get('crit_damage_percent', 0) / 100.0
+
+            self.apply_direct_damage(dmg, is_crit=is_crit, weakspot_hit=False, ability_name='unstable_bomber')
+            self.process_combat_event('trigger_unstable_bomber', is_crit=is_crit, is_weakspot=False)
             self.counters['shots_towards_bomber_trigger'] = 0
 
     def check_status_on_target(self, status_to_check):
-        return status_to_check in self.mannequin_status_effects
+        return status_to_check in self.mannequin_status_effects or status_to_check in self.mannequin.effects
 
     def get_player_hp_ratio(self):
         if self.max_hp > 0:
@@ -771,17 +954,19 @@ class Context:
             return True
         return False
 
-    def apply_temporary_stat_bonus(self, stat, value, duration, max_stacks=None):
-        self.player.apply_stat_bonus(stat, value, duration, max_stacks)
+    def apply_temporary_stat_bonus(self, stat, value, duration, max_stacks=None, source=None):
+        self.player.apply_stat_bonus(stat, value, duration, max_stacks, source=source)
 
     def gain_stacks(self, stack_type, count):
         self.stacks[stack_type] = self.stacks.get(stack_type, 0) + count
+        self.refresh_player_stats()
         logging.debug(f"Stacks {stack_type} gained {count}, total: {self.stacks[stack_type]}")
 
     def reduce_stacks(self, stack_type, value):
         current = self.stacks.get(stack_type, 0)
         new_val = max(0, current - value)
         self.stacks[stack_type] = new_val
+        self.refresh_player_stats()
         logging.debug(f"Stacks {stack_type} reduced by {value}, total: {new_val}")
 
     def spread_effect(self, radius_meters, effect_data):
@@ -862,7 +1047,29 @@ class Context:
     def apply_direct_damage(self, damage, is_crit=False, weakspot_hit=False, ability_name=None):
         center_pos = self.get_center_of_hit_area()
         self.mannequin.receive_damage(damage)
+        self.total_damage += damage
+        self.damage_history.append((time.time(), damage))
         self.display_damage_number(damage, center_pos, is_crit, weakspot_hit, ability_name=ability_name)
+        self.handle_target_defeat(is_crit, weakspot_hit)
+
+    def resolve_damage_formula(self, damage_formula):
+        if not isinstance(damage_formula, dict):
+            return float(self.player.stats.get('psi_intensity', 100))
+        formula_type = damage_formula.get('type', 'psi_intensity')
+        multiplier = damage_formula.get('multiplier', 1.0)
+        if formula_type == 'psi_intensity':
+            return float(self.player.stats.get('psi_intensity', 100)) * multiplier
+        stat_value = self.player.stats.get(formula_type, self.player.stats.get('psi_intensity', 100))
+        return float(stat_value) * multiplier
+
+    def handle_target_defeat(self, is_crit=False, weakspot_hit=False):
+        if self.mannequin.current_hp > 0 or self.enemy_defeated_pending_reset:
+            return
+        self.enemy_defeated_pending_reset = True
+        self.process_combat_event('kill', is_crit=is_crit, is_weakspot=weakspot_hit)
+        self.process_combat_event('defeat_enemy', is_crit=is_crit, is_weakspot=weakspot_hit)
+        if weakspot_hit:
+            self.process_combat_event('defeat_enemy_with_weakspot_hit', is_crit=is_crit, is_weakspot=True)
 
     # ------------------------- Добавлен фикс: --------------------------
     def get_mod_texture_id(self, mod_key, mod_name_key):
