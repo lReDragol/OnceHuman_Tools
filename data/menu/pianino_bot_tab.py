@@ -83,10 +83,10 @@ class PianinoBotTab:
 
     def create_midi_file_group(self):
         with dpg.group(horizontal=True):
-            dpg.add_button(label=self.trans.get("load_midi", "Load MIDI"), callback=self.load_midi)
+            self.load_midi_button = dpg.add_button(label=self.trans.get("load_midi", "Load MIDI"), callback=self.load_midi)
             dpg.add_spacer(width=10)
-            dpg.add_button(label=self.trans.get("play_song", "Play"), callback=self.play_song)
-            dpg.add_button(label=self.trans.get("stop_song", "Stop"), callback=self.stop_song)
+            self.play_song_button = dpg.add_button(label=self.trans.get("play_song", "Play"), callback=self.play_song)
+            self.stop_song_button = dpg.add_button(label=self.trans.get("stop_song", "Stop"), callback=self.stop_song)
             dpg.add_spacer(width=10)
             self.label_selected_midi = dpg.add_text(default_value="")
 
@@ -102,11 +102,11 @@ class PianinoBotTab:
                                                      default_value=self.merge_octave,
                                                      callback=self.update_merge_octave)
 
-            dpg.add_text(default_value=self.trans.get("speed", "Speed"))
+            self.speed_label = dpg.add_text(default_value=self.trans.get("speed", "Speed"))
             self.tempo_scale = dpg.add_slider_int(label="", min_value=-10, max_value=10, default_value=self.tempo,
                                                   callback=self.update_tempo)
 
-            dpg.add_text(default_value=self.trans.get("modifier_delay", "Modifier Delay"))
+            self.modifier_delay_label = dpg.add_text(default_value=self.trans.get("modifier_delay", "Modifier Delay"))
             self.modifier_delay_scale = dpg.add_slider_int(label="", min_value=0, max_value=100,
                                                            default_value=self.modifier_delay,
                                                            callback=self.update_modifier_delay)
@@ -140,9 +140,9 @@ class PianinoBotTab:
 
     def create_information_group(self):
         with dpg.group():
-            dpg.add_text(default_value=self.trans.get("start_stop_midi", "Press F5 to Start and F6 to Stop the MIDI in game."))
-            dpg.add_text(default_value=self.trans.get("stutter_warning", "A song with lots of Shift and Control presses will stutter. (Game Issue)"))
-            dpg.add_text(default_value=self.trans.get("use_small_piano", "Use the small ingame piano."))
+            self.start_stop_info = dpg.add_text(default_value=self.trans.get("start_stop_midi", "Press F5 to Start and F6 to Stop the MIDI in game."))
+            self.stutter_warning_info = dpg.add_text(default_value=self.trans.get("stutter_warning", "A song with lots of Shift and Control presses will stutter. (Game Issue)"))
+            self.use_small_piano_info = dpg.add_text(default_value=self.trans.get("use_small_piano", "Use the small ingame piano."))
 
     def create_piano(self):
         white_key_width = 20
@@ -414,6 +414,18 @@ class PianinoBotTab:
         pass
 
     def update_ui(self):
+        self.trans = self.main_app.translations.get(self.main_app.current_language, {}).get("piano_bot_tab", {})
+        dpg.configure_item(self.load_midi_button, label=self.trans.get("load_midi", "Load MIDI"))
+        dpg.configure_item(self.play_song_button, label=self.trans.get("play_song", "Play"))
+        dpg.configure_item(self.stop_song_button, label=self.trans.get("stop_song", "Stop"))
+        dpg.configure_item(self.repeat_song_var, label=self.trans.get("repeat_song", "Repeat Song"))
+        dpg.configure_item(self.skip_octave_var, label=self.trans.get("skip_octave", "Skip Octave 3 and 5"))
+        dpg.configure_item(self.merge_octave_var, label=self.trans.get("merge_octave", "Merge Octave 4"))
+        dpg.set_value(self.speed_label, self.trans.get("speed", "Speed"))
+        dpg.set_value(self.modifier_delay_label, self.trans.get("modifier_delay", "Modifier Delay"))
+        dpg.set_value(self.start_stop_info, self.trans.get("start_stop_midi", "Press F5 to Start and F6 to Stop the MIDI in game."))
+        dpg.set_value(self.stutter_warning_info, self.trans.get("stutter_warning", "A song with lots of Shift and Control presses will stutter. (Game Issue)"))
+        dpg.set_value(self.use_small_piano_info, self.trans.get("use_small_piano", "Use the small ingame piano."))
         print("UI updated with new translations.")
 
     def stop(self):

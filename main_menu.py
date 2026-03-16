@@ -26,6 +26,8 @@ class MainApp:
         self.translations = self.load_translations()
         self.trans = self.translations.get(self.current_language, {}).get("main", {})
         self.tabs = []
+        self.settings_buttons = []
+        self.default_font_tag = "Default font"
 
         dpg.create_context()
 
@@ -47,6 +49,11 @@ class MainApp:
         self.game_path = self.path_finder.find_game_path_in_config()
 
         self.search_start_time = None
+        self.path_finder_thread = None
+
+        self.setup_ui()
+        self.restore_states()
+
         if not self.game_path:
             self.search_start_time = time.time()
             self.path_finder_thread = threading.Thread(
@@ -54,9 +61,6 @@ class MainApp:
                 daemon=True
             )
             self.path_finder_thread.start()
-
-        self.setup_ui()
-        self.restore_states()
 
         dpg.show_viewport()
         dpg.set_primary_window("MainWindow", True)
@@ -123,6 +127,8 @@ class MainApp:
         with dpg.tab(label=tab_name) as tab_id:
             tab_instance = tab_class(self)
             self.tabs.append(tab_instance)
+            if hasattr(tab_instance, "trans"):
+                dpg.set_item_label(tab_id, tab_instance.trans.get("title", tab_name))
             print(f"Tab created: {tab_name}")
 
     def load_translations(self):
@@ -147,22 +153,23 @@ class MainApp:
                 tab.restore_states()
 
     def load_font(self):
-        if dpg.does_item_exist("Default font"):
-            dpg.delete_item("Default font")
+        if dpg.does_item_exist(self.default_font_tag):
+            dpg.delete_item(self.default_font_tag)
         if dpg.does_item_exist("Font_Registry"):
             dpg.delete_item("Font_Registry")
 
         with dpg.font_registry(tag="Font_Registry"):
             font_path = "data/file/ru.ttf"
             if os.path.exists(font_path):
-                with dpg.font(font_path, 13, default_font=True, tag="Default font") as f:
+                with dpg.font(font_path, 13, default_font=True, tag=self.default_font_tag):
                     dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
-                dpg.bind_font("Default font")
+                dpg.bind_font(self.default_font_tag)
                 print("Unified font (ru.ttf) loaded for all languages.")
             else:
                 print("No ru.ttf found, using default Dear PyGui font.")
 
     def change_language(self, lang):
+        self.current_language = lang
         self.save_states()
         self.config.language = lang
         self.config.save_to_json()
@@ -181,6 +188,10 @@ class MainApp:
                 dpg.set_item_label(tab_id, tab.trans.get("title", "Unnamed Tab"))
             else:
                 print(f"No tab found for index {i}")
+
+        self.load_font()
+        for settings_button in self.settings_buttons:
+            settings_button.update_ui()
 
         dpg.set_viewport_title(self.trans.get("app_title", "Default Title"))
         print("UI updated with new translations.")

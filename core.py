@@ -14,7 +14,7 @@ from watchdog.events import FileSystemEventHandler
 from config import Config
 import tkinter as tk
 from tkinter import filedialog
-import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 console = False
 TEMPLATE_SOURCE_NAME = "template_source.png"
@@ -50,6 +50,9 @@ class PathFinder:
         print("Начинается поиск папки 'photo_local' в директории игры 'Once Human' на доступных дисках...")
 
         drives = [f'{d}:\\' for d in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' if os.path.exists(f'{d}:')]
+        if not drives:
+            print("Диски для поиска не найдены.")
+            return False
 
         def search_drive(drive):
             ignore_dirs = {'Windows', 'Program Files', 'Program Files (x86)', 'AppData', 'ProgramData'}
@@ -69,9 +72,9 @@ class PathFinder:
             return None
 
         found_path = None
-        with concurrent.futures.ThreadPoolExecutor(max_workers=len(drives)) as executor:
+        with ThreadPoolExecutor(max_workers=len(drives)) as executor:
             future_to_drive = {executor.submit(search_drive, d): d for d in drives}
-            for future in concurrent.futures.as_completed(future_to_drive):
+            for future in as_completed(future_to_drive):
                 result = future.result()
                 if result:
                     found_path = result
@@ -98,9 +101,12 @@ class PathFinder:
         self.search_running = True
         self.search_completed = False
         while self.search_running:
-            if self.search_game_path():
-                # Путь найден
-                self.search_running = False
+            try:
+                if self.search_game_path():
+                    self.search_running = False
+                    break
+            except RuntimeError as exc:
+                print(f"Поиск пути остановлен: {exc}")
                 break
             # Проверяем таймаут
             if (time.time() - self.search_start_time) > self.search_timeout:

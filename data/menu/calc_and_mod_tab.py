@@ -78,9 +78,13 @@ class CalcAndModTab:
         dpg.configure_item("mod_selection_window", show=True)
 
     def setup_fonts(self):
-        with dpg.font_registry():
-            font_path = "C:\\Windows\\Fonts\\arial.ttf"
-            if os.path.exists(font_path):
+        if hasattr(self.main_app, "default_font_tag") and dpg.does_item_exist(self.main_app.default_font_tag):
+            self.default_font = self.main_app.default_font_tag
+            return
+
+        font_path = os.path.join("data", "file", "ru.ttf")
+        if os.path.exists(font_path):
+            with dpg.font_registry():
                 with dpg.font(font_path, 15) as self.default_font:
                     dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 

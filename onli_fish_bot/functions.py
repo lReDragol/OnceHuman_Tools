@@ -4,7 +4,6 @@ import cv2
 import pyautogui
 import json
 import time
-import pytesseract
 import os
 import ctypes
 from ctypes import wintypes
@@ -14,8 +13,6 @@ import sys
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QPushButton
 from PyQt5.QtGui import QPixmap, QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, QRect, QPoint
-
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 PUL = ctypes.POINTER(ctypes.c_ulong)
 
@@ -203,8 +200,9 @@ def calculate_window_position(index):
 
 
 class MainMenu(QMainWindow):
-    def __init__(self):
+    def __init__(self, config_path):
         super().__init__()
+        self.config_path = config_path
         self.setWindowTitle('Создание зон')
         self.setGeometry(100, 100, 400, 200)
 
@@ -228,19 +226,20 @@ class MainMenu(QMainWindow):
         self.hide()
         time.sleep(0.5)
         screenshot = pyautogui.screenshot()
-        screenshot_path = "screenshot.png"
+        screenshot_path = os.path.join(os.path.dirname(self.config_path), "screenshot.png")
         screenshot.save(screenshot_path)
         self.open_screenshot_selector(screenshot_path)
         self.close()
 
     def open_screenshot_selector(self, image_path):
-        self.selector_window = ScreenshotSelector(image_path)
+        self.selector_window = ScreenshotSelector(image_path, self.config_path)
         self.selector_window.show()
 
 
 class ScreenshotSelector(QMainWindow):
-    def __init__(self, image_path):
+    def __init__(self, image_path, config_path):
         super().__init__()
+        self.config_path = config_path
         self.setWindowTitle('Выбор областей')
         self.setGeometry(100, 100, 800, 600)
 
@@ -314,7 +313,7 @@ class ScreenshotSelector(QMainWindow):
             painter.end()
 
     def save_config(self):
-        config_data = load_config("config.json")
+        config_data = load_config(self.config_path)
         existing_zones = config_data.get("zones", [])
         for rect in self.rectangles:
             x1, y1 = rect.topLeft().x(), rect.topLeft().y()
@@ -325,8 +324,8 @@ class ScreenshotSelector(QMainWindow):
             })
         config_data["zones"] = existing_zones
 
-        save_config(config_data, "config.json")
-        print("Конфигурация сохранена в config.json")
+        save_config(config_data, self.config_path)
+        print(f"Конфигурация сохранена в {self.config_path}")
         self.close()
 
     def clear_rectangles(self):
@@ -335,9 +334,11 @@ class ScreenshotSelector(QMainWindow):
         self.update()
 
 
-def start_zone_creation(callback=None):
-    app = QApplication(sys.argv)
-    main_menu = MainMenu()
+def start_zone_creation(config_path="config.json", callback=None):
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication(sys.argv)
+    main_menu = MainMenu(config_path)
     app.exec_()
     if callback:
         callback()

@@ -92,7 +92,7 @@ class FotoVideoTab:
             width, height, channels, data = dpg.load_image(icon_path)
             with dpg.texture_registry():
                 icon_id = dpg.add_static_texture(width, height, data)
-            self.select_folder_button = dpg.add_image_button(texture_id=icon_id, callback=self.open_folder_dialog, width=30, height=30)
+            self.select_folder_button = dpg.add_image_button(texture_tag=icon_id, callback=self.open_folder_dialog, width=30, height=30)
         else:
             self.select_folder_button = dpg.add_button(label=self.trans.get("select_folder", "Select Folder"), callback=self.open_folder_dialog)
 
@@ -112,7 +112,7 @@ class FotoVideoTab:
             width, height, channels, data = dpg.load_image(icon_path)
             with dpg.texture_registry():
                 icon_id = dpg.add_static_texture(width, height, data)
-            self.select_file_button = dpg.add_image_button(texture_id=icon_id, callback=self.open_file_dialog, width=30, height=30)
+            self.select_file_button = dpg.add_image_button(texture_tag=icon_id, callback=self.open_file_dialog, width=30, height=30)
         else:
             self.select_file_button = dpg.add_button(label=self.trans.get("select_file", "Select File"), callback=self.open_file_dialog)
 

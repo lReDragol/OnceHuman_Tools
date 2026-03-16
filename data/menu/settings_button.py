@@ -11,6 +11,7 @@ class SettingsButton:
         self.main_app = main_app
         self.trans = self.main_app.translations.get(self.main_app.current_language, {}).get("settings", {})
         self.config = Config.from_json()
+        self.main_app.settings_buttons.append(self)
 
         self.button_tag = f"settings_button_{id(self)}"
         dpg.add_button(label=self.trans.get("title", "Settings"),
