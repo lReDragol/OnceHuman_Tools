@@ -13,10 +13,16 @@ import copy
 import queue
 import dearpygui.dearpygui as dpg
 from config import Config
-import sys
 import webbrowser
 
-from .functions import apply_filter, draw_areas_on_frame, scale_coordinates, press_key, release_key
+from .functions import (
+    apply_filter,
+    draw_areas_on_frame,
+    press_key,
+    release_key,
+    scale_coordinates,
+    start_zone_creation as launch_zone_creation,
+)
 from .ocr_manager import DEFAULT_OCR_LANGUAGES, inspect_tesseract, install_tesseract_with_languages
 
 class BotFishTab:
@@ -515,7 +521,11 @@ class BotFishTab:
             self.zones = copy.deepcopy(self.config.bot_fish_tab.get('zones', []))
             print("Зоны обновлены.")
 
-        self.start_zone_creation(callback=update_zones_display)
+        zones_saved = self.start_zone_creation(callback=update_zones_display)
+        if zones_saved:
+            self.set_status_message(self.trans.get("zones_saved", "Zones saved."))
+        else:
+            self.set_status_message(self.trans.get("zones_creation_cancelled", "Zone creation cancelled."))
 
     def toggle_zone_settings(self, sender, app_data):
         # Если пользователь включает настройки, создаем окно, если выключает — удаляем
@@ -617,11 +627,15 @@ class BotFishTab:
 
     def start_zone_creation(self, callback=None):
         self.callback = callback
-        from PyQt5.QtWidgets import QApplication
-        from .functions import MainMenu
-        app = QApplication.instance() or QApplication(sys.argv)
-        main_menu = MainMenu(callback=self.on_zones_created, config=self.config)
-        app.exec_()
+        return launch_zone_creation(
+            self.config,
+            callback=self.on_zones_created,
+            ui_text={
+                "window_title": self.trans.get("zone_selector_title", "Select zones"),
+                "save_button": self.trans.get("zone_selector_save", "Save zones"),
+                "clear_button": self.trans.get("zone_selector_clear", "Clear"),
+            },
+        )
 
     def on_zones_created(self):
         self.zones = copy.deepcopy(self.config.bot_fish_tab.get('zones', []))

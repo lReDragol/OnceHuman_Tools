@@ -2,5 +2,14 @@ __pycache__/
 *.py[cod]
 *.pyo
 .pytest_cache/
+.idea/
+save/
+tree.txt
+config.json
+onli_fish_bot/config.json
+onli_fish_bot/2config.json
+screenshot.png
+onli_fish_bot/screenshot.png
 build/
 dist/
+*.spec

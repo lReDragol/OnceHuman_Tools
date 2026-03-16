@@ -16,8 +16,10 @@ logging.basicConfig(level=logging.DEBUG)
 class CalcAndModTab:
     def __init__(self, main_app):
         self.main_app = main_app
+        self.translations = getattr(self.main_app, "translations", {})
         self.player = Player()
         self.context = Context(self.player)
+        self.refresh_translations()
 
         self.config_manager = ConfigManager(
             self.context,
@@ -65,6 +67,14 @@ class CalcAndModTab:
     def dummy_update_stats_display(self):
         pass
 
+    def refresh_translations(self):
+        language = getattr(self.main_app, "current_language", "ru")
+        self.trans = self.translations.get(language, {}).get("calc_and_mod_tab", {})
+        self.context.set_language(language)
+
+    def tr(self, key, default):
+        return self.trans.get(key, default)
+
     def get_target_image_path(self):
         return os.path.join("data", "icons", "target_image.png")
 
@@ -73,7 +83,7 @@ class CalcAndModTab:
             self.context.populate_mod_selection_list(user_data)
         else:
             dpg.delete_item("mod_selection_list", children_only=True)
-            dpg.add_text("Пока не реализовано или список пуст...", parent="mod_selection_list")
+            dpg.add_text(self.tr("mods_not_available", "Not implemented yet or the list is empty..."), parent="mod_selection_list")
 
         dpg.configure_item("mod_selection_window", show=True)
 
@@ -183,8 +193,8 @@ class CalcAndModTab:
             with dpg.tab_bar():
                 self.create_calc_tab()
                 self.create_create_tab()
-            dpg.add_button(label="Сохранить конфигурацию", callback=self.save_config_callback)
-            dpg.add_button(label="Загрузить конфигурацию", callback=self.load_config_callback)
+            dpg.add_button(label=self.tr("save_config", "Save configuration"), callback=self.save_config_callback, tag="calc_save_config_button")
+            dpg.add_button(label=self.tr("load_config", "Load configuration"), callback=self.load_config_callback, tag="calc_load_config_button")
 
         self.create_item_selection_window()
         self.create_mod_selection_window()
@@ -213,21 +223,21 @@ class CalcAndModTab:
         self.update_stats_display()
 
         active_effects = list(self.context.mannequin.effects.keys())
-        effects_str = ", ".join(active_effects) if active_effects else "Нет активных статусов"
+        effects_str = ", ".join(active_effects) if active_effects else self.tr("no_active_statuses", "No active statuses")
         if dpg.does_item_exist("active_statuses_text"):
-            dpg.set_value("active_statuses_text", f"Активные статусы: {effects_str}")
+            dpg.set_value("active_statuses_text", f"{self.tr('active_statuses', 'Active statuses')}: {effects_str}")
 
         self.draw_mannequin_hp_bar()
 
     def create_calc_tab(self):
-        with dpg.tab(label="Calc"):
+        with dpg.tab(label=self.tr("calc_tab", "Calc")):
             with dpg.group(horizontal=True):
                 self.create_parameters_section()
                 self.create_combat_section()
 
     def create_create_tab(self):
-        with dpg.tab(label="Create"):
-            dpg.add_text("Выберите, что вы хотите создать:", color=[255, 255, 0])
+        with dpg.tab(label=self.tr("create_tab", "Create")):
+            dpg.add_text(self.tr("create_prompt", "Choose what you want to create:"), color=[255, 255, 0])
             dpg.add_radio_button(items=["Мод", "Предмет", "Сет"], default_value="Мод", horizontal=True,
                                  callback=lambda s,a,u: self.toggle_creation_menu(a))
 
@@ -242,37 +252,37 @@ class CalcAndModTab:
 
     def create_parameters_section(self):
         with dpg.child_window(width=600, height=760, horizontal_scrollbar=True):
-            dpg.add_text("Параметры:")
+            dpg.add_text(self.tr("parameters_title", "Parameters:"))
             dpg.add_spacer(height=5)
             dpg.add_separator()
             dpg.add_spacer(height=5)
-            self.create_parameters_table("Базовые характеристики:", [
-                ("Урон (УРН):", 0, "base_damage_input", True),
-                ("Пси-интенсивность:", 125, "psi_intensity_input", True),
-                ("ОЗ (xp):", 700, "hp_input", True),
-                ("Сопротивление загрязнению:", 15, "contamination_resistance_input", True)
+            self.create_parameters_table(self.tr("base_stats_header", "Base stats:"), [
+                (self.tr("base_damage", "Damage (DMG):"), 0, "base_damage_input", True),
+                (self.tr("psi_intensity", "PSI intensity:"), 125, "psi_intensity_input", True),
+                (self.tr("hp_label", "HP:"), 700, "hp_input", True),
+                (self.tr("pollution_resist", "Pollution resistance:"), 15, "contamination_resistance_input", True)
             ])
-            self.create_parameters_table("Боевые характеристики:", [
-                ("Шанс крит. попадания %:", 0, "crit_chance_input", True),
-                ("Крит. УРН +%:", 0, "crit_dmg_input", True),
-                ("УРН уязвимостям %:", 0, "weakspot_damage_bonus_input", True),
-                ("Бонус к УРН оружия %:", 0, "weapon_damage_bonus_input", True),
-                ("Бонус к УРН статуса %:", 4, "status_damage_bonus_input", True),
-                ("Бонус к УРН обычным %:", 0, "damage_bonus_normal_input", True),
-                ("Бонус к УРН элиткам %:", 0, "damage_bonus_elite_input", True),
-                ("Бонус к УРН против боссов %:", 0, "damage_bonus_boss_input", True),
-                ("Скорость стрельбы (выстр./мин):", 0, "fire_rate_input", True),
-                ("Емкость магазина:", 0, "magazine_capacity_input", True),
-                ("Скорость перезарядки (сек):", 0, "reload_speed_input", True)
+            self.create_parameters_table(self.tr("combat_stats_header", "Combat stats:"), [
+                (self.tr("crit_rate", "Critical hit chance %:"), 0, "crit_chance_input", True),
+                (self.tr("crit_damage", "Critical damage %:"), 0, "crit_dmg_input", True),
+                (self.tr("weakspot_damage", "Weakspot damage %:"), 0, "weakspot_damage_bonus_input", True),
+                (self.tr("weapon_damage_bonus", "Weapon damage bonus %:"), 0, "weapon_damage_bonus_input", True),
+                (self.tr("status_damage_bonus", "Status damage bonus %:"), 4, "status_damage_bonus_input", True),
+                (self.tr("damage_bonus_normal", "Damage vs normal %:"), 0, "damage_bonus_normal_input", True),
+                (self.tr("damage_bonus_elite", "Damage vs elite %:"), 0, "damage_bonus_elite_input", True),
+                (self.tr("damage_bonus_boss", "Damage vs bosses %:"), 0, "damage_bonus_boss_input", True),
+                (self.tr("fire_rate", "Fire rate (shots/min):"), 0, "fire_rate_input", True),
+                (self.tr("magazine_capacity", "Magazine capacity:"), 0, "magazine_capacity_input", True),
+                (self.tr("reload_speed", "Reload speed (sec):"), 0, "reload_speed_input", True)
             ])
-            self.create_parameters_table("Показатели защиты:", [
-                ("Снижение УРН %:", 0, "damage_reduction_input", True),
-                ("Сопротивление загрязнению:", 15, "resistance_to_pollution", True)
+            self.create_parameters_table(self.tr("defense_stats_header", "Defense stats:"), [
+                (self.tr("damage_reduction", "Damage reduction %:"), 0, "damage_reduction_input", True),
+                (self.tr("pollution_resist", "Pollution resistance:"), 15, "resistance_to_pollution", True)
             ])
-            dpg.add_input_int(label="Врагов в радиусе (м):", default_value=0,
+            dpg.add_input_int(label=self.tr("enemies_within_distance", "Enemies nearby (m):"), default_value=0,
                               tag="enemies_within_distance_input", width=100,
                               callback=self.on_parameter_change)
-            dpg.add_text("Выбор оружия:", color=[255, 255, 255], bullet=True)
+            dpg.add_text(self.tr("weapon_selection", "Weapon selection:"), color=[255, 255, 255], bullet=True)
             with dpg.group(horizontal=True, tag="weapon_selection_group"):
                 weapon = self.player.weapon
                 if weapon:
@@ -287,8 +297,8 @@ class CalcAndModTab:
                     dpg.bind_item_handler_registry(image_tag, handler_id)
                 else:
                     button_tag = "weapon_selector"
-                    dpg.add_button(label="Выберите оружие", callback=self.open_weapon_selection, tag=button_tag)
-            dpg.add_text("Выбор брони:", color=[255, 255, 255], bullet=True)
+                    dpg.add_button(label=self.tr("select_weapon", "Select weapon"), callback=self.open_weapon_selection, tag=button_tag)
+            dpg.add_text(self.tr("armor_selection", "Armor selection:"), color=[255, 255, 255], bullet=True)
             with dpg.group(horizontal=True, tag="armor_selection_group"):
                 armor_types = ['helmet', 'mask', 'top', 'gloves', 'pants', 'boots']
                 for armor_type in armor_types:
@@ -333,10 +343,10 @@ class CalcAndModTab:
 
     def create_combat_section(self):
         with dpg.child_window(width=600, height=760):
-            with dpg.group(horizontal=False):
-                dpg.add_spacer(height=10)
-                dpg.add_text("DPS: 0    Total DMG: 0", color=[120, 219, 226], tag="dps_text")
-                dpg.add_text("Патроны: 0/0", tag="ammo_text")
+                with dpg.group(horizontal=False):
+                    dpg.add_spacer(height=10)
+                    dpg.add_text("DPS: 0    Total DMG: 0", color=[120, 219, 226], tag="dps_text")
+                    dpg.add_text(f"{self.tr('ammo', 'Ammo')}: 0/0", tag="ammo_text")
 
                 target_img = self.get_target_image_path()
                 if os.path.exists(target_img):
@@ -365,7 +375,8 @@ class CalcAndModTab:
                 dpg.bind_item_handler_registry("damage_layer", "damage_layer_handlers")
 
                 with dpg.group(tag="hotbar_group"):
-                    dpg.add_text("Активные статусы:", tag="active_statuses_text")
+                    dpg.add_text(f"{self.tr('active_statuses', 'Active statuses')}:",
+                                 tag="active_statuses_text")
 
                 dpg.add_text("", tag="stats_display_text")
 
@@ -474,16 +485,16 @@ class CalcAndModTab:
             dpg.add_text(f"{item.name} ({item_type.capitalize()})")
             item_stats = item.get_stats()
             for stat_name, stat_value in item_stats.items():
-                dpg.add_text(f"{stat_name}: {stat_value}", wrap=380)
-            dpg.add_slider_int(label="Количество звёзд", min_value=1, max_value=item.max_stars,
+                dpg.add_text(f"{self.context.format_stat_name(stat_name)}: {self.context.format_value(stat_value)}", wrap=380)
+            dpg.add_slider_int(label=self.tr("stars_count", "Stars"), min_value=1, max_value=item.max_stars,
                                default_value=item.star, callback=self.update_item_stats,
                                user_data={'item': item, 'item_type': item_type},
                                tag=f"{item_type}_star_slider")
-            dpg.add_slider_int(label="Уровень", min_value=1, max_value=5,
+            dpg.add_slider_int(label=self.tr("level", "Level"), min_value=1, max_value=5,
                                default_value=item.level, callback=self.update_item_stats,
                                user_data={'item': item, 'item_type': item_type},
                                tag=f"{item_type}_level_slider")
-            dpg.add_slider_int(label="Уровень калибровки", min_value=0, max_value=item.get_max_calibration(),
+            dpg.add_slider_int(label=self.tr("calibration_level", "Calibration level"), min_value=0, max_value=item.get_max_calibration(),
                                default_value=item.calibration, callback=self.update_item_stats,
                                user_data={'item': item, 'item_type': item_type},
                                tag=f"{item_type}_calibration_slider")
@@ -493,9 +504,9 @@ class CalcAndModTab:
                 if game_set:
                     set_description = game_set.get('description', 'Описание сета отсутствует.')
                     dpg.add_separator()
-                    dpg.add_text(f"Сет: {game_set['name']}")
+                    dpg.add_text(f"{self.tr('set_label', 'Set')}: {game_set['name']}")
                     dpg.add_text(set_description, wrap=380)
-            dpg.add_button(label="Закрыть", callback=lambda: dpg.delete_item(window_tag))
+            dpg.add_button(label=self.tr("close", "Close"), callback=lambda: dpg.delete_item(window_tag))
 
     def update_item_stats(self, sender, app_data, user_data):
         item = user_data['item']
@@ -565,7 +576,7 @@ class CalcAndModTab:
         if dpg.does_item_exist(button_tag):
             dpg.delete_item(button_tag)
         parent_tag = "weapon_selection_group"
-        dpg.add_button(label="Выберите оружие", callback=self.open_weapon_selection,
+        dpg.add_button(label=self.tr("select_weapon", "Select weapon"), callback=self.open_weapon_selection,
                        tag=button_tag, parent=parent_tag)
         dpg.configure_item("weapon_selection_window", show=False)
         self.update_stats_display()
@@ -614,23 +625,23 @@ class CalcAndModTab:
         y_pos = main_window_pos[1] + (main_window_height - window_height) / 2 - 100
         with dpg.window(label=f"Настройка оружия {weapon.name}", modal=True, show=True, tag=window_tag,
                         width=window_width, height=window_height, pos=(x_pos, y_pos)):
-            dpg.add_text(f"Оружие: {weapon.name}")
+            dpg.add_text(f"{self.tr('weapon_label', 'Weapon')}: {weapon.name}")
             star_slider_tag = f"{weapon.id}_star_slider"
             level_slider_tag = f"{weapon.id}_level_slider"
             calibration_slider_tag = f"{weapon.id}_calibration_slider"
-            dpg.add_slider_int(label="Звёзды", min_value=1, max_value=6, default_value=weapon.star,
+            dpg.add_slider_int(label=self.tr("stars_count", "Stars"), min_value=1, max_value=6, default_value=weapon.star,
                                tag=star_slider_tag, callback=self.update_weapon_stats,
                                user_data={'weapon': weapon})
-            dpg.add_slider_int(label="Уровень", min_value=1, max_value=5, default_value=weapon.level,
+            dpg.add_slider_int(label=self.tr("level", "Level"), min_value=1, max_value=5, default_value=weapon.level,
                                tag=level_slider_tag, callback=self.update_weapon_stats,
                                user_data={'weapon': weapon})
-            dpg.add_slider_int(label="Калибровка", min_value=0, max_value=6, default_value=weapon.calibration,
+            dpg.add_slider_int(label=self.tr("calibration", "Calibration"), min_value=0, max_value=6, default_value=weapon.calibration,
                                tag=calibration_slider_tag, callback=self.update_weapon_stats,
                                user_data={'weapon': weapon})
             dpg.add_separator()
-            dpg.add_text("Описание:")
+            dpg.add_text(self.tr("description", "Description:"))
             dpg.add_text(weapon.description, wrap=380)
-            dpg.add_button(label="Закрыть", callback=lambda: dpg.delete_item(window_tag))
+            dpg.add_button(label=self.tr("close", "Close"), callback=lambda: dpg.delete_item(window_tag))
 
     def update_weapon_stats(self, sender, app_data, user_data):
         weapon = user_data['weapon']
@@ -649,27 +660,27 @@ class CalcAndModTab:
         self.update_stats_display()
 
     def create_item_selection_window(self):
-        with dpg.window(label="Выбор предмета", modal=True, show=False,
+        with dpg.window(label=self.tr("item_selection_window", "Item selection"), modal=True, show=False,
                         tag="item_selection_window", width=600, height=500):
-            dpg.add_text("Выберите предмет:")
+            dpg.add_text(self.tr("select_item_prompt", "Select an item:"))
             dpg.add_child_window(tag="item_selection_list", autosize_x=True, autosize_y=True)
-            dpg.add_button(label="Закрыть",
+            dpg.add_button(label=self.tr("close", "Close"),
                            callback=lambda: dpg.configure_item("item_selection_window", show=False))
 
     def create_mod_selection_window(self):
-        with dpg.window(label="Выбор мода", modal=True, show=False,
+        with dpg.window(label=self.tr("mod_selection_window", "Mod selection"), modal=True, show=False,
                         tag="mod_selection_window", width=600, height=500):
-            dpg.add_text("Выберите мод:")
+            dpg.add_text(self.tr("select_mod_prompt", "Select a mod:"))
             dpg.add_child_window(tag="mod_selection_list", autosize_x=True, autosize_y=True)
-            dpg.add_button(label="Закрыть",
+            dpg.add_button(label=self.tr("close", "Close"),
                            callback=lambda: dpg.configure_item("mod_selection_window", show=False))
 
     def create_weapon_selection_window(self):
-        with dpg.window(label="Выбор оружия", modal=True, show=False,
+        with dpg.window(label=self.tr("weapon_selection_window", "Weapon selection"), modal=True, show=False,
                         tag="weapon_selection_window", width=600, height=500):
-            dpg.add_text("Выберите оружие:")
+            dpg.add_text(self.tr("select_weapon_prompt", "Select a weapon:"))
             dpg.add_child_window(tag="weapon_selection_list", autosize_x=True, autosize_y=True)
-            dpg.add_button(label="Закрыть",
+            dpg.add_button(label=self.tr("close", "Close"),
                            callback=lambda: dpg.configure_item("weapon_selection_window", show=False))
 
     def create_error_modals(self):
@@ -864,52 +875,56 @@ class CalcAndModTab:
         main_window_height = dpg.get_viewport_height()
         x_pos = main_window_pos[0] + (main_window_width - window_width) / 2
         y_pos = main_window_pos[1] + (main_window_height - window_height) / 2 - 100
-        with dpg.window(label="Настройки Манекена", modal=True, show=True, tag=window_tag,
+        with dpg.window(label=self.tr("mannequin_settings", "Target dummy settings"), modal=True, show=True, tag=window_tag,
                         width=window_width, height=window_height, pos=(x_pos, y_pos)):
-            dpg.add_text(f"HP манекена: {self.context.mannequin.current_hp}/{self.context.mannequin.max_hp}")
+            dpg.add_text(
+                f"{self.tr('mannequin_hp', 'Target dummy HP')}: "
+                f"{self.context.format_value(self.context.mannequin.current_hp, hp_value=True)}/"
+                f"{self.context.format_value(self.context.mannequin.max_hp, hp_value=True)}"
+            )
             hp_slider_tag = "mannequin_hp_slider"
-            dpg.add_slider_int(label="Установить HP", min_value=1000, max_value=1000000,
+            dpg.add_slider_int(label=self.tr("set_hp", "Set HP"), min_value=1000, max_value=1000000,
                                default_value=self.context.mannequin.max_hp, tag=hp_slider_tag,
                                callback=self.apply_mannequin_hp_callback)
             enemy_types = ['Обычный', 'Элитный', 'Босс']
-            dpg.add_combo(label="Тип Врага", items=enemy_types, default_value=self.context.mannequin.enemy_type,
+            dpg.add_combo(label=self.tr("enemy_type", "Enemy type"), items=enemy_types, default_value=self.context.mannequin.enemy_type,
                           tag="mannequin_enemy_type_combo", callback=self.apply_mannequin_enemy_type_callback)
-            dpg.add_checkbox(label="Отображать Хотбар", default_value=self.context.mannequin.show_hotbar,
+            dpg.add_checkbox(label=self.tr("show_hotbar", "Show hotbar"), default_value=self.context.mannequin.show_hotbar,
                              callback=self.toggle_hotbar_callback)
-            dpg.add_checkbox(label="Суммарный урон дробовика",
+            dpg.add_checkbox(label=self.tr("unified_shotgun_damage", "Unified shotgun damage"),
                              default_value=self.context.mannequin.show_unified_shotgun_damage,
                              callback=self.toggle_unified_shotgun_damage_callback)
             dpg.add_separator()
-            dpg.add_text("Эффекты:")
+            dpg.add_text(self.tr("effects", "Effects:"))
             for eff_name in self.context.available_effects:
                 is_active = eff_name in self.context.mannequin.effects
                 dpg.add_checkbox(label=eff_name, default_value=is_active, user_data=eff_name,
                                  callback=self.toggle_mannequin_effect)
-            dpg.add_button(label="Закрыть", callback=lambda: dpg.delete_item(window_tag))
+            dpg.add_button(label=self.tr("close", "Close"), callback=lambda: dpg.delete_item(window_tag))
             dpg.add_separator()
-            dpg.add_text("Настройки анимации урона:")
-            dpg.add_slider_float(label="Скорость", min_value=10, max_value=500,
+            dpg.add_text(self.tr("damage_animation_settings", "Damage animation settings:"))
+            dpg.add_slider_float(label=self.tr("speed", "Speed"), min_value=10, max_value=500,
                                  default_value=self.context.damage_text_settings['speed'],
                                  callback=lambda s,a,u: self.set_damage_text_setting('speed', a))
-            dpg.add_slider_float(label="Задержка исчезновения", min_value=0.1, max_value=5.0,
+            dpg.add_slider_float(label=self.tr("fade_delay", "Fade delay"), min_value=0.1, max_value=5.0,
                                  default_value=self.context.damage_text_settings['fade_delay'],
                                  callback=lambda s,a,u: self.set_damage_text_setting('fade_delay', a))
-            dpg.add_slider_int(label="Мин. угол", min_value=0, max_value=180,
+            dpg.add_slider_int(label=self.tr("min_angle", "Min angle"), min_value=0, max_value=180,
                                default_value=self.context.damage_text_settings['angle_min'],
                                callback=lambda s,a,u: self.set_damage_text_setting('angle_min', a))
-            dpg.add_slider_int(label="Макс. угол", min_value=0, max_value=180,
+            dpg.add_slider_int(label=self.tr("max_angle", "Max angle"), min_value=0, max_value=180,
                                default_value=self.context.damage_text_settings['angle_max'],
                                callback=lambda s,a,u: self.set_damage_text_setting('angle_max', a))
-            dpg.add_text("Цвет для критического попадания:")
+            dpg.add_text(self.tr("crit_color", "Critical hit color:"))
             dpg.add_color_picker(default_value=self.context.damage_text_settings['crit_color'], width=200,
                                  callback=lambda s,a,u: self.set_damage_text_setting('crit_color', a))
-            dpg.add_text("Цвет для слабого места:")
+            dpg.add_text(self.tr("weakspot_color", "Weakspot color:"))
             dpg.add_color_picker(default_value=self.context.damage_text_settings['weakspot_color'], width=200,
                                  callback=lambda s,a,u: self.set_damage_text_setting('weakspot_color', a))
-            dpg.add_text("Цвет для критического попадания по слабому месту:")
+            dpg.add_text(self.tr("crit_weakspot_color", "Critical weakspot color:"))
             dpg.add_color_picker(default_value=self.context.damage_text_settings['crit_weakspot_color'], width=200,
                                  callback=lambda s,a,u: self.set_damage_text_setting('crit_weakspot_color', a))
-            dpg.add_text("Цвет для обычного попадания:")
+            dpg.add_text(self.tr("normal_color", "Normal hit color:"))
             dpg.add_color_picker(default_value=self.context.damage_text_settings['normal_color'], width=200,
                                  callback=lambda s,a,u: self.set_damage_text_setting('normal_color', a))
 
@@ -1139,10 +1154,16 @@ class CalcAndModTab:
             dpg.set_value("status_text", message)
 
     def update_dps_display(self):
-        dps_text = f"DPS: {int(self.context.dps)}    Total DMG: {int(self.context.total_damage)}"
+        dps_text = (
+            f"DPS: {int(self.context.dps)}    "
+            f"{self.tr('total_damage', 'Total DMG')}: {int(self.context.total_damage)}"
+        )
         if dpg.does_item_exist("dps_text"):
             dpg.set_value("dps_text", dps_text)
-        ammo_text = f"Патроны: {self.context.current_ammo}/{self.player.stats.get('magazine_capacity', 0)}"
+        ammo_text = (
+            f"{self.tr('ammo', 'Ammo')}: "
+            f"{self.context.current_ammo}/{self.player.stats.get('magazine_capacity', 0)}"
+        )
         if dpg.does_item_exist("ammo_text"):
             dpg.set_value("ammo_text", ammo_text)
 
@@ -1180,3 +1201,16 @@ class CalcAndModTab:
 
     def load_config_callback(self):
         self.config_manager.load_config()
+
+    def update_ui(self):
+        self.refresh_translations()
+        self.update_dps_display()
+        self.update_stats_display()
+        active_effects = list(self.context.mannequin.effects.keys())
+        effects_str = ", ".join(active_effects) if active_effects else self.tr("no_active_statuses", "No active statuses")
+        if dpg.does_item_exist("active_statuses_text"):
+            dpg.set_value("active_statuses_text", f"{self.tr('active_statuses', 'Active statuses')}: {effects_str}")
+        if dpg.does_item_exist("calc_save_config_button"):
+            dpg.configure_item("calc_save_config_button", label=self.tr("save_config", "Save configuration"))
+        if dpg.does_item_exist("calc_load_config_button"):
+            dpg.configure_item("calc_load_config_button", label=self.tr("load_config", "Load configuration"))

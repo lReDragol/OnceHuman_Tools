@@ -9,6 +9,7 @@ Pillow
 psutil
 PyAutoGUI
 PyQt5
+PySide6
 pytesseract
 pyTelegramBotAPI
 python-Levenshtein

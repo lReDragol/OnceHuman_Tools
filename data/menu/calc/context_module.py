@@ -12,6 +12,107 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+DISPLAY_TEXT = {
+    "ru": {
+        "stats_title": "Текущие параметры персонажа",
+        "mannequin_hp": "HP манекена",
+        "mannequin_status": "Статус манекена",
+        "mannequin_enemy_type": "Тип врага манекена",
+        "mannequin_effects": "Эффекты на манекене",
+        "equipped_items": "Экипированные предметы",
+        "stars": "Звёзд",
+        "level": "Уровень",
+        "calibration": "Калибровка",
+        "weapon": "Оружие",
+        "status_effects": "Статусные эффекты",
+        "yes": "Да",
+        "no": "Нет",
+    },
+    "en": {
+        "stats_title": "Current character stats",
+        "mannequin_hp": "Target dummy HP",
+        "mannequin_status": "Target dummy status",
+        "mannequin_enemy_type": "Target dummy enemy type",
+        "mannequin_effects": "Effects on target dummy",
+        "equipped_items": "Equipped items",
+        "stars": "Stars",
+        "level": "Level",
+        "calibration": "Calibration",
+        "weapon": "Weapon",
+        "status_effects": "Status effects",
+        "yes": "Yes",
+        "no": "No",
+    },
+}
+
+STAT_LABELS = {
+    "ru": {
+        "damage_per_projectile": "Урон за выстрел",
+        "crit_rate_percent": "Шанс крит. попадания %",
+        "crit_damage_percent": "Крит. урон %",
+        "weapon_damage_percent": "Урон оружия %",
+        "status_damage_percent": "Урон статуса %",
+        "movement_speed_percent": "Скорость передвижения %",
+        "elemental_damage_percent": "Элементальный урон %",
+        "weakspot_damage_percent": "Урон по уязвимостям %",
+        "reload_time_seconds": "Перезарядка (сек.)",
+        "magazine_capacity": "Ёмкость магазина",
+        "damage_bonus_normal": "Урон по обычным %",
+        "damage_bonus_elite": "Урон по элитным %",
+        "damage_bonus_boss": "Урон по боссам %",
+        "pollution_resist": "Сопротивление загрязнению",
+        "psi_intensity": "Пси-интенсивность",
+        "fire_rate": "Скорость стрельбы",
+        "projectiles_per_shot": "Пуль за выстрел",
+        "hp": "ОЗ",
+        "can_deal_weakspot_damage": "Попадание по уязвимостям",
+        "is_invincible": "Неуязвимость",
+        "has_super_armor": "Суперброня",
+    },
+    "en": {
+        "damage_per_projectile": "Damage per shot",
+        "crit_rate_percent": "Critical hit chance %",
+        "crit_damage_percent": "Critical damage %",
+        "weapon_damage_percent": "Weapon damage %",
+        "status_damage_percent": "Status damage %",
+        "movement_speed_percent": "Movement speed %",
+        "elemental_damage_percent": "Elemental damage %",
+        "weakspot_damage_percent": "Weakspot damage %",
+        "reload_time_seconds": "Reload time (sec.)",
+        "magazine_capacity": "Magazine capacity",
+        "damage_bonus_normal": "Damage vs normal enemies %",
+        "damage_bonus_elite": "Damage vs elite enemies %",
+        "damage_bonus_boss": "Damage vs bosses %",
+        "pollution_resist": "Pollution resistance",
+        "psi_intensity": "PSI intensity",
+        "fire_rate": "Fire rate",
+        "projectiles_per_shot": "Projectiles per shot",
+        "hp": "HP",
+        "can_deal_weakspot_damage": "Weakspot damage enabled",
+        "is_invincible": "Invincible",
+        "has_super_armor": "Super armor",
+    },
+}
+
+ENEMY_TYPE_LABELS = {
+    "ru": {
+        "Normal": "Обычный",
+        "Elite": "Элитный",
+        "Boss": "Босс",
+        "Обычный": "Обычный",
+        "Элитный": "Элитный",
+        "Босс": "Босс",
+    },
+    "en": {
+        "Normal": "Normal",
+        "Elite": "Elite",
+        "Boss": "Boss",
+        "Обычный": "Normal",
+        "Элитный": "Elite",
+        "Босс": "Boss",
+    },
+}
+
 class DamageCalculator:
     def __init__(self, player, context):
         self.player = player
@@ -73,6 +174,7 @@ class DamageCalculator:
 class Context:
     def __init__(self, player):
         self.player = player
+        self.language = "ru"
         self.total_damage = 0
         self.dps = 0
         self.max_dps = 0
@@ -277,13 +379,47 @@ class Context:
         self.max_hp = self.base_hp + self.bonus_hp
         logging.debug(f"Updated max HP: {self.max_hp}")
 
+    def set_language(self, language):
+        self.language = language if language in DISPLAY_TEXT else "ru"
+
+    def get_text(self, key, fallback):
+        return DISPLAY_TEXT.get(self.language, DISPLAY_TEXT["ru"]).get(key, fallback)
+
+    def format_enemy_type(self, enemy_type):
+        return ENEMY_TYPE_LABELS.get(self.language, ENEMY_TYPE_LABELS["ru"]).get(enemy_type, enemy_type)
+
+    def format_stat_name(self, stat_key):
+        label_map = STAT_LABELS.get(self.language, STAT_LABELS["ru"])
+        if stat_key in label_map:
+            return label_map[stat_key]
+        return stat_key.replace("_", " ").strip().capitalize()
+
+    def format_value(self, value, digits=2, hp_value=False):
+        if isinstance(value, bool):
+            return self.get_text("yes", "Yes") if value else self.get_text("no", "No")
+        if isinstance(value, (int, float)):
+            if hp_value:
+                return str(int(round(value)))
+            rounded = round(float(value), digits)
+            if rounded.is_integer():
+                return str(int(rounded))
+            return f"{rounded:.{digits}f}".rstrip("0").rstrip(".")
+        return str(value)
+
     def get_stats_display_text(self, player):
-        stats_text = "Текущие параметры персонажа:\n\n"
-        stats_text += f"HP манекена: {self.mannequin.current_hp}/{self.mannequin.max_hp}\n"
-        stats_text += f"Статус манекена: {self.mannequin.status}\n"
-        stats_text += f"Тип врага манекена: {self.mannequin.enemy_type}\n"
+        stats_text = f"{self.get_text('stats_title', 'Current character stats')}:\n\n"
+        stats_text += (
+            f"{self.get_text('mannequin_hp', 'Target dummy HP')}: "
+            f"{self.format_value(self.mannequin.current_hp, hp_value=True)}/"
+            f"{self.format_value(self.mannequin.max_hp, hp_value=True)}\n"
+        )
+        stats_text += f"{self.get_text('mannequin_status', 'Target dummy status')}: {self.mannequin.status}\n"
+        stats_text += (
+            f"{self.get_text('mannequin_enemy_type', 'Target dummy enemy type')}: "
+            f"{self.format_enemy_type(self.mannequin.enemy_type)}\n"
+        )
         if self.mannequin.effects:
-            stats_text += "Эффекты на манекене:\n"
+            stats_text += f"{self.get_text('mannequin_effects', 'Effects on target dummy')}:\n"
             for effect in self.mannequin.effects:
                 stats_text += f"- {effect}\n"
         stats_to_display = [
@@ -296,24 +432,26 @@ class Context:
         ]
         for stat in stats_to_display:
             value = player.stats.get(stat, getattr(self, stat, 0))
-            value = int(value)
-            stats_text += f"{stat}: {value}\n"
-        stats_text += "\nЭкипированные предметы:\n"
+            stats_text += f"{self.format_stat_name(stat)}: {self.format_value(value)}\n"
+        stats_text += f"\n{self.get_text('equipped_items', 'Equipped items')}:\n"
         for item_type, item in player.equipped_items.items():
-            stats_text += (f"{item.name} ({item_type.capitalize()}): "
-                           f"Звёзд: {item.star}, Уровень: {item.level}, "
-                           f"Калибровка: {item.calibration}\n")
+            stats_text += (
+                f"{item.name} ({item_type.capitalize()}): "
+                f"{self.get_text('stars', 'Stars')}: {item.star}, "
+                f"{self.get_text('level', 'Level')}: {item.level}, "
+                f"{self.get_text('calibration', 'Calibration')}: {item.calibration}\n"
+            )
             item_stats = item.get_stats()
             for stat_name, stat_value in item_stats.items():
-                stats_text += f"  {stat_name}: {stat_value}\n"
+                stats_text += f"  {self.format_stat_name(stat_name)}: {self.format_value(stat_value)}\n"
         if player.weapon:
-            stats_text += f"\nОружие: {player.weapon.name}\n"
+            stats_text += f"\n{self.get_text('weapon', 'Weapon')}: {player.weapon.name}\n"
             for stat_name, stat_value in player.weapon.get_stats().items():
-                stats_text += f"  {stat_name}: {stat_value}\n"
+                stats_text += f"  {self.format_stat_name(stat_name)}: {self.format_value(stat_value)}\n"
         if self.mannequin_status_effects:
-            stats_text += "\nСтатусные эффекты:\n"
+            stats_text += f"\n{self.get_text('status_effects', 'Status effects')}:\n"
             for key, val in self.mannequin_status_effects.items():
-                stats_text += f"{key}: {val}\n"
+                stats_text += f"{key}: {self.format_value(val)}\n"
         return stats_text
 
     def initialize(self):

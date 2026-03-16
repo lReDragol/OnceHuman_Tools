@@ -1,15 +1,16 @@
-# 🛠️ OnceHuman Tools
+# Once Human Tools
 
-Welcome to the OnceHuman Tools repository! Choose your preferred language to read the documentation:
+Choose the documentation language:
 
-- [🇷🇺 Читать на русском языке (README_ru.md)](README_ru.md)
-- [🇺🇸 Read in English (README_en.md)](README_en.md)
+- [README in Russian](README_ru.md)
+- [README in English](README_en.md)
 
-### Usage Policies
+## Policies
 
-To review the usage policies for OnceHuman Tools, please select your language:
+- [Политика использования на русском](README_policy_ru.md)
+- [Usage policy in English](README_policy_en.md)
 
-- [🇷🇺 Политика использования на русском языке (README_policy_ru.md)](README_policy_ru.md)
-- [🇺🇸 Usage Policy in English (README_policy_en.md)](README_policy_en.md)
+## Data tools
 
-Choose your language to dive into the details of how this program can improve your gameplay and to understand the policies governing its use!
+- [Инструменты для данных на русском](tools/README_ru.md)
+- [Data tools in English](tools/README_en.md)

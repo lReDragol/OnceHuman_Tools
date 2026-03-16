@@ -6,13 +6,16 @@ import json
 import time
 import os
 import ctypes
+import subprocess
+import tempfile
 from ctypes import wintypes
 from vk_codes import VK_CODE
 import sys
 
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFileDialog, QPushButton
-from PyQt5.QtGui import QPixmap, QPainter, QPen, QColor
-from PyQt5.QtCore import Qt, QRect, QPoint
+from PIL import ImageGrab
+from PySide6.QtCore import QEventLoop, QPoint, QRect, Qt
+from PySide6.QtGui import QColor, QPainter, QPen, QPixmap
+from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QPushButton
 
 PUL = ctypes.POINTER(ctypes.c_ulong)
 
@@ -51,6 +54,14 @@ KEYEVENTF_SCANCODE = 0x0008
 KEYEVENTF_EXTENDEDKEY = 0x0001
 MOUSEEVENTF_LEFTDOWN = 0x0002
 MOUSEEVENTF_LEFTUP = 0x0004
+SW_MINIMIZE = 6
+
+
+ZONE_CREATION_TEXT = {
+    "window_title": "Выбор областей",
+    "save_button": "Сохранить",
+    "clear_button": "Очистить",
+}
 
 
 def SendInput(*inputs):
@@ -199,48 +210,63 @@ def calculate_window_position(index):
     return x, y
 
 
-class MainMenu(QMainWindow):
-    def __init__(self, config_path):
-        super().__init__()
-        self.config_path = config_path
-        self.setWindowTitle('Создание зон')
-        self.setGeometry(100, 100, 400, 200)
+def _clear_clipboard():
+    user32 = ctypes.windll.user32
+    if not user32.OpenClipboard(None):
+        return
+    try:
+        user32.EmptyClipboard()
+    finally:
+        user32.CloseClipboard()
 
-        load_button = QPushButton('Загрузить скриншот', self)
-        load_button.setGeometry(50, 80, 150, 40)
-        load_button.clicked.connect(self.load_screenshot)
 
-        screenshot_button = QPushButton('Сделать скриншот', self)
-        screenshot_button.setGeometry(210, 80, 150, 40)
-        screenshot_button.clicked.connect(self.take_screenshot)
+def _minimize_foreground_window():
+    hwnd = ctypes.windll.user32.GetForegroundWindow()
+    if hwnd:
+        ctypes.windll.user32.ShowWindow(hwnd, SW_MINIMIZE)
 
-        self.show()
 
-    def load_screenshot(self):
-        image_path, _ = QFileDialog.getOpenFileName(self, 'Выберите изображение', '', 'PNG files (*.png);;JPEG files (*.jpg *.jpeg)')
-        if image_path:
-            self.open_screenshot_selector(image_path)
-            self.close()
+def _launch_windows_snipping():
+    try:
+        os.startfile("ms-screenclip:")
+        return True
+    except OSError:
+        try:
+            subprocess.Popen(["explorer.exe", "ms-screenclip:"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            return True
+        except Exception:
+            return False
 
-    def take_screenshot(self):
-        self.hide()
-        time.sleep(0.5)
-        screenshot = pyautogui.screenshot()
-        screenshot_path = os.path.join(os.path.dirname(self.config_path), "screenshot.png")
-        screenshot.save(screenshot_path)
-        self.open_screenshot_selector(screenshot_path)
-        self.close()
 
-    def open_screenshot_selector(self, image_path):
-        self.selector_window = ScreenshotSelector(image_path, self.config_path)
-        self.selector_window.show()
+def capture_zone_screenshot():
+    screenshot_path = os.path.join(tempfile.gettempdir(), "once_human_portable_zone_capture.png")
+    _clear_clipboard()
+    _minimize_foreground_window()
+    time.sleep(0.2)
+
+    if _launch_windows_snipping():
+        deadline = time.time() + 45
+        while time.time() < deadline:
+            clipboard_content = ImageGrab.grabclipboard()
+            if hasattr(clipboard_content, "save"):
+                clipboard_content.save(screenshot_path)
+                return screenshot_path
+            time.sleep(0.25)
+        return None
+
+    screenshot = pyautogui.screenshot()
+    screenshot.save(screenshot_path)
+    return screenshot_path
 
 
 class ScreenshotSelector(QMainWindow):
-    def __init__(self, image_path, config_path):
+    def __init__(self, image_path, config_path, ui_text=None, result_holder=None):
         super().__init__()
         self.config_path = config_path
-        self.setWindowTitle('Выбор областей')
+        self.ui_text = {**ZONE_CREATION_TEXT, **(ui_text or {})}
+        self.result_holder = result_holder if result_holder is not None else {"saved": False}
+        self.setAttribute(Qt.WA_DeleteOnClose, True)
+        self.setWindowTitle(self.ui_text["window_title"])
         self.setGeometry(100, 100, 800, 600)
 
         self.image_label = QLabel(self)
@@ -259,16 +285,17 @@ class ScreenshotSelector(QMainWindow):
         self.image_label.mouseMoveEvent = self.on_mouse_move
         self.image_label.mouseReleaseEvent = self.on_mouse_release
 
-        self.save_button = QPushButton('Сохранить', self)
+        self.save_button = QPushButton(self.ui_text["save_button"], self)
         self.save_button.setGeometry(10, 10, 100, 30)
         self.save_button.clicked.connect(self.save_config)
 
-        self.clear_button = QPushButton('Очистить', self)
+        self.clear_button = QPushButton(self.ui_text["clear_button"], self)
         self.clear_button.setGeometry(120, 10, 100, 30)
         self.clear_button.clicked.connect(self.clear_rectangles)
 
     def load_image(self, image_path):
         self.image = QPixmap(image_path)
+        self.backup_image = self.image.copy()
         self.image_label.setPixmap(self.image)
         self.image_label.adjustSize()
 
@@ -325,6 +352,7 @@ class ScreenshotSelector(QMainWindow):
         config_data["zones"] = existing_zones
 
         save_config(config_data, self.config_path)
+        self.result_holder["saved"] = True
         print(f"Конфигурация сохранена в {self.config_path}")
         self.close()
 
@@ -334,11 +362,26 @@ class ScreenshotSelector(QMainWindow):
         self.update()
 
 
-def start_zone_creation(config_path="config.json", callback=None):
+def start_zone_creation(config_path="config.json", callback=None, ui_text=None):
     app = QApplication.instance()
     if app is None:
         app = QApplication(sys.argv)
-    main_menu = MainMenu(config_path)
-    app.exec_()
-    if callback:
+
+    screenshot_path = capture_zone_screenshot()
+    if not screenshot_path or not os.path.exists(screenshot_path):
+        return False
+
+    result_holder = {"saved": False}
+    selector = ScreenshotSelector(
+        screenshot_path,
+        config_path,
+        ui_text=ui_text,
+        result_holder=result_holder,
+    )
+    selector.show()
+    loop = QEventLoop()
+    selector.destroyed.connect(loop.quit)
+    loop.exec()
+    if result_holder["saved"] and callback:
         callback()
+    return result_holder["saved"]
