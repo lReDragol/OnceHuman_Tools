@@ -56,15 +56,46 @@ STAT_LABELS = {
         "elemental_damage_percent": "Элементальный урон %",
         "weakspot_damage_percent": "Урон по уязвимостям %",
         "reload_time_seconds": "Перезарядка (сек.)",
+        "reload_speed_percent": "Скорость перезарядки %",
+        "reload_speed_points": "Очки перезарядки",
         "magazine_capacity": "Ёмкость магазина",
+        "magazine_capacity_percent": "Ёмкость магазина %",
         "damage_bonus_normal": "Урон по обычным %",
         "damage_bonus_elite": "Урон по элитным %",
         "damage_bonus_boss": "Урон по боссам %",
         "pollution_resist": "Сопротивление загрязнению",
         "psi_intensity": "Пси-интенсивность",
         "fire_rate": "Скорость стрельбы",
+        "fire_rate_percent": "Скорость стрельбы %",
         "projectiles_per_shot": "Пуль за выстрел",
         "hp": "ОЗ",
+        "attack": "Атака",
+        "psi_intensity_damage_percent": "Урон от PSI %",
+        "stability": "Стабильность",
+        "accuracy": "Точность",
+        "range": "Дальность",
+        "mobility": "Мобильность",
+        "ads_time_seconds": "Время ADS (сек.)",
+        "bullet_speed": "Скорость пули",
+        "min_damage_range_meters": "Начало падения урона (м)",
+        "min_damage_percent": "Мин. урон %",
+        "damage_reduction_percent": "Снижение урона %",
+        "vulnerability_percent": "Уязвимость цели %",
+        "explosion_elemental_damage_percent": "Урон взрыва %",
+        "unstable_bomber_damage_percent": "Урон Unstable Bomber %",
+        "unstable_bomber_final_damage_percent": "Финальный урон Unstable Bomber %",
+        "shrapnel_damage_percent": "Урон Shrapnel %",
+        "shrapnel_trigger_chance_percent": "Шанс Shrapnel %",
+        "power_surge_damage_percent": "Урон Power Surge %",
+        "power_surge_duration_percent": "Длительность Power Surge %",
+        "shock_damage_percent": "Урон шока %",
+        "burn_damage_percent": "Урон горения %",
+        "burn_duration_percent": "Длительность горения %",
+        "max_burn_stacks": "Макс. стаков горения",
+        "frost_vortex_damage_percent": "Урон Frost Vortex %",
+        "fortress_warfare_range_percent": "Радиус Fortress Warfare %",
+        "max_lone_shadow_stacks": "Макс. стаков Lone Shadow",
+        "max_deviant_energy_stacks": "Макс. стаков Deviant Energy",
         "can_deal_weakspot_damage": "Попадание по уязвимостям",
         "is_invincible": "Неуязвимость",
         "has_super_armor": "Суперброня",
@@ -79,15 +110,46 @@ STAT_LABELS = {
         "elemental_damage_percent": "Elemental damage %",
         "weakspot_damage_percent": "Weakspot damage %",
         "reload_time_seconds": "Reload time (sec.)",
+        "reload_speed_percent": "Reload speed %",
+        "reload_speed_points": "Reload points",
         "magazine_capacity": "Magazine capacity",
+        "magazine_capacity_percent": "Magazine capacity %",
         "damage_bonus_normal": "Damage vs normal enemies %",
         "damage_bonus_elite": "Damage vs elite enemies %",
         "damage_bonus_boss": "Damage vs bosses %",
         "pollution_resist": "Pollution resistance",
         "psi_intensity": "PSI intensity",
         "fire_rate": "Fire rate",
+        "fire_rate_percent": "Fire rate %",
         "projectiles_per_shot": "Projectiles per shot",
         "hp": "HP",
+        "attack": "Attack",
+        "psi_intensity_damage_percent": "PSI damage %",
+        "stability": "Stability",
+        "accuracy": "Accuracy",
+        "range": "Range",
+        "mobility": "Mobility",
+        "ads_time_seconds": "ADS time (sec.)",
+        "bullet_speed": "Bullet speed",
+        "min_damage_range_meters": "Damage falloff start (m)",
+        "min_damage_percent": "Minimum damage %",
+        "damage_reduction_percent": "Damage reduction %",
+        "vulnerability_percent": "Target vulnerability %",
+        "explosion_elemental_damage_percent": "Explosion damage %",
+        "unstable_bomber_damage_percent": "Unstable Bomber damage %",
+        "unstable_bomber_final_damage_percent": "Unstable Bomber final damage %",
+        "shrapnel_damage_percent": "Shrapnel damage %",
+        "shrapnel_trigger_chance_percent": "Shrapnel trigger chance %",
+        "power_surge_damage_percent": "Power Surge damage %",
+        "power_surge_duration_percent": "Power Surge duration %",
+        "shock_damage_percent": "Shock damage %",
+        "burn_damage_percent": "Burn damage %",
+        "burn_duration_percent": "Burn duration %",
+        "max_burn_stacks": "Max burn stacks",
+        "frost_vortex_damage_percent": "Frost Vortex damage %",
+        "fortress_warfare_range_percent": "Fortress Warfare range %",
+        "max_lone_shadow_stacks": "Max Lone Shadow stacks",
+        "max_deviant_energy_stacks": "Max Deviant Energy stacks",
         "can_deal_weakspot_damage": "Weakspot damage enabled",
         "is_invincible": "Invincible",
         "has_super_armor": "Super armor",
@@ -199,6 +261,9 @@ class Context:
         self.selected_mods = []
         self.selected_items = {}
         self.mannequin_status_effects = {}
+        self.mannequin_status_expirations = []
+        self.mannequin_status_stacks = {}
+        self.mannequin_status_payloads = {}
         self.player_status_expirations = []
         self.status_stack_counts = {}
         self.max_fire_stacks = 16
@@ -215,10 +280,13 @@ class Context:
         self.alternate_ammo_until_reload = False
         self.charge_stacks = 0
         self.current_mode = None
+        self.mode_expirations = {}
         self.magazine_bullets_fired = 0
         self.magazine_weakspot_hits = 0
         self.last_magazine_weakspot_rate = 0.0
         self.enemy_defeated_pending_reset = False
+        self.current_shield = 0.0
+        self.shield_end_time = 0.0
 
         # Путь с JSON
         self.bd_json_path = os.path.join(CURRENT_DIR, 'bd_json')
@@ -235,6 +303,7 @@ class Context:
         self.calibration_bonuses = self.base_stats_data.get('calibration_bonuses', {})
 
         self.weapons_data = self.load_weapons()
+        self.attachments_data = self.load_weapon_attachments()
 
         self.current_mod = {'effects': []}
         self.stats_stack = [self.current_mod['effects']]
@@ -340,6 +409,16 @@ class Context:
             logging.warning("weapon_list.json not found!")
             return []
 
+    def load_weapon_attachments(self):
+        path_attachments = os.path.join(self.bd_json_path, 'weapon_attachments.json')
+        try:
+            with open(path_attachments, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                return data.get('attachments', [])
+        except FileNotFoundError:
+            logging.warning("weapon_attachments.json not found!")
+            return []
+
     def update_selected_status(self, status):
         self.selected_status = status
 
@@ -420,9 +499,63 @@ class Context:
             return f"{rounded:.{digits}f}".rstrip("0").rstrip(".")
         return str(value)
 
+    def get_status_remaining(self, status):
+        now = time.time()
+        target_remaining = max(
+            [entry['end_time'] - now for entry in self.mannequin_status_expirations if entry['status'] == status] or [0.0]
+        )
+        player_remaining = max(
+            [entry['end_time'] - now for entry in self.player_status_expirations if entry['status'] == status] or [0.0]
+        )
+        mode_remaining = max(self.mode_expirations.get(status, 0.0) - now, 0.0)
+        return max(target_remaining, player_remaining, mode_remaining, 0.0)
+
+    def get_active_status_payloads(self):
+        now = time.time()
+        payloads = []
+        seen = set()
+        for status, end_time in self.mannequin_status_effects.items():
+            payloads.append({
+                'status': status,
+                'target': 'mannequin',
+                'stacks': self.mannequin_status_stacks.get(status, 1),
+                'remaining': max(end_time - now, 0.0),
+            })
+            seen.add(('mannequin', status))
+        for status, count in self.status_stack_counts.items():
+            key = ('player', status)
+            if key in seen:
+                continue
+            payloads.append({
+                'status': status,
+                'target': 'player',
+                'stacks': count,
+                'remaining': self.get_status_remaining(status),
+            })
+        if self.current_mode:
+            key = ('player', self.current_mode)
+            if key not in seen:
+                payloads.append({
+                    'status': self.current_mode,
+                    'target': 'player',
+                    'stacks': 1,
+                    'remaining': self.get_status_remaining(self.current_mode),
+                })
+        if self.current_shield > 0 and self.shield_end_time > now:
+            payloads.append({
+                'status': 'shielded',
+                'target': 'player',
+                'stacks': 1,
+                'remaining': max(self.shield_end_time - now, 0.0),
+            })
+        return payloads
+
     def build_effect_context(self, event_name=None, **overrides):
         target_statuses = [{'status': status} for status in self.mannequin.effects.keys()]
         for status in self.mannequin_status_effects.keys():
+            if {'status': status} not in target_statuses:
+                target_statuses.append({'status': status})
+        for status in self.mannequin_status_stacks.keys():
             if {'status': status} not in target_statuses:
                 target_statuses.append({'status': status})
 
@@ -436,6 +569,7 @@ class Context:
             'target_hp_ratio': (self.mannequin.current_hp / self.mannequin.max_hp) if self.mannequin.max_hp else 1.0,
             'enemy_type': self.mannequin.enemy_type,
             'current_mode': self.current_mode,
+            'current_shield': self.current_shield,
             'event_name': event_name,
         }
         effect_context.update(overrides)
@@ -447,13 +581,19 @@ class Context:
         return (
             status in self.mannequin_status_effects
             or status in self.mannequin.effects
+            or self.mannequin_status_stacks.get(status, 0) > 0
             or self.status_stack_counts.get(status, 0) > 0
             or self.stacks.get(status, 0) > 0
             or status in self.buffs
+            or status == self.current_mode
+            or (status == 'shielded' and self.current_shield > 0)
         )
 
     def get_stack_count(self, stack_source):
-        return self.status_stack_counts.get(stack_source, self.stacks.get(stack_source, 0))
+        return self.status_stack_counts.get(
+            stack_source,
+            self.mannequin_status_stacks.get(stack_source, self.stacks.get(stack_source, 0)),
+        )
 
     def refresh_player_stats(self):
         self.player.recalculate_stats(self)
@@ -461,6 +601,104 @@ class Context:
         max_mag = self.player.stats.get('magazine_capacity', 0)
         if self.current_ammo > max_mag:
             self.current_ammo = max_mag
+
+    def refill_magazine_percent(self, percent):
+        if percent <= 0:
+            return
+        max_mag = self.player.stats.get('magazine_capacity', 0)
+        amount = max(1, int(math.ceil(max_mag * percent / 100.0)))
+        self.current_ammo = min(max_mag, self.current_ammo + amount)
+
+    def restore_hp_percent(self, percent):
+        if percent <= 0:
+            return
+        healed = self.max_hp * (percent / 100.0)
+        self.current_hp = min(self.max_hp, self.current_hp + healed)
+
+    def apply_shield(self, percent_of_max_hp=None, flat_value=None, duration_seconds=0, max_percent=None):
+        shield_value = 0.0
+        if percent_of_max_hp:
+            shield_value += self.max_hp * (percent_of_max_hp / 100.0)
+        if flat_value:
+            shield_value += float(flat_value)
+        if shield_value <= 0:
+            return
+        max_cap = self.max_hp * (max_percent / 100.0) if max_percent else None
+        self.current_shield += shield_value
+        if max_cap is not None:
+            self.current_shield = min(self.current_shield, max_cap)
+        self.shield_end_time = max(self.shield_end_time, time.time() + duration_seconds)
+        self.status_stack_counts['shielded'] = 1
+        self.player_status_expirations = [
+            entry for entry in self.player_status_expirations if entry['status'] != 'shielded'
+        ]
+        self.player_status_expirations.append({'status': 'shielded', 'end_time': self.shield_end_time})
+        self.refresh_player_stats()
+
+    def reduce_status_stacks_percent(self, status, percent):
+        count = self.mannequin_status_stacks.get(status, 0)
+        if count <= 0:
+            return
+        keep_count = max(0, int(math.floor(count * max(0.0, 100.0 - percent) / 100.0)))
+        if keep_count <= 0:
+            self.mannequin_status_stacks.pop(status, None)
+            self.mannequin_status_effects.pop(status, None)
+            self.mannequin.effects.pop(status, None)
+            self.mannequin_status_expirations = [
+                entry for entry in self.mannequin_status_expirations if entry['status'] != status
+            ]
+        else:
+            self.mannequin_status_stacks[status] = keep_count
+            entries = [entry for entry in self.mannequin_status_expirations if entry['status'] == status]
+            entries.sort(key=lambda entry: entry['end_time'], reverse=True)
+            kept_entries = entries[:keep_count]
+            self.mannequin_status_expirations = [
+                entry for entry in self.mannequin_status_expirations if entry['status'] != status
+            ] + kept_entries
+
+    def extend_status_duration(self, status, duration_seconds):
+        if duration_seconds <= 0:
+            return
+        updated = False
+        for entry in self.mannequin_status_expirations:
+            if entry['status'] == status:
+                entry['end_time'] += duration_seconds
+                updated = True
+        for entry in self.player_status_expirations:
+            if entry['status'] == status:
+                entry['end_time'] += duration_seconds
+                updated = True
+        if updated:
+            self.mannequin_status_effects[status] = max(
+                [entry['end_time'] for entry in self.mannequin_status_expirations if entry['status'] == status] or [0]
+            )
+
+    def extend_mode_duration(self, mode_name, duration_seconds):
+        if duration_seconds <= 0 or not mode_name:
+            return
+        self.mode_expirations[mode_name] = max(
+            self.mode_expirations.get(mode_name, 0.0),
+            time.time(),
+        ) + duration_seconds
+        self.current_mode = mode_name
+
+    def set_mode(self, mode_name, duration_seconds):
+        if not mode_name:
+            return
+        self.current_mode = mode_name
+        self.mode_expirations[mode_name] = time.time() + max(duration_seconds, 0)
+        self.refresh_player_stats()
+
+    def clear_mode(self, mode_name=None):
+        if mode_name and self.current_mode != mode_name:
+            return
+        ended_mode = self.current_mode
+        if ended_mode:
+            self.mode_expirations.pop(ended_mode, None)
+        self.current_mode = None
+        self.refresh_player_stats()
+        if ended_mode:
+            self.process_combat_event(f'{ended_mode}_end')
 
     def get_stats_display_text(self, player):
         stats_text = f"{self.get_text('stats_title', 'Current character stats')}:\n\n"
@@ -512,6 +750,19 @@ class Context:
 
     def initialize(self):
         self.player.effect_sources_dirty = True
+        self.mannequin_status_effects.clear()
+        self.mannequin_status_expirations.clear()
+        self.mannequin_status_stacks.clear()
+        self.mannequin_status_payloads.clear()
+        self.player_status_expirations.clear()
+        self.status_stack_counts.clear()
+        self.counters.clear()
+        self.stacks.clear()
+        self.buffs.clear()
+        self.current_mode = None
+        self.mode_expirations.clear()
+        self.current_shield = 0.0
+        self.shield_end_time = 0.0
         self.refresh_player_stats()
         self.update_max_hp()
         self.current_hp = self.max_hp
@@ -624,10 +875,16 @@ class Context:
 
     def process_hit(self, is_crit, is_weakspot):
         self.process_combat_event('hit_target', is_crit=is_crit, is_weakspot=is_weakspot)
+        if self.is_status_active('the_bulls_eye'):
+            self.process_combat_event('hit_marked_enemy', is_crit=is_crit, is_weakspot=is_weakspot)
+        if self.is_status_active('burn'):
+            self.process_combat_event('hit_burned_target', is_crit=is_crit, is_weakspot=is_weakspot)
         if is_crit:
             self.process_combat_event('crit_hit', is_crit=True, is_weakspot=is_weakspot)
         if is_weakspot:
             self.process_combat_event('weakspot_hit', is_crit=is_crit, is_weakspot=True)
+            if self.is_status_active('burn'):
+                self.process_combat_event('weakspot_hit_burned_target', is_crit=is_crit, is_weakspot=True)
 
     def process_combat_event(self, event_name, **kwargs):
         self.mechanics_processor.process_event(event_name, **kwargs)
@@ -698,16 +955,64 @@ class Context:
 
     def update_status_effects(self):
         current_time = time.time()
-        expired_effects = []
         changed = False
-        for status, end_time in self.mannequin_status_effects.items():
-            if current_time >= end_time:
-                expired_effects.append(status)
-        for status in expired_effects:
-            del self.mannequin_status_effects[status]
-            if status in self.mannequin.effects:
-                del self.mannequin.effects[status]
-            logging.debug(f"Status effect '{status}' expired.")
+        for status, payload in list(self.mannequin_status_payloads.items()):
+            if status not in self.mannequin_status_effects:
+                continue
+            damage_formula = payload.get('damage_formula')
+            if not damage_formula:
+                continue
+            tick_interval = max(payload.get('tick_interval', 1.0), 0.1)
+            next_tick = payload.get('next_tick', 0.0)
+            if current_time < next_tick:
+                continue
+            stacks = max(1, self.mannequin_status_stacks.get(status, 1))
+            damage_type = payload.get('damage_type', status)
+            if damage_type == 'burn':
+                dmg = self.calculate_status_damage(
+                    self.resolve_damage_formula(damage_formula),
+                    damage_type,
+                    ['burn_damage_percent'],
+                ) * stacks
+                self.apply_direct_damage(dmg, is_crit=False, weakspot_hit=False, ability_name='burn')
+                self.process_combat_event('deal_burn_damage', is_crit=False, is_weakspot=False)
+            elif damage_type == 'frost':
+                dmg = self.calculate_status_damage(
+                    self.resolve_damage_formula(damage_formula),
+                    damage_type,
+                    ['frost_vortex_damage_percent'],
+                ) * stacks
+                self.apply_direct_damage(dmg, is_crit=False, weakspot_hit=False, ability_name='frost_vortex')
+            elif damage_type == 'shock':
+                dmg = self.calculate_status_damage(
+                    self.resolve_damage_formula(damage_formula),
+                    damage_type,
+                    ['shock_damage_percent', 'power_surge_damage_percent'],
+                ) * stacks
+                self.apply_direct_damage(dmg, is_crit=False, weakspot_hit=False, ability_name='power_surge')
+                self.process_combat_event('deal_power_surge_damage', is_crit=False, is_weakspot=False)
+            payload['next_tick'] = current_time + tick_interval
+        expired_target_effects = [entry for entry in self.mannequin_status_expirations if current_time >= entry['end_time']]
+        for entry in expired_target_effects:
+            status = entry['status']
+            self.mannequin_status_expirations.remove(entry)
+            current_stacks = self.mannequin_status_stacks.get(status, 0)
+            if current_stacks <= 1:
+                self.mannequin_status_stacks.pop(status, None)
+                self.mannequin_status_effects.pop(status, None)
+                self.mannequin.effects.pop(status, None)
+                self.mannequin_status_payloads.pop(status, None)
+                if status == 'burn':
+                    self.process_combat_event('burn_removed', is_crit=False, is_weakspot=False)
+                elif status == 'frost_vortex':
+                    self.process_combat_event('frost_vortex_disappear', is_crit=False, is_weakspot=False)
+            else:
+                self.mannequin_status_stacks[status] = current_stacks - 1
+                remaining = max(
+                    [item['end_time'] for item in self.mannequin_status_expirations if item['status'] == status] or [0.0]
+                )
+                if remaining > 0:
+                    self.mannequin_status_effects[status] = remaining
             changed = True
 
         expired_player_effects = [entry for entry in self.player_status_expirations if current_time >= entry['end_time']]
@@ -720,6 +1025,19 @@ class Context:
             else:
                 self.status_stack_counts[status] = current_stacks - 1
             changed = True
+        if self.current_shield > 0 and current_time >= self.shield_end_time:
+            self.current_shield = 0.0
+            self.status_stack_counts.pop('shielded', None)
+            self.player_status_expirations = [
+                entry for entry in self.player_status_expirations if entry['status'] != 'shielded'
+            ]
+            changed = True
+        if self.current_mode:
+            mode_end = self.mode_expirations.get(self.current_mode, 0.0)
+            if mode_end and current_time >= mode_end:
+                self.process_combat_event(f'{self.current_mode}_end', is_crit=False, is_weakspot=False)
+                self.clear_mode(self.current_mode)
+                changed = True
         if changed:
             self.refresh_player_stats()
 
@@ -797,6 +1115,22 @@ class Context:
         from .player import Item
         item = Item(item_data, self.base_stats, self.calibration_bonuses)
         return item
+
+    def get_attachment_by_id(self, attachment_id):
+        return next((attachment for attachment in self.attachments_data if attachment.get('id') == attachment_id), None)
+
+    def get_attachments_for_weapon(self, weapon, slot=None):
+        if not weapon:
+            return []
+        result = []
+        for attachment in self.attachments_data:
+            if slot and attachment.get('slot') != slot:
+                continue
+            allowed_types = attachment.get('allowed_weapon_types') or []
+            if allowed_types and weapon.type not in allowed_types:
+                continue
+            result.append(attachment)
+        return result
 
     def create_item_instance_by_id(self, item_id):
         for item_data in self.items_data:
@@ -877,11 +1211,28 @@ class Context:
             logging.debug(f"Player status {status} applied for {duration} seconds.")
             return
 
-        self.mannequin.apply_status(status, duration, **kwargs)
         end_time = time.time() + duration
-        self.mannequin_status_effects[status] = end_time
-        logging.debug(f"Status {status} applied for {duration} seconds.")
+        max_stacks = kwargs.get('max_stacks')
+        current_stacks = self.mannequin_status_stacks.get(status, 0)
+        if max_stacks and current_stacks >= max_stacks:
+            matching_entries = [entry for entry in self.mannequin_status_expirations if entry['status'] == status]
+            if matching_entries:
+                oldest_entry = min(matching_entries, key=lambda entry: entry['end_time'])
+                oldest_entry['end_time'] = end_time
+        else:
+            self.mannequin_status_expirations.append({'status': status, 'end_time': end_time})
+            self.mannequin_status_stacks[status] = min(current_stacks + 1, max_stacks or current_stacks + 1)
+        self.mannequin_status_effects[status] = max(
+            [entry['end_time'] for entry in self.mannequin_status_expirations if entry['status'] == status] or [end_time]
+        )
+        payload = self.mannequin_status_payloads.get(status, {}).copy()
+        payload.update(kwargs)
+        self.mannequin_status_payloads[status] = payload
         self.mannequin.effects[status] = True
+        self.mannequin.apply_status(status, duration, **payload)
+        logging.debug(f"Status {status} applied for {duration} seconds.")
+        if status == 'the_bulls_eye':
+            self.process_combat_event('trigger_bulls_eye')
 
     def remove_buff(self, buff_name):
         if buff_name in self.buffs:
@@ -889,18 +1240,31 @@ class Context:
             self.refresh_player_stats()
             logging.info(f"Buff {buff_name} removed.")
 
+    def calculate_status_damage(self, base_damage, damage_type, bonus_stats=None):
+        damage = float(base_damage)
+        bonus_stats = bonus_stats or []
+        damage *= 1 + self.player.stats.get('status_damage_percent', 0) / 100.0
+        damage *= 1 + self.player.stats.get('elemental_damage_percent', 0) / 100.0
+        for stat_name in bonus_stats:
+            damage *= 1 + self.player.stats.get(stat_name, 0) / 100.0
+        return damage
+
     def trigger_ability(self, ability_name, **kwargs):
         ability_lower = ability_name.lower()
         logging.info(f"Triggered ability: {ability_name} with {kwargs}")
         if ability_lower == 'unstable_bomber':
             damage_formula = kwargs.get('damage_formula', {'type': 'psi_intensity', 'multiplier': 1.0})
-            dmg = self.resolve_damage_formula(damage_formula)
-            dmg *= 1 + self.player.stats.get('status_damage_percent', 0) / 100.0
-            dmg *= 1 + self.player.stats.get('psi_intensity_damage_percent', 0) / 100.0
-            dmg *= 1 + self.player.stats.get('elemental_damage_percent', 0) / 100.0
-            dmg *= 1 + self.player.stats.get('explosion_elemental_damage_percent', 0) / 100.0
-            dmg *= 1 + self.player.stats.get('unstable_bomber_damage_percent', 0) / 100.0
-            dmg *= 1 + self.player.stats.get('unstable_bomber_final_damage_percent', 0) / 100.0
+            self.process_combat_event('unstable_bomber_hits_one_enemy', is_crit=False, is_weakspot=False)
+            dmg = self.calculate_status_damage(
+                self.resolve_damage_formula(damage_formula),
+                'blast',
+                [
+                    'psi_intensity_damage_percent',
+                    'explosion_elemental_damage_percent',
+                    'unstable_bomber_damage_percent',
+                    'unstable_bomber_final_damage_percent',
+                ],
+            )
 
             trigger_bonus = self.trigger_factors.get(ability_lower) or self.trigger_factors.get(ability_name)
             if trigger_bonus:
@@ -916,8 +1280,85 @@ class Context:
                 dmg *= 1 + self.player.stats.get('crit_damage_percent', 0) / 100.0
 
             self.apply_direct_damage(dmg, is_crit=is_crit, weakspot_hit=False, ability_name='unstable_bomber')
+            self.apply_status('unstable_bomber', 5)
             self.process_combat_event('trigger_unstable_bomber', is_crit=is_crit, is_weakspot=False)
+            self.process_combat_event('deal_explosion_damage', is_crit=is_crit, is_weakspot=False)
             self.counters['shots_towards_bomber_trigger'] = 0
+            return
+
+        if ability_lower == 'shrapnel':
+            damage_formula = kwargs.get('damage_formula', {'type': 'attack', 'multiplier': 0.5})
+            dmg = self.resolve_damage_formula(damage_formula)
+            dmg *= 1 + self.player.stats.get('weapon_damage_percent', 0) / 100.0
+            dmg *= 1 + self.player.stats.get('shrapnel_damage_percent', 0) / 100.0
+            is_crit = kwargs.get('can_crit', False) and random.uniform(0, 100) <= self.player.stats.get('crit_rate_percent', 0)
+            if is_crit:
+                dmg *= 1 + self.player.stats.get('crit_damage_percent', 0) / 100.0
+            self.apply_direct_damage(dmg, is_crit=is_crit, weakspot_hit=False, ability_name='shrapnel')
+            self.process_combat_event('trigger_shrapnel', is_crit=is_crit, is_weakspot=False)
+            return
+
+        if ability_lower == 'power_surge':
+            damage_formula = kwargs.get('damage_formula', {'type': 'psi_intensity', 'multiplier': 0.5})
+            dmg = self.calculate_status_damage(
+                self.resolve_damage_formula(damage_formula),
+                'shock',
+                ['shock_damage_percent', 'power_surge_damage_percent'],
+            )
+            trigger_bonus = self.trigger_factors.get(ability_lower) or self.trigger_factors.get(ability_name)
+            if trigger_bonus:
+                end_time = trigger_bonus.get('end_time')
+                if end_time is None or end_time >= time.time():
+                    dmg *= 1 + trigger_bonus.get('bonus', 0) / 100.0
+            self.apply_direct_damage(dmg, is_crit=False, weakspot_hit=False, ability_name='power_surge')
+            duration = 6.0 * (1 + self.player.stats.get('power_surge_duration_percent', 0) / 100.0)
+            self.apply_status('power_surge', max(duration, 0.5))
+            self.process_combat_event('trigger_power_surge', is_crit=False, is_weakspot=False)
+            self.process_combat_event('deal_power_surge_damage', is_crit=False, is_weakspot=False)
+            self.process_combat_event('shock_damage_dealt', is_crit=False, is_weakspot=False)
+            return
+
+        if ability_lower == 'celestial_thunder':
+            damage_formula = kwargs.get('damage_formula', {'type': 'psi_intensity', 'multiplier': 2.0})
+            dmg = self.calculate_status_damage(
+                self.resolve_damage_formula(damage_formula),
+                'shock',
+                ['shock_damage_percent', 'power_surge_damage_percent'],
+            )
+            self.apply_direct_damage(dmg, is_crit=False, weakspot_hit=False, ability_name='power_surge')
+            self.process_combat_event('deal_power_surge_damage', is_crit=False, is_weakspot=False)
+            return
+
+        if ability_lower == 'burn':
+            damage_formula = kwargs.get('damage_formula', {'type': 'psi_intensity', 'multiplier': 0.4})
+            duration = kwargs.get('duration_seconds', 6.0)
+            payload = {
+                'damage_formula': damage_formula,
+                'damage_type': 'burn',
+                'tick_interval': kwargs.get('tick_interval_seconds', 1.0),
+            }
+            self.apply_status('burn', duration, max_stacks=kwargs.get('max_stacks'), **payload)
+            self.process_combat_event('trigger_burn', is_crit=False, is_weakspot=False)
+            return
+
+        if ability_lower == 'frost_vortex':
+            damage_formula = kwargs.get('damage_formula', {'type': 'psi_intensity', 'multiplier': 0.6})
+            dmg = self.calculate_status_damage(
+                self.resolve_damage_formula(damage_formula),
+                'frost',
+                ['frost_vortex_damage_percent'],
+            )
+            self.apply_direct_damage(dmg, is_crit=False, weakspot_hit=False, ability_name='frost_vortex')
+            self.apply_status('frost_vortex', kwargs.get('duration_seconds', 6.0))
+            self.process_combat_event('trigger_frost_vortex', is_crit=False, is_weakspot=False)
+            self.process_combat_event('frost_vortex_triggered', is_crit=False, is_weakspot=False)
+            return
+
+        if ability_lower == 'fortress_warfare':
+            self.set_mode('fortress_warfare', kwargs.get('duration_seconds', 8.0))
+            self.apply_status('fortress_warfare', kwargs.get('duration_seconds', 8.0))
+            self.process_combat_event('fortress_warfare_triggered', is_crit=False, is_weakspot=False)
+            return
 
     def check_status_on_target(self, status_to_check):
         return status_to_check in self.mannequin_status_effects or status_to_check in self.mannequin.effects
@@ -952,7 +1393,12 @@ class Context:
         self.player.apply_stat_bonus(stat, value, duration, max_stacks, source=source)
 
     def gain_stacks(self, stack_type, count):
-        self.stacks[stack_type] = self.stacks.get(stack_type, 0) + count
+        current = self.stacks.get(stack_type, 0)
+        max_from_stats = self.player.stats.get(f'max_{stack_type}_stacks')
+        new_value = current + count
+        if isinstance(max_from_stats, (int, float)) and max_from_stats > 0:
+            new_value = min(new_value, int(max_from_stats))
+        self.stacks[stack_type] = new_value
         self.refresh_player_stats()
         logging.debug(f"Stacks {stack_type} gained {count}, total: {self.stacks[stack_type]}")
 
@@ -962,6 +1408,13 @@ class Context:
         self.stacks[stack_type] = new_val
         self.refresh_player_stats()
         logging.debug(f"Stacks {stack_type} reduced by {value}, total: {new_val}")
+
+    def reduce_stacks_percent(self, stack_type, percent):
+        current = self.stacks.get(stack_type, 0)
+        new_val = max(0, int(current * max(0.0, 100.0 - percent) / 100.0))
+        self.stacks[stack_type] = new_val
+        self.refresh_player_stats()
+        logging.debug(f"Stacks {stack_type} reduced by {percent}%, total: {new_val}")
 
     def spread_effect(self, radius_meters, effect_data):
         logging.info(f"Spread effect in {radius_meters}m with {effect_data}")
@@ -1051,6 +1504,11 @@ class Context:
             return float(self.player.stats.get('psi_intensity', 100))
         formula_type = damage_formula.get('type', 'psi_intensity')
         multiplier = damage_formula.get('multiplier', 1.0)
+        alias_map = {
+            'attack': 'damage_per_projectile',
+            'weapon_attack': 'damage_per_projectile',
+        }
+        formula_type = alias_map.get(formula_type, formula_type)
         if formula_type == 'psi_intensity':
             return float(self.player.stats.get('psi_intensity', 100)) * multiplier
         stat_value = self.player.stats.get(formula_type, self.player.stats.get('psi_intensity', 100))
@@ -1059,11 +1517,18 @@ class Context:
     def handle_target_defeat(self, is_crit=False, weakspot_hit=False):
         if self.mannequin.current_hp > 0 or self.enemy_defeated_pending_reset:
             return
+        was_marked = self.is_status_active('the_bulls_eye')
+        had_burn = self.is_status_active('burn')
         self.enemy_defeated_pending_reset = True
         self.process_combat_event('kill', is_crit=is_crit, is_weakspot=weakspot_hit)
         self.process_combat_event('defeat_enemy', is_crit=is_crit, is_weakspot=weakspot_hit)
         if weakspot_hit:
             self.process_combat_event('defeat_enemy_with_weakspot_hit', is_crit=is_crit, is_weakspot=True)
+        if was_marked:
+            self.process_combat_event('defeat_marked_enemy', is_crit=is_crit, is_weakspot=weakspot_hit)
+        if had_burn:
+            self.process_combat_event('kill_enemy_with_burn', is_crit=is_crit, is_weakspot=weakspot_hit)
+            self.process_combat_event('defeat_enemy_with_burn', is_crit=is_crit, is_weakspot=weakspot_hit)
 
     # ------------------------- Добавлен фикс: --------------------------
     def get_mod_texture_id(self, mod_key, mod_name_key):

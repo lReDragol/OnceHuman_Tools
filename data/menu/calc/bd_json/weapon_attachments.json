@@ -1,0 +1,2556 @@
+{
+  "attachments": [
+    {
+      "id": "120_2x_01",
+      "name": "2X Sight 01",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_reddot_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_01_1",
+      "name": "2X Sight 01 1",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_reddot_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_01_2",
+      "name": "2X Sight 01 2",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_reddot_03.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_01_3",
+      "name": "2X Sight 01 3",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_redot_hs510c.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_01_rust",
+      "name": "2X Sight 01 (Rust)",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_reddot_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_02",
+      "name": "2X Sight 02",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_reddot_03.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_02_1",
+      "name": "2X Sight 02 1",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_reddot_03.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_02_1_rust",
+      "name": "2X Sight 02 1 (Rust)",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_reddot_03.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_03",
+      "name": "2X Sight 03",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_redot_hs510c.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_04",
+      "name": "2X Sight 04",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_exps3_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_05",
+      "name": "2X Sight 05",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_xps3_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_dp",
+      "name": "Delta Point Red Dot",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_reddot_dp.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_ekp",
+      "name": "Kobra Red Dot",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_kobra_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_okp",
+      "name": "OKP-7 Reflex Sight",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_opk7_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_2x_srs",
+      "name": "SRS Red Dot",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +2, Range +1.",
+      "stats": {
+        "accuracy": 2,
+        "range": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_reddot_srs.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_3x_01",
+      "name": "3X Sight 01",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +3, Range +2.",
+      "stats": {
+        "accuracy": 3,
+        "range": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_zoom3x_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_3x_01_rust",
+      "name": "3X Sight 01 (Rust)",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +3, Range +2.",
+      "stats": {
+        "accuracy": 3,
+        "range": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_zoom3x_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_3x_02",
+      "name": "3X Sight 02",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +3, Range +2.",
+      "stats": {
+        "accuracy": 3,
+        "range": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_vortex_3x_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_4x_01",
+      "name": "4X Sight 01",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +4, Range +3, ADS time +0.04s.",
+      "stats": {
+        "accuracy": 4,
+        "range": 3,
+        "ads_time_seconds": 0.04
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_hamr_4x24.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_4x_01_rust",
+      "name": "4X Sight 01 (Rust)",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +4, Range +3, ADS time +0.04s.",
+      "stats": {
+        "accuracy": 4,
+        "range": 3,
+        "ads_time_seconds": 0.04
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_hamr_4x24.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_4x_02",
+      "name": "4X Sight 02",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +4, Range +3, ADS time +0.04s.",
+      "stats": {
+        "accuracy": 4,
+        "range": 3,
+        "ads_time_seconds": 0.04
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_uh1_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_4x_03",
+      "name": "4X Sight 03",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +4, Range +3, ADS time +0.04s.",
+      "stats": {
+        "accuracy": 4,
+        "range": 3,
+        "ads_time_seconds": 0.04
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_zoom4x_03.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_4x_04",
+      "name": "4X Sight 04",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +4, Range +3, ADS time +0.04s.",
+      "stats": {
+        "accuracy": 4,
+        "range": 3,
+        "ads_time_seconds": 0.04
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_hamr_4x24.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_4x_hamr",
+      "name": "HAMR 4x Scope",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +4, Range +3, ADS time +0.04s.",
+      "stats": {
+        "accuracy": 4,
+        "range": 3,
+        "ads_time_seconds": 0.04
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_hamr_4x24.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_6x_01",
+      "name": "6X Sight 01",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +6, Range +5, ADS time +0.06s.",
+      "stats": {
+        "accuracy": 6,
+        "range": 5,
+        "ads_time_seconds": 0.06
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_zoom6x_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_6x_02",
+      "name": "6X Sight 02",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +6, Range +5, ADS time +0.06s.",
+      "stats": {
+        "accuracy": 6,
+        "range": 5,
+        "ads_time_seconds": 0.06
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_npz_po156_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_6x_03",
+      "name": "6X Sight 03",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +6, Range +5, ADS time +0.06s.",
+      "stats": {
+        "accuracy": 6,
+        "range": 5,
+        "ads_time_seconds": 0.06
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_mk360_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_6x_03_rust",
+      "name": "6X Sight 03 (Rust)",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +6, Range +5, ADS time +0.06s.",
+      "stats": {
+        "accuracy": 6,
+        "range": 5,
+        "ads_time_seconds": 0.06
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_mk360_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_6x_04",
+      "name": "6X Sight 04",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +6, Range +5, ADS time +0.06s.",
+      "stats": {
+        "accuracy": 6,
+        "range": 5,
+        "ads_time_seconds": 0.06
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_elcan_6x.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_8x_01",
+      "name": "8X Sight 01",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +8, Range +7, ADS time +0.08s.",
+      "stats": {
+        "accuracy": 8,
+        "range": 7,
+        "ads_time_seconds": 0.08
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_nf_32x50_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_8x_02",
+      "name": "8X Sight 02",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +8, Range +7, ADS time +0.08s.",
+      "stats": {
+        "accuracy": 8,
+        "range": 7,
+        "ads_time_seconds": 0.08
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_sight_pa_8x24_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "120_iron_01",
+      "name": "Iron Sight",
+      "slot": "sight",
+      "description": "Game-file optic attachment. Accuracy +1, Range +1, Mobility +1.",
+      "stats": {
+        "accuracy": 1,
+        "range": 1,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_iron_sight_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_12g_brake_01",
+      "name": "12G Brake",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "shotgun"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_12g_brake_02",
+      "name": "12G Brake",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "shotgun"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_12g_brake_02_rust",
+      "name": "12G Brake (Rust)",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "shotgun"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_556_sup_01",
+      "name": "5.56 Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_socom556_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_556_sup_02",
+      "name": "5.56 Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_socom556_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_acp_cmpn_01",
+      "name": ".45 ACP Compensator",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +4, Accuracy +2.",
+      "stats": {
+        "stability": 4,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "pistol"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_45acp.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_acp_flhhdr_01",
+      "name": ".45 ACP Flash Hider",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +2, Mobility +1.",
+      "stats": {
+        "stability": 2,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "pistol"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_45acp.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_allin_flhhdr_01",
+      "name": "All-in-One Flash Hider",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +2, Mobility +1.",
+      "stats": {
+        "stability": 2,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_silencer_03.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_allin_sup_01",
+      "name": "All-in-One Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_silencer_03.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_atk_cmpn_01",
+      "name": "Assault Compensator",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +4, Accuracy +2.",
+      "stats": {
+        "stability": 4,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_nbk_06.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_bs_flhhdr_01",
+      "name": "Burst Flash Hider",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +2, Mobility +1.",
+      "stats": {
+        "stability": 2,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_flashhider_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_bs_sup_01",
+      "name": "Burst Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_flashhider_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_bs_sup_01_rust",
+      "name": "Burst Suppressor (Rust)",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_flashhider_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_cmpt_brake_01",
+      "name": "Compact Brake",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_nbk_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_cmpt_cmpn_01",
+      "name": "Compact Compensator",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +4, Accuracy +2.",
+      "stats": {
+        "stability": 4,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_nbk_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_cmpt_cmpn_01_rust",
+      "name": "Compact Compensator (Rust)",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +4, Accuracy +2.",
+      "stats": {
+        "stability": 4,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_nbk_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_cqb_brake_01",
+      "name": "CQB Brake",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_05.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_dtk_cmpn_01",
+      "name": "DTK Compensator",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +4, Accuracy +2.",
+      "stats": {
+        "stability": 4,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_zenit_dtk_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_fabric_sup_01",
+      "name": "Fabric Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_sup_fabric01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_fabric_sup_01_rust",
+      "name": "Fabric Suppressor (Rust)",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_sup_fabric01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_large_brake_01",
+      "name": "Heavy Brake",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_04.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_large_sup_01",
+      "name": "Heavy Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_04.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_large_sup_01_rust",
+      "name": "Heavy Suppressor (Rust)",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_04.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_lcpis_brake_01",
+      "name": "Pistol Brake",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "pistol"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_45acp.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_lcpis_brake_01_rust",
+      "name": "Pistol Brake (Rust)",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "pistol"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_45acp.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_lrg_brake_01",
+      "name": "Long Brake",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_03.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_lrg_flhhdr_01",
+      "name": "Long Flash Hider",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +2, Mobility +1.",
+      "stats": {
+        "stability": 2,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_03.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_mcs_brake_01",
+      "name": "MCS Brake",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "shotgun"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_mcs_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_mcs_brake_01_rust",
+      "name": "MCS Brake (Rust)",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "shotgun"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_brake_mcs_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_oilfilter_sup_01",
+      "name": "Oil Filter Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_silencer_oilfilter_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_pbs_sup_01",
+      "name": "PBS Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_silencer_pbs_4_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_salvo_sup_01",
+      "name": "Salvo Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "shotgun"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_salvo12_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_shot_sup_01",
+      "name": "Shotgun Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "shotgun"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_12g_brake_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_shot_sup_01_rust",
+      "name": "Shotgun Suppressor (Rust)",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "shotgun"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_12g_brake_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_small_brake_01",
+      "name": "Compact Brake",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +6, Accuracy +1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_compen_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_small_cmpn_01",
+      "name": "Compact Compensator",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +4, Accuracy +2.",
+      "stats": {
+        "stability": 4,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_compen_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_small_cmpn_01_rust",
+      "name": "Compact Compensator (Rust)",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +4, Accuracy +2.",
+      "stats": {
+        "stability": 4,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_compen_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_sq_sup_01",
+      "name": "Square Suppressor",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Accuracy +4, Stability +2, Range -1.",
+      "stats": {
+        "accuracy": 4,
+        "stability": 2,
+        "range": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_silencer_05.png",
+      "source": "game_client"
+    },
+    {
+      "id": "220_tac_flhhdr_01",
+      "name": "Tactical Flash Hider",
+      "slot": "muzzle",
+      "description": "Game-file muzzle attachment. Stability +2, Mobility +1.",
+      "stats": {
+        "stability": 2,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_muzzle_flashhider_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_bas_ir_01",
+      "name": "IR Laser",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_sight_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_bas_laser_01",
+      "name": "Basic Laser",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_pointer_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_bcm_grip_01",
+      "name": "BCM Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_bcm_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_c5l_laser_01",
+      "name": "C5L Laser",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_c5l_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_cmpt_flshlt_01",
+      "name": "Compact Flashlight",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Mobility +1.",
+      "stats": {
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_flashlight_4.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_cobra_grip_01",
+      "name": "Cobra Grip 01",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_tango_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_cqb_grip_01",
+      "name": "Cqb Grip 01",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_tango_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_cs_laser_01",
+      "name": "Canted Laser",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_db_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_cs_laser_01_rust",
+      "name": "Canted Laser (Rust)",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_db_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_dbl_laser_01",
+      "name": "Dual Laser",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_db_i2.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_fd_bipod_01",
+      "name": "Fd Bipod 01",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +8, Mobility -2.",
+      "stats": {
+        "stability": 8,
+        "mobility": -2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_tango_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_flshlt_01",
+      "name": "Flashlight",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Mobility +1.",
+      "stats": {
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_flashlight_2.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_grip_uvg_01",
+      "name": "UVG Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_uvg_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_grip_uvg_02",
+      "name": "UVG Grip Mk II",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_uvg_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_large_laser_01",
+      "name": "NGAL Laser",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_ngal_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_lok_grip_01",
+      "name": "LOK Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_lok_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_lsm_grip_01",
+      "name": "LSM Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_ng_03.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_mawl_laser_01",
+      "name": "MAWL Laser",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_mawl_c1.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_rk_grip_01",
+      "name": "RK Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_zenit_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_rvg_grip_01",
+      "name": "Rvg Grip 01",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_tango_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_skf_grip_01",
+      "name": "Skeleton Grip Mk II",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_ng_06.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_skh_grip_01",
+      "name": "Skeleton Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_ng_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_sla_grip_01",
+      "name": "SLA Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_ng_07.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_sml_ir_01",
+      "name": "Compact IR Laser",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_peq_2a.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_sml_ir_01_rust",
+      "name": "Compact IR Laser (Rust)",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_peq_2a.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_smv_grip_01",
+      "name": "SMV Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_ng_04.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_sort_grip_01",
+      "name": "Short Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_ng_10.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_strl_flshlt_01",
+      "name": "Strobe Flashlight",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Mobility +1.",
+      "stats": {
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_flashlight_5.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_tac_flshlt_01",
+      "name": "Tactical Flashlight",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Mobility +1.",
+      "stats": {
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_flashlight_4.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_tac_flshlt_01_rust",
+      "name": "Tactical Flashlight (Rust)",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Mobility +1.",
+      "stats": {
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_flashlight_4.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_tac_flshlt_02",
+      "name": "Tactical Flashlight Mk II",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Mobility +1.",
+      "stats": {
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_flashlight_5.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_tac_grip_01",
+      "name": "Tactical Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_tango_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_tac_laser_01",
+      "name": "Tactical Laser",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_vism_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_tac_laser_01_rust",
+      "name": "Tactical Laser (Rust)",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Accuracy +3, Mobility +1.",
+      "stats": {
+        "accuracy": 3,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_laser_vism_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_tango_grip_01",
+      "name": "Tango Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_tango_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_tango_grip_01_rust",
+      "name": "Tango Grip (Rust)",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_tango_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_tri_grip_01",
+      "name": "Angled Foregrip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_afg_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_tri_grip_02",
+      "name": "Angled Foregrip Mk II",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_afg_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "320_vtl_grip_01",
+      "name": "Vertical Grip",
+      "slot": "underbarrel",
+      "description": "Game-file underbarrel attachment. Stability +5, Accuracy +2.",
+      "stats": {
+        "stability": 5,
+        "accuracy": 2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_grip_vertical_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_ex_mag_rust",
+      "name": "Universal Magazine (Rust)",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +4.",
+      "stats": {
+        "magazine_capacity": 4
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_ar_ex_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_lmg_lrg_drum_02",
+      "name": "LMG Large Drum Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +26, Reload speed % -16.",
+      "stats": {
+        "magazine_capacity": 26,
+        "reload_speed_percent": -16
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "lmgs"
+      ],
+      "game_icon_name": "icon_accessory_sg_drum_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_lmg_med_drum_02",
+      "name": "LMG Drum Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +4.",
+      "stats": {
+        "magazine_capacity": 4
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "lmgs"
+      ],
+      "game_icon_name": "icon_accessory_sg_drum_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_pis_ex_mag_02",
+      "name": "Pistol Extended Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +10, Reload speed % -5.",
+      "stats": {
+        "magazine_capacity": 10,
+        "reload_speed_percent": -5
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "pistol"
+      ],
+      "game_icon_name": "icon_accessory_ar_ex_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_pis_med_mag_02",
+      "name": "Pistol Magazine",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +4.",
+      "stats": {
+        "magazine_capacity": 4
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "pistol"
+      ],
+      "game_icon_name": "icon_accessory_ar_light_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_pis_spr_mag_02",
+      "name": "Pistol Speed Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +2, Reload speed % +8.",
+      "stats": {
+        "magazine_capacity": 2,
+        "reload_speed_percent": 8
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "pistol"
+      ],
+      "game_icon_name": "icon_accessory_ar_tac_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_rif_ex_mag_03",
+      "name": "Rifle Extended Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +10, Reload speed % -5.",
+      "stats": {
+        "magazine_capacity": 10,
+        "reload_speed_percent": -5
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl"
+      ],
+      "game_icon_name": "icon_accessory_ar_ex_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_rif_lw_mag_03",
+      "name": "Rifle Lightweight Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity -2, Reload speed % +10, Mobility +1.",
+      "stats": {
+        "magazine_capacity": -2,
+        "reload_speed_percent": 10,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl"
+      ],
+      "game_icon_name": "icon_accessory_ar_light_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_rif_med_mag_03",
+      "name": "Rifle Magazine",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +4.",
+      "stats": {
+        "magazine_capacity": 4
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl"
+      ],
+      "game_icon_name": "icon_accessory_ar_light_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_shot_ex_mag_01",
+      "name": "Shotgun Extended Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +10, Reload speed % -5.",
+      "stats": {
+        "magazine_capacity": 10,
+        "reload_speed_percent": -5
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "shotgun"
+      ],
+      "game_icon_name": "icon_accessory_ar_ex_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_shot_tac_mag_01",
+      "name": "Shotgun Tactical Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +6, Reload speed % +5.",
+      "stats": {
+        "magazine_capacity": 6,
+        "reload_speed_percent": 5
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "shotgun"
+      ],
+      "game_icon_name": "icon_accessory_ar_tac_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_smg_ameh_mag_04",
+      "name": "SMG High-Cap Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +12, Reload speed % -8.",
+      "stats": {
+        "magazine_capacity": 12,
+        "reload_speed_percent": -8
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_ar_ex_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_smg_med_mag_04",
+      "name": "SMG Magazine",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +4.",
+      "stats": {
+        "magazine_capacity": 4
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_ar_light_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_smg_tac_mag_04",
+      "name": "SMG Tactical Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +6, Reload speed % +5.",
+      "stats": {
+        "magazine_capacity": 6,
+        "reload_speed_percent": 5
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "smgs"
+      ],
+      "game_icon_name": "icon_accessory_ar_tac_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_sr_ameh_mag_05",
+      "name": "Sniper High-Cap Mag",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +12, Reload speed % -8.",
+      "stats": {
+        "magazine_capacity": 12,
+        "reload_speed_percent": -8
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_ar_ex_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_sr_med_mag_05",
+      "name": "Sniper Magazine",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +4.",
+      "stats": {
+        "magazine_capacity": 4
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_ar_light_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "420_tac_mag_rust",
+      "name": "Universal Magazine (Rust)",
+      "slot": "magazine",
+      "description": "Game-file magazine attachment. Magazine capacity +4.",
+      "stats": {
+        "magazine_capacity": 4
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "pistol",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_ar_tac_mag_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "620_large_stock_01",
+      "name": "Heavy Stock",
+      "slot": "stock",
+      "description": "Game-file stock attachment. Stability +8, Mobility -2.",
+      "stats": {
+        "stability": 8,
+        "mobility": -2
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_stock_combat_01.png",
+      "source": "game_client"
+    },
+    {
+      "id": "620_rs2_stock_01",
+      "name": "RS2 Stock",
+      "slot": "stock",
+      "description": "Game-file stock attachment. Stability +4, Mobility +1.",
+      "stats": {
+        "stability": 4,
+        "mobility": 1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_stock_combat_02.png",
+      "source": "game_client"
+    },
+    {
+      "id": "620_strike_stock_01",
+      "name": "Strike Stock",
+      "slot": "stock",
+      "description": "Game-file stock attachment. Stability +5, Mobility -1.",
+      "stats": {
+        "stability": 5,
+        "mobility": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_stock_combat_05.png",
+      "source": "game_client"
+    },
+    {
+      "id": "620_tac_stock_01",
+      "name": "Tactical Stock",
+      "slot": "stock",
+      "description": "Game-file stock attachment. Stability +6, Accuracy +2, Mobility -1.",
+      "stats": {
+        "stability": 6,
+        "accuracy": 2,
+        "mobility": -1
+      },
+      "effects": [],
+      "allowed_weapon_types": [
+        "assault_rifl",
+        "lmgs",
+        "shotgun",
+        "smgs",
+        "sniper_rifles"
+      ],
+      "game_icon_name": "icon_accessory_stock_combat_03.png",
+      "source": "game_client"
+    }
+  ]
+}

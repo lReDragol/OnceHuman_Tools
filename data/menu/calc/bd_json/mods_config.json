@@ -1117,7 +1117,19 @@
     {
       "name": "Blaze Amplifier Burn",
       "description": "Every stack of Burn grants +3% Psi Intensity DMG.",
-      "effects": [],
+      "effects": [
+        {
+          "type": "per_stack",
+          "stack_source": "burn",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "psi_intensity_damage_percent",
+              "value": 3
+            }
+          ]
+        }
+      ],
       "slot": "Mask",
       "rarity": "legendary",
       "source_url": "https://www.oncehumandb.com/mods/blaze-amplifier-burn"
@@ -1513,7 +1525,24 @@
     {
       "name": "Frost Construct Frost Vortex",
       "description": "Frost Constructs (Ice Spikes, Ice Missiles, Ice Crystals) deal +10% damage; if the target is in Frost Vortex status, damage dealt +10%.",
-      "effects": [],
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "frost_vortex_damage_percent",
+          "value": 10
+        },
+        {
+          "type": "while_active",
+          "status": "frost_vortex",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weapon_damage_percent",
+              "value": 10
+            }
+          ]
+        }
+      ],
       "slot": "Mask",
       "rarity": "legendary",
       "source_url": "https://www.oncehumandb.com/mods/frost-construct-frost-vortex"
@@ -2121,10 +2150,26 @@
     {
       "name": "Thunderclap Power Surge",
       "description": "After triggering Power Surge 20 times, the next hit summons Celestial Thunder (Shock DMG of 200% Psi Intensity).",
-      "effects": [],
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "every_20_deal_power_surge_damage",
+          "effects": [
+            {
+              "type": "trigger_ability",
+              "ability": "celestial_thunder",
+              "damage_formula": {
+                "type": "psi_intensity",
+                "multiplier": 2.0
+              }
+            }
+          ]
+        }
+      ],
       "slot": "Mask",
       "rarity": "legendary",
-      "source_url": "https://www.oncehumandb.com/mods/thunderclap-power-surge"
+      "source_url": "https://www.oncehumandb.com/mods/thunderclap-power-surge",
+      "category": "Power Surge"
     },
     {
       "name": "Thunderclap Survival",
@@ -2167,10 +2212,28 @@
     {
       "name": "Unbreakable Fortress Warfare",
       "description": "Fortress Warfare Range -30%. While in Fortress Warfare state, Attack +15%.",
-      "effects": [],
+      "effects": [
+        {
+          "type": "decrease_stat",
+          "stat": "fortress_warfare_range_percent",
+          "value": 30.0
+        },
+        {
+          "type": "while_active",
+          "status": "fortress_warfare",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "weapon_damage_percent",
+              "value": 15.0
+            }
+          ]
+        }
+      ],
       "slot": "Mask",
       "rarity": "legendary",
-      "source_url": "https://www.oncehumandb.com/mods/unbreakable-fortress-warfare"
+      "source_url": "https://www.oncehumandb.com/mods/unbreakable-fortress-warfare",
+      "category": "Fortress Warfare"
     },
     {
       "name": "Unbreakable General",
@@ -4754,7 +4817,21 @@
     {
       "name": "Critical Surge General",
       "description": "When the magazine is empty, Crit DMG +15% for 12s. Stacks independently, up to 3 stack(s).",
-      "effects": [],
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "mag_empty",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "crit_damage_percent",
+              "value": 15,
+              "duration_seconds": 12,
+              "max_stacks": 3
+            }
+          ]
+        }
+      ],
       "slot": "Bottoms",
       "rarity": "legendary",
       "source_url": "https://www.oncehumandb.com/mods/critical-surge-general"
@@ -5755,10 +5832,22 @@
     {
       "name": "Bombardier Souvenir Unstable Bomber",
       "description": "When triggering Unstable Bomber, automatically refill 10% of your magazine.",
-      "effects": [],
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "trigger_unstable_bomber",
+          "effects": [
+            {
+              "type": "refill_magazine_percent",
+              "value": 10
+            }
+          ]
+        }
+      ],
       "slot": "Weapon",
       "rarity": "legendary",
-      "source_url": "https://www.oncehumandb.com/mods/bombardier-souvenir-unstable-bomber"
+      "source_url": "https://www.oncehumandb.com/mods/bombardier-souvenir-unstable-bomber",
+      "category": "Unstable Bomber"
     },
     {
       "name": "Bombardier Souvenir Violence",
@@ -5887,7 +5976,21 @@
     {
       "name": "Burning Wrath Burn",
       "description": "Triggering Burn has a 25% chance to grant +1 Burn stack(s).",
-      "effects": [],
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "trigger_burn",
+          "chance_percent": 25,
+          "effects": [
+            {
+              "type": "apply_status",
+              "status": "burn",
+              "duration_seconds": 6,
+              "max_stacks": 16
+            }
+          ]
+        }
+      ],
       "slot": "Weapon",
       "rarity": "legendary",
       "source_url": "https://www.oncehumandb.com/mods/burning-wrath-burn"
@@ -6031,7 +6134,21 @@
     {
       "name": "Cryo Blast Frost Vortex",
       "description": "After triggering Frost Vortex, increases Frost Vortex DMG by +4%, up to 5 stacks, lasting 4s.",
-      "effects": [],
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "trigger_frost_vortex",
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "frost_vortex_damage_percent",
+              "value": 4,
+              "duration_seconds": 4,
+              "max_stacks": 5
+            }
+          ]
+        }
+      ],
       "slot": "Weapon",
       "rarity": "legendary",
       "source_url": "https://www.oncehumandb.com/mods/cryo-blast-frost-vortex"
@@ -6596,10 +6713,23 @@
     {
       "name": "Portable Territory Fortress Warfare",
       "description": "After leaving Fortress Warfare, the status will remain for 2s.",
-      "effects": [],
+      "effects": [
+        {
+          "type": "on_event",
+          "event": "fortress_warfare_end",
+          "effects": [
+            {
+              "type": "apply_status",
+              "status": "fortress_warfare",
+              "duration_seconds": 2
+            }
+          ]
+        }
+      ],
       "slot": "Weapon",
       "rarity": "legendary",
-      "source_url": "https://www.oncehumandb.com/mods/portable-territory-fortress-warfare"
+      "source_url": "https://www.oncehumandb.com/mods/portable-territory-fortress-warfare",
+      "category": "Fortress Warfare"
     },
     {
       "name": "Portable Territory General",
@@ -6826,12 +6956,15 @@
       "description": "The more parts the Shrapnel hits, the higher the Shrapnel DMG. Each part +15%.",
       "effects": [
         {
-          "type": "per_part_hit",
+          "type": "on_event",
+          "event": "trigger_shrapnel",
           "effects": [
             {
               "type": "increase_stat",
               "stat": "shrapnel_damage_percent",
-              "value": 15
+              "value": 15,
+              "duration_seconds": 3,
+              "max_stacks": 3
             }
           ]
         }
@@ -7495,10 +7628,22 @@
     {
       "name": "Static Shock Power Surge",
       "description": "Power Surge Status duration -50%, and Power Surge DMG +20%.",
-      "effects": [],
+      "effects": [
+        {
+          "type": "increase_stat",
+          "stat": "power_surge_duration_percent",
+          "value": -50.0
+        },
+        {
+          "type": "increase_stat",
+          "stat": "power_surge_damage_percent",
+          "value": 20.0
+        }
+      ],
       "slot": "Weapon",
       "rarity": "legendary",
-      "source_url": "https://www.oncehumandb.com/mods/static-shock-power-surge"
+      "source_url": "https://www.oncehumandb.com/mods/static-shock-power-surge",
+      "category": "Power Surge"
     },
     {
       "name": "Static Shock Survival",

@@ -46,12 +46,24 @@ python tools/extract_once_human_mod_icons.py --game-path "E:\SteamLibrary\steama
 python tools/extract_once_human_mod_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --dry-run --keep-temp
 ```
 
+`extract_once_human_attachment_icons.py`
+- Pulls the real weapon attachment icons from local Once Human `.npk` packs.
+- Uses QuickBMS to extract `icon_accessory*.pvr` files from the known pack set and PVRTexToolCLI to convert them to PNG.
+- Updates `weapon_attachments.json` and rewrites `data/icons/attachments/*.png` by attachment id.
+
+Usage:
+```powershell
+python tools/extract_once_human_attachment_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human"
+python tools/extract_once_human_attachment_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --report attachment_icons_report.json
+```
+
 ## Typical workflow
 
 1. Run `once_human_game_probe.py` against the local game files to discover useful tables.
 2. Run `import_once_human_db.py --write` to update the calculator JSON data.
 3. Run `sync_once_human_db_icons.py` to pull weapon, armor, and baseline mod icons.
 4. Run `extract_once_human_mod_icons.py` if you want to replace mod icons with direct assets from the local client.
+5. Run `extract_once_human_attachment_icons.py` to refresh the direct in-game attachment icons.
 
 ## Notes
 
@@ -59,3 +71,4 @@ python tools/extract_once_human_mod_icons.py --game-path "E:\SteamLibrary\steama
 - `import_once_human_db.py` uses public datamined sources as a bridge until direct extraction is complete.
 - `sync_once_human_db_icons.py` uses the synced public dataset to fetch icons derived from real game assets.
 - `extract_once_human_mod_icons.py` needs local access to `quickbms.exe`, `Once_Human_Beta_NPK.bms`, and `PVRTexToolCLI.exe`. The script tries to auto-discover them in the temp directory first.
+- `extract_once_human_attachment_icons.py` uses the same toolchain, but targets weapon attachment icons instead of mod glyphs.

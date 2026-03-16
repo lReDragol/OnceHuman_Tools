@@ -2127,7 +2127,19 @@
         {
           "required_items": 1,
           "description": "When HP is above 70%, Weapon DMG +10%",
-          "effects": []
+          "effects": [
+            {
+              "type": "conditional_effect",
+              "condition": "hp / max_hp > 0.7",
+              "effects": [
+                {
+                  "type": "increase_stat",
+                  "stat": "weapon_damage_percent",
+                  "value": 10.0
+                }
+              ]
+            }
+          ]
         },
         {
           "required_items": 2,
@@ -2404,7 +2416,7 @@
           "effects": [
             {
               "type": "on_event",
-              "event": "every_2_weapon_crit_hits",
+              "event": "every_4_crit_hits",
               "effects": [
                 {
                   "type": "apply_status",
@@ -2417,7 +2429,7 @@
                     },
                     {
                       "type": "set_duration",
-                      "duration_seconds": 30
+                      "duration_seconds": 20
                     },
                     {
                       "type": "set_max_stacks",
@@ -2440,16 +2452,22 @@
             },
             {
               "type": "on_event",
-              "event": "kill",
+              "event": "reload",
               "effects": [
                 {
-                  "type": "increase_stat",
-                  "stat": "crit_rate_percent",
-                  "value": 8
-                },
-                {
-                  "type": "set_duration",
-                  "duration_seconds": 2
+                  "type": "apply_status",
+                  "status": "lonewolf_reload_bonus",
+                  "effects": [
+                    {
+                      "type": "increase_stat",
+                      "stat": "crit_rate_percent",
+                      "value": 10
+                    },
+                    {
+                      "type": "set_duration",
+                      "duration_seconds": 2
+                    }
+                  ]
                 }
               ]
             }
@@ -2582,12 +2600,43 @@
         {
           "required_items": 2,
           "description": "While shielded, Weapon DMG and Status DMG dealt increases by +10%.",
-          "effects": []
+          "effects": [
+            {
+              "type": "while_active",
+              "status": "shielded",
+              "effects": [
+                {
+                  "type": "increase_stat",
+                  "stat": "weapon_damage_percent",
+                  "value": 10.0
+                },
+                {
+                  "type": "increase_stat",
+                  "stat": "status_damage_percent",
+                  "value": 10.0
+                }
+              ]
+            }
+          ]
         },
         {
           "required_items": 3,
           "description": "Consumes 6% of current HP on hit to generate a temporary shield equal to 6% of Max HP, lasting 30s (Cooldown: 0.5s; does not trigger if Shield exceeds 60%)",
-          "effects": []
+          "effects": [
+            {
+              "type": "on_event",
+              "event": "hit_target",
+              "cooldown_seconds": 0.5,
+              "effects": [
+                {
+                  "type": "apply_shield",
+                  "percent_of_max_hp": 6,
+                  "duration_seconds": 30,
+                  "max_shield_percent": 60
+                }
+              ]
+            }
+          ]
         },
         {
           "required_items": 4,
@@ -2654,17 +2703,75 @@
         {
           "required_items": 2,
           "description": "Element DMG (Blaze, Frost, Shock, Blast) +8%",
-          "effects": []
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "elemental_damage_percent",
+              "value": 8.0
+            }
+          ]
         },
         {
           "required_items": 3,
           "description": "Each weapon hit grants 1 stack of Deviant Energy. Every stack of Deviant Energy grants 1% Elemental DMG (Blaze, Frost, Shock, Blast). Effect can stack up to 20 times. Reloading removes half of the total stacks.",
-          "effects": []
+          "effects": [
+            {
+              "type": "on_event",
+              "event": "hit_target",
+              "effects": [
+                {
+                  "type": "gain_stack",
+                  "stack_type": "deviant_energy",
+                  "count": 1
+                }
+              ]
+            },
+            {
+              "type": "on_event",
+              "event": "reload",
+              "effects": [
+                {
+                  "type": "reduce_stack_percent",
+                  "stack_type": "deviant_energy",
+                  "value": 50
+                }
+              ]
+            },
+            {
+              "type": "per_stack",
+              "stack_source": "deviant_energy",
+              "effects": [
+                {
+                  "type": "increase_stat",
+                  "stat": "elemental_damage_percent",
+                  "value": 1,
+                  "max_value": 20
+                }
+              ]
+            }
+          ]
         },
         {
           "required_items": 4,
           "description": "Increase max Deviant Energy stack by 10. Grant 2 additional stacks when hitting a weakspot.",
-          "effects": []
+          "effects": [
+            {
+              "type": "increase_stat",
+              "stat": "max_deviant_energy_stacks",
+              "value": 30
+            },
+            {
+              "type": "on_event",
+              "event": "weakspot_hit",
+              "effects": [
+                {
+                  "type": "gain_stack",
+                  "stack_type": "deviant_energy",
+                  "count": 2
+                }
+              ]
+            }
+          ]
         }
       ],
       "description": "1-Piece: Status DMG Reduction +15% | 2-Piece: Element DMG (Blaze, Frost, Shock, Blast) +8% | 3-Piece: Each weapon hit grants 1 stack of Deviant Energy. Every stack of Deviant Energy grants 1% Elemental DMG (Blaze, Frost, Shock, Blast). Effect can stack up to 20 times. Reloading removes half of the total stacks. | 4-Piece: Increase max Deviant Energy stack by 10. Grant 2 additional stacks when hitting a weakspot.",

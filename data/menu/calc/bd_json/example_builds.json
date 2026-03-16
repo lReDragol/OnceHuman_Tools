@@ -51,6 +51,125 @@
       "source": {
         "title": "Game8 Best Unstable Bomber Build, Weapons, and Mods",
         "url": "https://game8.co/games/Once-Human/archives/466957"
+      },
+      "weapon_settings": {
+        "star": 6,
+        "level": 5,
+        "calibration": 6,
+        "attachments": {
+          "sight": "120_2x_dp",
+          "muzzle": "220_lcpis_brake_01",
+          "magazine": "420_pis_spr_mag_02"
+        }
+      },
+      "item_settings": {
+        "helmet": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "mask": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "top": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "gloves": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "pants": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "boots": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        }
+      }
+    },
+    {
+      "id": "de50_jaws_reloadless_bomber",
+      "name": {
+        "ru": "DE.50 - Jaws / Бомбер без перезарядки",
+        "en": "DE.50 - Jaws / Reloadless Bomber"
+      },
+      "description": {
+        "ru": "Пресет под Jaws с упором на стрельбу без частой перезарядки и проки Unstable Bomber. В локальной базе нет Shaman Vulture Top, поэтому вместо неё используется ближайший доступный нагрудник.",
+        "en": "Jaws preset focused on minimizing reload downtime while cycling Unstable Bomber procs. The local database does not include Shaman Vulture Top yet, so the preset uses the closest available chest piece."
+      },
+      "weapon": {
+        "id": "de50_jaws",
+        "name": "DE.50 - Jaws"
+      },
+      "items": {
+        "helmet": "lonewolf_hood",
+        "mask": "lonewolf_mask",
+        "top": "heavy_duty_top",
+        "gloves": "lonewolf_gloves",
+        "pants": "lonewolf_pants",
+        "boots": "bastille_boots"
+      },
+      "mods": {
+        "weapon": "Bombardier Souvenir Unstable Bomber",
+        "helmet": "Deviation Expert",
+        "mask": "Point Detonation",
+        "top": "Critical Rescue",
+        "gloves": "Crit Boost",
+        "pants": "Deadshot",
+        "boots": "Slow And Steady General"
+      },
+      "source": {
+        "title": "Gameplay.tips Reloadless Jaws / Unstable Bomber build"
+      },
+      "weapon_settings": {
+        "star": 6,
+        "level": 5,
+        "calibration": 6,
+        "attachments": {
+          "sight": "120_2x_05",
+          "muzzle": "220_lcpis_brake_01",
+          "magazine": "420_pis_ex_mag_02"
+        }
+      },
+      "item_settings": {
+        "helmet": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "mask": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "top": {
+          "star": 5,
+          "level": 5,
+          "calibration": 6
+        },
+        "gloves": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "pants": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "boots": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        }
       }
     },
     {
@@ -87,41 +206,50 @@
       "source": {
         "title": "Game8 Best Shrapnel Build, Weapons, and Mods",
         "url": "https://game8.co/games/Once-Human/archives/466935"
-      }
-    },
-    {
-      "id": "de50_jaws_reloadless_bomber",
-      "name": {
-        "ru": "DE.50 - Jaws / Бомбер без перезарядки",
-        "en": "DE.50 - Jaws / Reloadless Bomber"
       },
-      "description": {
-        "ru": "Пресет под Jaws с упором на стрельбу без частой перезарядки и проки Unstable Bomber. В локальной базе нет Shaman Vulture Top, поэтому вместо неё используется ближайший доступный нагрудник.",
-        "en": "Jaws preset focused on minimizing reload downtime while cycling Unstable Bomber procs. The local database does not include Shaman Vulture Top yet, so the preset uses the closest available chest piece."
+      "weapon_settings": {
+        "star": 6,
+        "level": 5,
+        "calibration": 6,
+        "attachments": {
+          "sight": "120_4x_02",
+          "muzzle": "220_556_sup_01",
+          "underbarrel": "320_rvg_grip_01",
+          "magazine": "420_rif_ex_mag_03",
+          "stock": "620_strike_stock_01"
+        }
       },
-      "weapon": {
-        "id": "de50_jaws",
-        "name": "DE.50 - Jaws"
-      },
-      "items": {
-        "helmet": "lonewolf_hood",
-        "mask": "lonewolf_mask",
-        "top": "heavy_duty_top",
-        "gloves": "lonewolf_gloves",
-        "pants": "lonewolf_pants",
-        "boots": "bastille_boots"
-      },
-      "mods": {
-        "weapon": "Bombardier Souvenir Unstable Bomber",
-        "helmet": "Deviation Expert",
-        "mask": "Point Detonation",
-        "top": "Critical Rescue",
-        "gloves": "Crit Boost",
-        "pants": "Deadshot",
-        "boots": "Slow And Steady General"
-      },
-      "source": {
-        "title": "Gameplay.tips Reloadless Jaws / Unstable Bomber build"
+      "item_settings": {
+        "helmet": {
+          "star": 5,
+          "level": 5,
+          "calibration": 6
+        },
+        "mask": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "top": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "gloves": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "pants": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "boots": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        }
       }
     },
     {
@@ -157,6 +285,50 @@
       },
       "source": {
         "title": "GameSkinny Best Power Surge Build Guide"
+      },
+      "weapon_settings": {
+        "star": 6,
+        "level": 5,
+        "calibration": 6,
+        "attachments": {
+          "sight": "120_2x_03",
+          "muzzle": "220_allin_sup_01",
+          "underbarrel": "320_tango_grip_01",
+          "magazine": "420_smg_tac_mag_04",
+          "stock": "620_tac_stock_01"
+        }
+      },
+      "item_settings": {
+        "helmet": {
+          "star": 5,
+          "level": 5,
+          "calibration": 6
+        },
+        "mask": {
+          "star": 4,
+          "level": 5,
+          "calibration": 6
+        },
+        "top": {
+          "star": 5,
+          "level": 5,
+          "calibration": 6
+        },
+        "gloves": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "pants": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "boots": {
+          "star": 5,
+          "level": 5,
+          "calibration": 6
+        }
       }
     },
     {
@@ -192,6 +364,208 @@
       },
       "source": {
         "title": "Game8 Best Doombringer Build, Weapons, and Mods"
+      },
+      "weapon_settings": {
+        "star": 6,
+        "level": 5,
+        "calibration": 6,
+        "attachments": {
+          "sight": "120_2x_01",
+          "muzzle": "220_shot_sup_01",
+          "underbarrel": "320_fd_bipod_01",
+          "magazine": "420_shot_ex_mag_01",
+          "stock": "620_rs2_stock_01"
+        }
+      },
+      "item_settings": {
+        "helmet": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "mask": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "top": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "gloves": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "pants": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "boots": {
+          "star": 5,
+          "level": 5,
+          "calibration": 6
+        }
+      }
+    },
+    {
+      "id": "kvd_icebreaker_frost",
+      "name": {
+        "ru": "KVD - Icebreaker / Frost Vortex",
+        "en": "KVD - Icebreaker / Frost Vortex"
+      },
+      "description": {
+        "ru": "Встроенный пример под Frost Vortex с KVD - Icebreaker, чтобы быстро проверить заморозку, длительности статусов и работу элементального урона.",
+        "en": "Built-in Frost Vortex example around KVD - Icebreaker for quickly testing freeze uptime, status durations, and elemental damage."
+      },
+      "weapon": {
+        "id": "kvd_icebreaker",
+        "name": "KVD - Icebreaker"
+      },
+      "items": {
+        "helmet": "mayfly_goggles",
+        "mask": "scout_mask",
+        "top": "heavy_duty_top",
+        "gloves": "shelterer_gloves",
+        "pants": "shelterer_pants",
+        "boots": "heavy_duty_shoes"
+      },
+      "mods": {
+        "weapon": "Cryo Blast Frost Vortex",
+        "helmet": "Deviation Expert",
+        "mask": "Frost Construct Frost Vortex",
+        "top": "Critical Rescue",
+        "gloves": "Elemental Overload",
+        "pants": "Critical Surge General",
+        "boots": "Covered Advance General"
+      },
+      "source": {
+        "title": "Built-in Frost Vortex sample"
+      },
+      "weapon_settings": {
+        "star": 6,
+        "level": 5,
+        "calibration": 6,
+        "attachments": {
+          "sight": "120_6x_02",
+          "muzzle": "220_large_sup_01",
+          "underbarrel": "320_rvg_grip_01",
+          "magazine": "420_lmg_lrg_drum_02",
+          "stock": "620_large_stock_01"
+        }
+      },
+      "item_settings": {
+        "helmet": {
+          "star": 5,
+          "level": 5,
+          "calibration": 6
+        },
+        "mask": {
+          "star": 4,
+          "level": 5,
+          "calibration": 6
+        },
+        "top": {
+          "star": 5,
+          "level": 5,
+          "calibration": 6
+        },
+        "gloves": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "pants": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "boots": {
+          "star": 5,
+          "level": 5,
+          "calibration": 6
+        }
+      }
+    },
+    {
+      "id": "m416_scorched_earth_burn",
+      "name": {
+        "ru": "M416 - Scorched Earth / Burn",
+        "en": "M416 - Scorched Earth / Burn"
+      },
+      "description": {
+        "ru": "Встроенный пример под горение с упором на Burn-модификаторы, чтобы тестировать тики горения, стеки и добивание горящих целей.",
+        "en": "Built-in burn example focused on burn modifiers for testing burn ticks, stack handling, and finishing burning enemies."
+      },
+      "weapon": {
+        "id": "m416_scorched_earth",
+        "name": "M416 - Scorched Earth"
+      },
+      "items": {
+        "helmet": "lonewolf_hood",
+        "mask": "lonewolf_mask",
+        "top": "heavy_duty_top",
+        "gloves": "lonewolf_gloves",
+        "pants": "lonewolf_pants",
+        "boots": "fire_rune_boots"
+      },
+      "mods": {
+        "weapon": "Burning Wrath Burn",
+        "helmet": "Deviation Expert",
+        "mask": "Blaze Amplifier Burn",
+        "top": "Critical Rescue",
+        "gloves": "Elemental Overload",
+        "pants": "Deadshot",
+        "boots": "Slow And Steady General"
+      },
+      "source": {
+        "title": "Built-in Burn sample"
+      },
+      "weapon_settings": {
+        "star": 6,
+        "level": 5,
+        "calibration": 6,
+        "attachments": {
+          "sight": "120_4x_02",
+          "muzzle": "220_556_sup_01",
+          "underbarrel": "320_bcm_grip_01",
+          "magazine": "420_rif_ex_mag_03",
+          "stock": "620_tac_stock_01"
+        }
+      },
+      "item_settings": {
+        "helmet": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "mask": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "top": {
+          "star": 5,
+          "level": 5,
+          "calibration": 6
+        },
+        "gloves": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "pants": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        },
+        "boots": {
+          "star": 6,
+          "level": 5,
+          "calibration": 6
+        }
       }
     }
   ]

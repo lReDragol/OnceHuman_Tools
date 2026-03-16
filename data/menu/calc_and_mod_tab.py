@@ -38,13 +38,19 @@ class CalcAndModTab:
         self.mod_images = {}
         self.item_images = {}
         self.weapon_images = {}
+        self.attachment_images = {}
         self.weapon_type_icons = {}
+        self.status_icon_textures = {}
         self.item_search_query = ""
         self.weapon_search_query = ""
         self.mod_search_query = ""
+        self.attachment_search_query = ""
         self.current_item_selection_type = None
         self.current_mod_selection_type = None
+        self.current_attachment_slot = None
+        self.current_attachment_weapon = None
         self.active_handler_tags = {}
+        self.attachment_slot_order = ["sight", "muzzle", "underbarrel", "magazine", "stock"]
 
         self.mouse_pressed = False
         self.scheduled_deletions = []
@@ -117,6 +123,11 @@ class CalcAndModTab:
         self.mod_search_query = app_data or ""
         if self.current_mod_selection_type:
             self.populate_mod_selection_list(self.current_mod_selection_type)
+
+    def on_attachment_search_changed(self, sender, app_data, user_data):
+        self.attachment_search_query = app_data or ""
+        if self.current_attachment_weapon and self.current_attachment_slot:
+            self.populate_attachment_selection_list()
 
     def open_mod_selection(self, sender, app_data, user_data):
         self.current_mod_selection_type = user_data
@@ -226,11 +237,52 @@ class CalcAndModTab:
                         pass
         return type_icons
 
+    def load_attachment_images(self):
+        attachment_images = {}
+        attachment_images['default'] = self.create_default_texture()
+        icons_folder = os.path.join('data', 'icons', 'attachments')
+        if not os.path.exists(icons_folder):
+            return attachment_images
+        for filename in os.listdir(icons_folder):
+            if not filename.endswith('.png'):
+                continue
+            attachment_id = os.path.splitext(filename)[0]
+            image_path = os.path.join(icons_folder, filename)
+            try:
+                width, height, channels, data = dpg.load_image(image_path)
+                with dpg.texture_registry():
+                    texture_id = dpg.add_static_texture(width, height, data)
+                attachment_images[attachment_id] = texture_id
+            except Exception as exc:
+                logging.warning("Failed to load attachment icon %s: %s", image_path, exc)
+        return attachment_images
+
+    def load_status_icons(self):
+        status_icons = {}
+        status_folder = os.path.join('data', 'icons', 'statuses')
+        if not os.path.exists(status_folder):
+            return status_icons
+        for filename in os.listdir(status_folder):
+            if not filename.endswith('.png'):
+                continue
+            status_id = os.path.splitext(filename)[0]
+            image_path = os.path.join(status_folder, filename)
+            try:
+                width, height, channels, data = dpg.load_image(image_path)
+                with dpg.texture_registry():
+                    texture_id = dpg.add_static_texture(width, height, data)
+                status_icons[status_id] = texture_id
+            except Exception as exc:
+                logging.warning("Failed to load status icon %s: %s", image_path, exc)
+        return status_icons
+
     def load_images(self):
         self.mod_images = self.load_mod_images()
         self.item_images = self.load_item_images()
         self.weapon_images = self.load_weapon_images()
+        self.attachment_images = self.load_attachment_images()
         self.weapon_type_icons = self.load_weapon_type_icons()
+        self.status_icon_textures = self.load_status_icons()
 
     def load_example_builds(self):
         path = os.path.join("data", "menu", "calc", "bd_json", "example_builds.json")
@@ -297,6 +349,109 @@ class CalcAndModTab:
         return ". ".join(parts) if parts else self.tr(
             "weapon_description_missing", "No description available for this weapon."
         )
+
+    def get_attachment_texture(self, attachment_id):
+        return self.attachment_images.get(attachment_id, self.attachment_images.get("default"))
+
+    def get_attachment_slot_label(self, slot_name):
+        labels = {
+            "sight": self.tr("attachment_slot_sight", "Sight"),
+            "muzzle": self.tr("attachment_slot_muzzle", "Muzzle"),
+            "underbarrel": self.tr("attachment_slot_underbarrel", "Underbarrel"),
+            "magazine": self.tr("attachment_slot_magazine", "Magazine"),
+            "stock": self.tr("attachment_slot_stock", "Stock"),
+        }
+        return labels.get(slot_name, slot_name.replace("_", " ").title())
+
+    def get_attachment_description(self, attachment_data):
+        parts = []
+        description = attachment_data.get("description")
+        if description:
+            parts.append(description)
+        stat_parts = []
+        for stat_name, stat_value in attachment_data.get("stats", {}).items():
+            stat_parts.append(
+                f"{self.context.format_stat_name(stat_name)} {self.context.format_value(stat_value)}"
+            )
+        if stat_parts:
+            stats_text = ", ".join(stat_parts)
+            if description and stats_text in description:
+                return description
+            parts.append(f"{self.tr('attachment_stats', 'Stats')}: {stats_text}")
+        return "\n".join(part for part in parts if part).strip()
+
+    def get_weapon_attachment_slots(self, weapon):
+        if not weapon:
+            return []
+        available_slots = []
+        for slot_name in self.attachment_slot_order:
+            if self.context.get_attachments_for_weapon(weapon, slot=slot_name):
+                available_slots.append(slot_name)
+        return available_slots
+
+    def get_weapon_attachment_summary(self, weapon):
+        if not weapon or not weapon.equipped_attachments:
+            return ""
+        summary_parts = []
+        for slot_name in self.attachment_slot_order:
+            attachment = weapon.equipped_attachments.get(slot_name)
+            if not attachment:
+                continue
+            summary_parts.append(
+                f"{self.get_attachment_slot_label(slot_name)}: {attachment.get('name', attachment.get('id', ''))}"
+            )
+        if not summary_parts:
+            return ""
+        return f"{self.tr('attachments_title', 'Attachments')}: " + "; ".join(summary_parts)
+
+    def get_status_icon_texture(self, status_name):
+        status_aliases = {
+            "power_surge": ["power_surge", "shock"],
+            "shock": ["shock", "power_surge"],
+            "burn": ["burn"],
+            "special_burn": ["burn"],
+            "frost_vortex": ["frost_vortex", "frost", "freeze"],
+            "frost": ["frost", "frost_vortex", "freeze"],
+            "shielded": ["shielded", "shield"],
+            "fortress_warfare": ["fortress_warfare", "shielded", "shield"],
+            "the_bulls_eye": ["the_bulls_eye", "bullseye", "marked"],
+            "unstable_bomber": ["unstable_bomber", "explosion", "bomb"],
+            "shrapnel": ["shrapnel"],
+        }
+        for key in status_aliases.get(status_name, [status_name]):
+            if key in self.status_icon_textures:
+                return self.status_icon_textures[key]
+        return None
+
+    def get_status_display_name(self, status_name):
+        ru_names = {
+            "burn": "Горение",
+            "special_burn": "Горение",
+            "frost_vortex": "Заморозка",
+            "frost": "Заморозка",
+            "shock": "Шок",
+            "power_surge": "Шок",
+            "shielded": "Щит",
+            "fortress_warfare": "Fortress",
+            "the_bulls_eye": "Метка",
+            "unstable_bomber": "Бомбер",
+            "shrapnel": "Shrapnel",
+        }
+        en_names = {
+            "burn": "Burn",
+            "special_burn": "Burn",
+            "frost_vortex": "Frost",
+            "frost": "Frost",
+            "shock": "Shock",
+            "power_surge": "Shock",
+            "shielded": "Shield",
+            "fortress_warfare": "Fortress",
+            "the_bulls_eye": "Bull's Eye",
+            "unstable_bomber": "Bomber",
+            "shrapnel": "Shrapnel",
+        }
+        label_map = ru_names if getattr(self.main_app, "current_language", "ru") == "ru" else en_names
+        return label_map.get(status_name, status_name.replace("_", " ").title())
 
     def get_mod_texture(self, item_type, mod_name):
         mod_key = self.context.category_key_mapping.get(item_type, "mod_weapon")
@@ -410,12 +565,14 @@ class CalcAndModTab:
         self.render_armor_slot(slot_name)
 
     def clear_build(self):
+        self.current_attachment_slot = None
+        self.current_attachment_weapon = None
         self.player.remove_weapon()
         self.player.remove_mod("weapon")
         for armor_type in self.armor_types:
             self.player.remove_item(armor_type)
             self.player.remove_mod(armor_type)
-        self.context.current_ammo = self.player.stats.get('magazine_capacity', 0)
+        self.context.initialize()
         self.refresh_equipment_ui()
         self.update_stats_display()
 
@@ -441,9 +598,10 @@ class CalcAndModTab:
             if not item_data:
                 continue
             item = self.context.create_item_instance(item_data)
-            item.star = build.get("item_settings", {}).get(slot_name, {}).get("star", item.star)
-            item.level = build.get("item_settings", {}).get(slot_name, {}).get("level", item.level)
-            item.calibration = build.get("item_settings", {}).get(slot_name, {}).get("calibration", item.calibration)
+            item_settings = build.get("item_settings", {}).get(slot_name, {})
+            item.star = max(1, min(item.max_stars, item_settings.get("star", item.star)))
+            item.level = max(1, min(5, item_settings.get("level", item.level)))
+            item.calibration = max(0, min(item.get_max_calibration(), item_settings.get("calibration", item.calibration)))
             self.player.equip_item(item)
 
         for slot_name, mod_name in build.get("mods", {}).items():
@@ -453,12 +611,17 @@ class CalcAndModTab:
 
         weapon_settings = build.get("weapon_settings", {})
         if self.player.weapon:
-            self.player.weapon.star = weapon_settings.get("star", self.player.weapon.star)
-            self.player.weapon.level = weapon_settings.get("level", self.player.weapon.level)
-            self.player.weapon.calibration = weapon_settings.get("calibration", self.player.weapon.calibration)
+            self.player.weapon.star = max(1, min(6, weapon_settings.get("star", self.player.weapon.star)))
+            self.player.weapon.level = max(1, min(5, weapon_settings.get("level", self.player.weapon.level)))
+            self.player.weapon.calibration = max(0, min(6, weapon_settings.get("calibration", self.player.weapon.calibration)))
+            for slot_name, attachment_spec in (weapon_settings.get("attachments") or {}).items():
+                attachment_id = attachment_spec.get("id") if isinstance(attachment_spec, dict) else attachment_spec
+                attachment_data = self.context.get_attachment_by_id(attachment_id)
+                if attachment_data:
+                    self.player.weapon.equip_attachment(slot_name, attachment_data)
             self.player.weapon.get_stats()
 
-        self.context.current_ammo = self.player.stats.get('magazine_capacity', 0)
+        self.context.initialize()
         self.refresh_equipment_ui()
         self.update_stats_display()
 
@@ -473,6 +636,7 @@ class CalcAndModTab:
         self.create_item_selection_window()
         self.create_mod_selection_window()
         self.create_weapon_selection_window()
+        self.create_attachment_selection_window()
         self.create_error_modals()
         self.create_item_edit_window()
 
@@ -619,6 +783,9 @@ class CalcAndModTab:
                             color=[168, 181, 198],
                         )
                     dpg.add_text(self.get_weapon_description(weapon_data), wrap=230)
+                    attachment_summary = self.get_weapon_attachment_summary(weapon)
+                    if attachment_summary:
+                        dpg.add_text(attachment_summary, wrap=230, color=[168, 181, 198])
 
                 with dpg.group():
                     equipped_mod = self.player.equipped_mods.get("weapon")
@@ -753,7 +920,7 @@ class CalcAndModTab:
         with dpg.texture_registry():
             texture_id = dpg.add_static_texture(width_img, height_img, data)
 
-        with dpg.drawlist(width=300, height=330, tag="damage_layer"):
+        with dpg.drawlist(width=390, height=330, tag="damage_layer"):
             dpg.draw_image(texture_id, pmin=[0, 30], pmax=[300, 330])
             dpg.draw_rectangle(pmin=[90, 80], pmax=[210, 320],
                                color=[0, 0, 255, 100], fill=[0, 0, 255, 50])
@@ -1000,8 +1167,11 @@ class CalcAndModTab:
                             dpg.add_text(self.get_weapon_description(weapon_data), wrap=320)
 
     def remove_weapon(self, sender, app_data, user_data):
+        self.current_attachment_slot = None
+        self.current_attachment_weapon = None
         self.player.remove_weapon()
         self.player.remove_mod("weapon")
+        self.context.initialize()
         self.render_weapon_selector()
         dpg.configure_item("weapon_selection_window", show=False)
         self.update_stats_display()
@@ -1009,9 +1179,10 @@ class CalcAndModTab:
     def select_weapon(self, sender, app_data, user_data):
         weapon_data = user_data
         weapon = self.context.create_weapon_instance(weapon_data)
+        self.current_attachment_slot = None
+        self.current_attachment_weapon = weapon
         self.player.equip_weapon(weapon)
-        self.player.recalculate_stats()
-        self.context.current_ammo = self.player.stats.get('magazine_capacity', 0)
+        self.context.initialize()
         self.render_weapon_selector()
         dpg.configure_item("weapon_selection_window", show=False)
         self.update_stats_display()
@@ -1025,8 +1196,8 @@ class CalcAndModTab:
         window_tag = f"{weapon.id}_config_window"
         if dpg.does_item_exist(window_tag):
             dpg.delete_item(window_tag)
-        window_width = 400
-        window_height = 360
+        window_width = 470
+        window_height = 640
         main_window_pos = dpg.get_viewport_pos()
         main_window_width = dpg.get_viewport_width()
         main_window_height = dpg.get_viewport_height()
@@ -1034,23 +1205,70 @@ class CalcAndModTab:
         y_pos = main_window_pos[1] + (main_window_height - window_height) / 2 - 100
         with dpg.window(label=f"Настройка оружия {weapon.name}", modal=True, show=True, tag=window_tag,
                         width=window_width, height=window_height, pos=(x_pos, y_pos)):
-            dpg.add_text(f"{self.tr('weapon_label', 'Weapon')}: {weapon.name}")
-            star_slider_tag = f"{weapon.id}_star_slider"
-            level_slider_tag = f"{weapon.id}_level_slider"
-            calibration_slider_tag = f"{weapon.id}_calibration_slider"
-            dpg.add_slider_int(label=self.tr("stars_count", "Stars"), min_value=1, max_value=6, default_value=weapon.star,
-                               tag=star_slider_tag, callback=self.update_weapon_stats,
-                               user_data={'weapon': weapon})
-            dpg.add_slider_int(label=self.tr("level", "Level"), min_value=1, max_value=5, default_value=weapon.level,
-                               tag=level_slider_tag, callback=self.update_weapon_stats,
-                               user_data={'weapon': weapon})
-            dpg.add_slider_int(label=self.tr("calibration", "Calibration"), min_value=0, max_value=6, default_value=weapon.calibration,
-                               tag=calibration_slider_tag, callback=self.update_weapon_stats,
-                               user_data={'weapon': weapon})
-            dpg.add_separator()
-            dpg.add_text(self.tr("description", "Description:"))
-            weapon_data = self.find_weapon_data(weapon_id=weapon.id) or {}
-            dpg.add_text(self.get_weapon_description(weapon_data), wrap=380)
+            with dpg.child_window(border=False, autosize_x=True, height=560):
+                dpg.add_text(f"{self.tr('weapon_label', 'Weapon')}: {weapon.name}")
+                star_slider_tag = f"{weapon.id}_star_slider"
+                level_slider_tag = f"{weapon.id}_level_slider"
+                calibration_slider_tag = f"{weapon.id}_calibration_slider"
+                dpg.add_slider_int(label=self.tr("stars_count", "Stars"), min_value=1, max_value=6, default_value=weapon.star,
+                                   tag=star_slider_tag, callback=self.update_weapon_stats,
+                                   user_data={'weapon': weapon})
+                dpg.add_slider_int(label=self.tr("level", "Level"), min_value=1, max_value=5, default_value=weapon.level,
+                                   tag=level_slider_tag, callback=self.update_weapon_stats,
+                                   user_data={'weapon': weapon})
+                dpg.add_slider_int(label=self.tr("calibration", "Calibration"), min_value=0, max_value=6, default_value=weapon.calibration,
+                                   tag=calibration_slider_tag, callback=self.update_weapon_stats,
+                                   user_data={'weapon': weapon})
+                dpg.add_separator()
+                dpg.add_text(self.tr("description", "Description:"))
+                weapon_data = self.find_weapon_data(weapon_id=weapon.id) or {}
+                dpg.add_text(self.get_weapon_description(weapon_data), wrap=430)
+
+                dpg.add_separator()
+                dpg.add_text(self.tr("weapon_stats_title", "Current weapon stats"))
+                weapon_stats = weapon.get_stats()
+                for stat_name in (
+                    "damage_per_projectile",
+                    "fire_rate",
+                    "magazine_capacity",
+                    "reload_time_seconds",
+                    "reload_speed_percent",
+                    "stability",
+                    "accuracy",
+                    "range",
+                    "mobility",
+                ):
+                    if stat_name in weapon_stats:
+                        dpg.add_text(
+                            f"{self.context.format_stat_name(stat_name)}: {self.context.format_value(weapon_stats[stat_name])}",
+                            wrap=430,
+                        )
+
+                available_slots = self.get_weapon_attachment_slots(weapon)
+                if available_slots:
+                    dpg.add_separator()
+                    dpg.add_text(self.tr("attachments_title", "Attachments"))
+                    for slot_name in available_slots:
+                        current_attachment = weapon.equipped_attachments.get(slot_name)
+                        with dpg.group():
+                            with dpg.group(horizontal=True):
+                                dpg.add_text(f"{self.get_attachment_slot_label(slot_name)}:", wrap=120)
+                                dpg.add_button(
+                                    label=current_attachment.get("name", self.tr("select_attachment", "Select attachment"))
+                                    if current_attachment else self.tr("select_attachment", "Select attachment"),
+                                    callback=self.open_attachment_selection,
+                                    user_data={"slot": slot_name},
+                                    width=220,
+                                )
+                                dpg.add_button(
+                                    label=self.tr("clear", "Clear"),
+                                    callback=self.clear_attachment_slot,
+                                    user_data=slot_name,
+                                    enabled=current_attachment is not None,
+                                    width=70,
+                                )
+                            if current_attachment:
+                                dpg.add_text(self.get_attachment_description(current_attachment), wrap=430)
             dpg.add_button(label=self.tr("close", "Close"), callback=lambda: dpg.delete_item(window_tag))
 
     def update_weapon_stats(self, sender, app_data, user_data):
@@ -1067,6 +1285,7 @@ class CalcAndModTab:
         weapon.get_stats()
         self.player.equip_weapon(weapon)
         self.player.recalculate_stats()
+        self.context.current_ammo = min(self.context.current_ammo, self.player.stats.get('magazine_capacity', 0))
         self.update_stats_display()
 
     def create_item_selection_window(self):
@@ -1221,6 +1440,109 @@ class CalcAndModTab:
             dpg.add_child_window(tag="weapon_selection_list", autosize_x=True, autosize_y=True)
             dpg.add_button(label=self.tr("close", "Close"),
                            callback=lambda: dpg.configure_item("weapon_selection_window", show=False))
+
+    def create_attachment_selection_window(self):
+        with dpg.window(label=self.tr("attachment_selection_window", "Attachment selection"), modal=True, show=False,
+                        tag="attachment_selection_window", width=820, height=560):
+            dpg.add_text(self.tr("select_attachment_prompt", "Select an attachment:"))
+            dpg.add_input_text(
+                label=self.tr("search_attachments", "Search attachments"),
+                tag="attachment_search_input",
+                callback=self.on_attachment_search_changed,
+                width=780,
+            )
+            dpg.add_child_window(tag="attachment_selection_list", autosize_x=True, autosize_y=True)
+            dpg.add_button(label=self.tr("close", "Close"),
+                           callback=lambda: dpg.configure_item("attachment_selection_window", show=False))
+
+    def open_attachment_selection(self, sender, app_data, user_data):
+        if not self.player.weapon:
+            return
+        self.current_attachment_slot = user_data.get("slot")
+        self.current_attachment_weapon = self.player.weapon
+        self.attachment_search_query = ""
+        if dpg.does_item_exist("attachment_search_input"):
+            dpg.set_value("attachment_search_input", "")
+        self.populate_attachment_selection_list()
+        dpg.configure_item("attachment_selection_window", show=True)
+
+    def populate_attachment_selection_list(self):
+        if not self.current_attachment_weapon or not self.current_attachment_slot:
+            return
+        dpg.delete_item("attachment_selection_list", children_only=True)
+        attachments = sorted(
+            [
+                attachment for attachment in self.context.get_attachments_for_weapon(
+                    self.current_attachment_weapon,
+                    slot=self.current_attachment_slot,
+                )
+                if self.matches_search_query(
+                    self.attachment_search_query,
+                    attachment.get("name", ""),
+                    attachment.get("description", ""),
+                    self.get_attachment_slot_label(attachment.get("slot", "")),
+                )
+            ],
+            key=lambda attachment: attachment.get("name", ""),
+        )
+        dpg.add_button(
+            label=self.tr("clear_slot", "Clear slot"),
+            callback=self.clear_attachment_slot,
+            user_data=self.current_attachment_slot,
+            parent="attachment_selection_list",
+        )
+        with dpg.table(
+            header_row=False,
+            resizable=True,
+            policy=dpg.mvTable_SizingStretchProp,
+            parent="attachment_selection_list",
+        ):
+            dpg.add_table_column(init_width_or_weight=0.18)
+            dpg.add_table_column(init_width_or_weight=0.25)
+            dpg.add_table_column(init_width_or_weight=0.57)
+            for attachment in attachments:
+                texture_id = self.get_attachment_texture(attachment.get("id"))
+                with dpg.table_row():
+                    dpg.add_image_button(
+                        texture_id,
+                        width=82,
+                        height=82,
+                        callback=self.select_attachment_for_slot,
+                        user_data=attachment,
+                    )
+                    with dpg.group():
+                        dpg.add_button(
+                            label=attachment.get("name", attachment.get("id", "")),
+                            callback=self.select_attachment_for_slot,
+                            user_data=attachment,
+                        )
+                        dpg.add_text(
+                            self.get_attachment_slot_label(attachment.get("slot", "")),
+                            color=[168, 181, 198],
+                        )
+                    dpg.add_text(self.get_attachment_description(attachment), wrap=320)
+
+    def clear_attachment_slot(self, sender, app_data, user_data):
+        if not self.player.weapon:
+            return
+        self.player.weapon.remove_attachment(user_data)
+        self.player.equip_weapon(self.player.weapon)
+        self.context.initialize()
+        dpg.configure_item("attachment_selection_window", show=False)
+        self.render_weapon_selector()
+        self.show_weapon_config_window(self.player.weapon)
+        self.update_stats_display()
+
+    def select_attachment_for_slot(self, sender, app_data, user_data):
+        if not self.player.weapon or not self.current_attachment_slot:
+            return
+        self.player.weapon.equip_attachment(self.current_attachment_slot, user_data)
+        self.player.equip_weapon(self.player.weapon)
+        self.context.initialize()
+        dpg.configure_item("attachment_selection_window", show=False)
+        self.render_weapon_selector()
+        self.show_weapon_config_window(self.player.weapon)
+        self.update_stats_display()
 
     def create_error_modals(self):
         self.create_error_modal("error_modal_effect", "Пожалуйста, заполните все необходимые поля эффекта.")
@@ -1717,7 +2039,6 @@ class CalcAndModTab:
         bar_width = 150
         bar_height = 15
         green_width = bar_width * hp_percentage
-        red_width = bar_width - green_width
         bar_x = 75
         bar_y = 5
         if not dpg.does_item_exist("hp_bar_layer"):
@@ -1735,6 +2056,88 @@ class CalcAndModTab:
                            pmax=[bar_x + bar_width, bar_y + bar_height],
                            color=[255, 255, 255, 255], fill=[0, 0, 0, 0],
                            thickness=1, parent="hp_bar_layer")
+        hp_text = (
+            f"{self.context.format_value(current_hp, hp_value=True)}/"
+            f"{self.context.format_value(max_hp, hp_value=True)}"
+        )
+        dpg.draw_text(
+            pos=[bar_x + 20, bar_y - 2],
+            text=hp_text,
+            color=[255, 255, 255, 255],
+            size=13,
+            parent="hp_bar_layer",
+        )
+
+        status_payloads = sorted(
+            self.context.get_active_status_payloads(),
+            key=lambda payload: (0 if payload.get("target") == "mannequin" else 1, payload.get("status", "")),
+        )
+        icon_x = bar_x + bar_width + 18
+        icon_y = bar_y - 3
+        row_height = 38
+        icon_size = 28
+        for index, payload in enumerate(status_payloads[:7]):
+            row_top = icon_y + index * row_height
+            row_bottom = row_top + 32
+            border_color = [244, 114, 64, 220] if payload.get("target") == "mannequin" else [88, 166, 255, 220]
+            dpg.draw_rectangle(
+                pmin=[icon_x - 4, row_top - 2],
+                pmax=[382, row_bottom],
+                color=border_color,
+                fill=[20, 25, 34, 180],
+                rounding=6,
+                parent="hp_bar_layer",
+            )
+            icon_texture = self.get_status_icon_texture(payload.get("status"))
+            if icon_texture:
+                dpg.draw_image(
+                    icon_texture,
+                    pmin=[icon_x, row_top],
+                    pmax=[icon_x + icon_size, row_top + icon_size],
+                    parent="hp_bar_layer",
+                )
+            else:
+                dpg.draw_rectangle(
+                    pmin=[icon_x, row_top],
+                    pmax=[icon_x + icon_size, row_top + icon_size],
+                    color=[255, 255, 255, 255],
+                    fill=[55, 65, 81, 255],
+                    rounding=4,
+                    parent="hp_bar_layer",
+                )
+                dpg.draw_text(
+                    pos=[icon_x + 4, row_top + 6],
+                    text=self.get_status_display_name(payload.get("status", ""))[:3],
+                    color=[255, 255, 255, 255],
+                    size=11,
+                    parent="hp_bar_layer",
+                )
+            label_text = self.get_status_display_name(payload.get("status", ""))
+            remaining = payload.get("remaining", 0.0)
+            remaining_text = f"{remaining:.1f}s" if remaining < 10 else f"{int(round(remaining))}s"
+            dpg.draw_text(
+                pos=[icon_x + 36, row_top + 1],
+                text=label_text,
+                color=[255, 255, 255, 255],
+                size=12,
+                parent="hp_bar_layer",
+            )
+            dpg.draw_text(
+                pos=[icon_x + 36, row_top + 15],
+                text=remaining_text,
+                color=[203, 213, 225, 255],
+                size=11,
+                parent="hp_bar_layer",
+            )
+            stacks = payload.get("stacks", 0)
+            if stacks and stacks > 1:
+                dpg.draw_text(
+                    pos=[icon_x + 86, row_top + 15],
+                    text=f"x{stacks}",
+                    color=[255, 215, 0, 255],
+                    size=11,
+                    parent="hp_bar_layer",
+                )
 
     def handle_viewport_resize(self, width=None, height=None):
         try:
@@ -1788,6 +2191,8 @@ class CalcAndModTab:
             dpg.configure_item("weapon_search_input", label=self.tr("search_weapons", "Search weapons"))
         if dpg.does_item_exist("mod_search_input"):
             dpg.configure_item("mod_search_input", label=self.tr("search_mods", "Search mods"))
+        if dpg.does_item_exist("attachment_search_input"):
+            dpg.configure_item("attachment_search_input", label=self.tr("search_attachments", "Search attachments"))
         if dpg.does_item_exist("build_presets_combo"):
             dpg.configure_item(
                 "build_presets_combo",

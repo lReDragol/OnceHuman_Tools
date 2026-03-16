@@ -336,6 +336,14 @@ def handle_reduce_stack(effect: Dict[str, Any], context: Dict[str, Any]):
     if ctx and stack_type:
         ctx.reduce_stacks(stack_type, value)
 
+@register_effect_handler("reduce_stack_percent")
+def handle_reduce_stack_percent(effect: Dict[str, Any], context: Dict[str, Any]):
+    stack_type = effect.get('stack_type')
+    value = effect.get('value', 0)
+    ctx = context.get('mechanics_context')
+    if ctx and stack_type:
+        ctx.reduce_stacks_percent(stack_type, value)
+
 @register_effect_handler("reload_ammo")
 def handle_reload_ammo(effect: Dict[str, Any], context: Dict[str, Any]):
     amount = effect.get('amount', 1)
@@ -355,6 +363,89 @@ def handle_restore_bullet(effect: Dict[str, Any], context: Dict[str, Any]):
     ctx = context.get('mechanics_context')
     if ctx:
         ctx.restore_bullet(amount)
+
+@register_effect_handler("refill_magazine_percent")
+def handle_refill_magazine_percent(effect: Dict[str, Any], context: Dict[str, Any]):
+    value = effect.get('value', effect.get('percent', 0))
+    ctx = context.get('mechanics_context')
+    if ctx:
+        ctx.refill_magazine_percent(value)
+
+@register_effect_handler("refill_bullets_from_inventory")
+@register_effect_handler("refill_bullet_from_inventory")
+def handle_refill_bullets_from_inventory(effect: Dict[str, Any], context: Dict[str, Any]):
+    amount = effect.get('value', effect.get('amount', 1))
+    ctx = context.get('mechanics_context')
+    if ctx:
+        ctx.restore_bullet(amount)
+
+@register_effect_handler("recover_hp_percent")
+@register_effect_handler("restore_hp_percent")
+def handle_restore_hp_percent(effect: Dict[str, Any], context: Dict[str, Any]):
+    value = effect.get('value', 0)
+    ctx = context.get('mechanics_context')
+    if ctx:
+        ctx.restore_hp_percent(value)
+
+@register_effect_handler("apply_shield")
+def handle_apply_shield(effect: Dict[str, Any], context: Dict[str, Any]):
+    ctx = context.get('mechanics_context')
+    if ctx:
+        ctx.apply_shield(
+            percent_of_max_hp=effect.get('percent_of_max_hp'),
+            flat_value=effect.get('value'),
+            duration_seconds=effect.get('duration_seconds', 0),
+            max_percent=effect.get('max_shield_percent'),
+        )
+
+@register_effect_handler("remove_stacks")
+def handle_remove_stacks(effect: Dict[str, Any], context: Dict[str, Any]):
+    ctx = context.get('mechanics_context')
+    if not ctx:
+        return
+    stack_type = effect.get('stack_type') or effect.get('status')
+    stacks = effect.get('stacks', effect.get('value', 0))
+    if stack_type:
+        ctx.reduce_stacks(stack_type, stacks)
+
+@register_effect_handler("reduce_burn_stacks_percent")
+def handle_reduce_burn_stacks_percent(effect: Dict[str, Any], context: Dict[str, Any]):
+    ctx = context.get('mechanics_context')
+    if ctx:
+        ctx.reduce_status_stacks_percent('burn', effect.get('value', 0))
+
+@register_effect_handler("trigger_status")
+def handle_trigger_status(effect: Dict[str, Any], context: Dict[str, Any]):
+    status = effect.get('status')
+    duration = effect.get('duration_seconds', 0)
+    chance = effect.get('chance_percent', 100)
+    ctx = context.get('mechanics_context')
+    if ctx and status and random.uniform(0, 100) <= chance:
+        ctx.apply_status(status, duration)
+
+@register_effect_handler("apply_status_to_nearby_enemies")
+@register_effect_handler("spread_status_to_nearby_enemies")
+def handle_apply_status_to_nearby_enemies(effect: Dict[str, Any], context: Dict[str, Any]):
+    status = effect.get('status')
+    duration = effect.get('duration_seconds', 0)
+    ctx = context.get('mechanics_context')
+    if ctx and status:
+        kwargs = {k: v for k, v in effect.items() if k not in {'type', 'status', 'duration_seconds'}}
+        ctx.apply_status(status, duration, **kwargs)
+
+@register_effect_handler("increase_duration")
+@register_effect_handler("extend_effect_duration")
+@register_effect_handler("status_remains")
+def handle_extend_status_duration(effect: Dict[str, Any], context: Dict[str, Any]):
+    ctx = context.get('mechanics_context')
+    if not ctx:
+        return
+    duration = effect.get('duration_seconds', 0)
+    status = effect.get('status')
+    if status:
+        ctx.extend_status_duration(status, duration)
+    elif ctx.current_mode:
+        ctx.extend_mode_duration(ctx.current_mode, duration)
 
 @register_effect_handler("consume_extra_ammo")
 def handle_consume_extra_ammo(effect: Dict[str, Any], context: Dict[str, Any]):
@@ -623,10 +714,23 @@ class Weapon:
         self.calibration = 0
         self.stats = {}
         self.counters = {}
+        self.equipped_attachments: Dict[str, Dict[str, Any]] = {}
         if isinstance(self.mechanics_data, dict) and 'description' in self.mechanics_data and 'effects' in self.mechanics_data:
             self.mechanics = Mechanic(self.mechanics_data['description'], self.mechanics_data['effects'])
         else:
             self.mechanics = None
+
+    def equip_attachment(self, slot: str, attachment_data: Dict[str, Any]):
+        if not slot or not attachment_data:
+            return
+        self.equipped_attachments[slot] = copy.deepcopy(attachment_data)
+
+    def remove_attachment(self, slot: str):
+        if slot in self.equipped_attachments:
+            del self.equipped_attachments[slot]
+
+    def clear_attachments(self):
+        self.equipped_attachments.clear()
 
     def calculate_stats(self):
         stats = {}
@@ -645,6 +749,9 @@ class Weapon:
                     stats[stat]=int(round(new_value))
                 else:
                     stats[stat]=new_value
+        for attachment in self.equipped_attachments.values():
+            attachment_stats = attachment.get('stats', {})
+            add_stats(stats, attachment_stats)
         self.stats=stats
         return stats
 

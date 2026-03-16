@@ -161,6 +161,16 @@ class Player:
                 'effects': effects,
             })
 
+        if self.weapon:
+            for slot_name, attachment in sorted(self.weapon.equipped_attachments.items()):
+                effects = normalize_effects(attachment.get('effects', []))
+                if not effects:
+                    continue
+                effect_groups.append({
+                    'source': f"attachment:{slot_name}:{attachment.get('id', attachment.get('name', 'unknown'))}",
+                    'effects': effects,
+                })
+
         if context:
             set_counts = {}
             for item in self.equipped_items.values():
@@ -328,6 +338,10 @@ class Player:
         alias_map = {
             'weapon_damage_bonus_percent': 'weapon_damage_percent',
             'super_armor': 'has_super_armor',
+            'attack': 'damage_per_projectile',
+            'crit_dmg_bonus_percent': 'crit_damage_percent',
+            'shrapnel_crit_dmg_bonus_percent': 'crit_damage_percent',
+            'power_surge_status_duration_percent': 'power_surge_duration_percent',
         }
         stat_name = alias_map.get(stat_name, stat_name)
 
@@ -442,43 +456,41 @@ class Mannequin:
 
     def apply_effect(self, effect_name):
         self.effects[effect_name] = True
-        print(f"Эффект {effect_name} применён к манекену.")
+        logging.debug(f"Effect {effect_name} applied to mannequin.")
 
     def remove_effect(self, effect_name):
         if effect_name in self.effects:
             del self.effects[effect_name]
-            print(f"Эффект {effect_name} удалён с манекена.")
+            logging.debug(f"Effect {effect_name} removed from mannequin.")
 
     def set_hp(self, hp):
         self.max_hp = hp
         self.current_hp = min(self.current_hp, hp)
-        print(f"HP манекена установлено на {self.max_hp}.")
+        logging.debug(f"Mannequin HP set to {self.max_hp}.")
 
     def toggle_hotbar(self):
         self.show_hotbar = not self.show_hotbar
-        state = "включено" if self.show_hotbar else "выключено"
-        print(f"Отображение хотбара {state}.")
+        logging.debug(f"Mannequin hotbar toggled to {self.show_hotbar}.")
 
     def toggle_unified_shotgun_damage(self):
         self.show_unified_shotgun_damage = not self.show_unified_shotgun_damage
-        state = "включено" if self.show_unified_shotgun_damage else "выключено"
-        print(f"Отображение суммарного урона дробовика {state}.")
+        logging.debug(f"Unified shotgun damage toggled to {self.show_unified_shotgun_damage}.")
 
     def set_status(self, status):
         self.status = status
-        print(f"Статус манекена установлен на {self.status}.")
+        logging.debug(f"Mannequin status set to {self.status}.")
 
     def set_enemy_type(self, enemy_type):
         self.enemy_type = enemy_type
-        print(f"Тип врага манекена установлен на {self.enemy_type}.")
+        logging.debug(f"Mannequin enemy type set to {self.enemy_type}.")
 
     def receive_damage(self, damage):
         self.current_hp -= damage
         self.current_hp = max(self.current_hp, 0)
-        print(f"Манекен получил {damage} урона. Текущее HP: {self.current_hp}/{self.max_hp}.")
+        logging.debug(f"Mannequin received {damage} damage. HP: {self.current_hp}/{self.max_hp}.")
 
     def apply_status(self, status_name, duration, **kwargs):
-        print(f"Манекен получил статус {status_name} на {duration} секунд с параметрами {kwargs}.")
+        logging.debug(f"Mannequin received status {status_name} for {duration}s with {kwargs}.")
 
     def update_effects(self, delta_time):
         effects_to_remove = []
