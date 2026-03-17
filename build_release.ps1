@@ -57,7 +57,7 @@ function Invoke-Build {
 }
 
 Invoke-Build `
-    -Name "OnceHumanTools_V4" `
+    -Name "OnceHumanTools_V4.5" `
     -EntryScript "main.py" `
     -IconPath "data\icons\icon.ico" `
     -ExtraArgs @(
@@ -75,7 +75,7 @@ Invoke-Build `
     )
 
 Invoke-Build `
-    -Name "OnceHumanCalcPortable_V2" `
+    -Name "OnceHumanCalcPortable_V2.5" `
     -EntryScript "portable_calc_v2\main.py" `
     -IconPath "data\icons\icon.ico" `
     -ExtraArgs @(

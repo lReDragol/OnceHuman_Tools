@@ -2,9 +2,9 @@
 
 Once Human Tools is a multi-tool project for Once Human with three maintained deliverables:
 
-- Main desktop application `V4`
+- Main desktop application `V4.5`
 - Portable fishing bot `V4`
-- Portable calculator `V2`
+- Portable calculator `V2.5`
 
 ## Main features
 

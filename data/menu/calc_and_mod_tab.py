@@ -49,6 +49,9 @@ class CalcAndModTab:
         self.current_mod_selection_type = None
         self.current_attachment_slot = None
         self.current_attachment_weapon = None
+        self.active_weapon_config_window_tag = None
+        self.pending_attachment_window_open = False
+        self.pending_attachment_window_delay_frames = 0
         self.active_handler_tags = {}
         self.attachment_slot_order = ["sight", "muzzle", "underbarrel", "magazine", "stock"]
 
@@ -380,6 +383,51 @@ class CalcAndModTab:
             parts.append(f"{self.tr('attachment_stats', 'Stats')}: {stats_text}")
         return "\n".join(part for part in parts if part).strip()
 
+    def get_centered_window_position(self, window_width, window_height, y_offset=-100):
+        main_window_pos = dpg.get_viewport_pos()
+        main_window_width = dpg.get_viewport_width()
+        main_window_height = dpg.get_viewport_height()
+        x_pos = int(main_window_pos[0] + (main_window_width - window_width) / 2)
+        y_pos = int(main_window_pos[1] + (main_window_height - window_height) / 2 + y_offset)
+        return x_pos, y_pos
+
+    def close_weapon_config_window(self, weapon=None):
+        window_tag = self.active_weapon_config_window_tag
+        if not window_tag and weapon:
+            window_tag = f"{weapon.id}_config_window"
+        if window_tag and dpg.does_item_exist(window_tag):
+            dpg.delete_item(window_tag)
+        if self.active_weapon_config_window_tag == window_tag:
+            self.active_weapon_config_window_tag = None
+
+    def close_attachment_selection_window(self, reopen_weapon_config=False):
+        if dpg.does_item_exist("attachment_selection_window"):
+            dpg.configure_item("attachment_selection_window", show=False)
+        if dpg.does_item_exist("attachment_search_input"):
+            dpg.set_value("attachment_search_input", "")
+        self.pending_attachment_window_open = False
+        self.pending_attachment_window_delay_frames = 0
+        self.attachment_search_query = ""
+        self.current_attachment_slot = None
+        self.current_attachment_weapon = None
+        if reopen_weapon_config and self.player.weapon:
+            self.show_weapon_config_window(self.player.weapon)
+
+    def process_pending_attachment_window(self):
+        if not self.pending_attachment_window_open:
+            return
+        if self.pending_attachment_window_delay_frames > 0:
+            self.pending_attachment_window_delay_frames -= 1
+            return
+        if not self.current_attachment_weapon or not self.current_attachment_slot:
+            self.pending_attachment_window_open = False
+            return
+        self.populate_attachment_selection_list()
+        x_pos, y_pos = self.get_centered_window_position(820, 560)
+        dpg.configure_item("attachment_selection_window", pos=(x_pos, y_pos), show=True)
+        self.pending_attachment_window_open = False
+        dpg.focus_item("attachment_selection_window")
+
     def get_weapon_attachment_slots(self, weapon):
         if not weapon:
             return []
@@ -654,6 +702,7 @@ class CalcAndModTab:
         self.handle_viewport_resize()
 
     def update(self):
+        self.process_pending_attachment_window()
         self.context.update()
         if self.context.mouse_pressed:
             self.context.try_fire_weapon()
@@ -1196,13 +1245,10 @@ class CalcAndModTab:
         window_tag = f"{weapon.id}_config_window"
         if dpg.does_item_exist(window_tag):
             dpg.delete_item(window_tag)
+        self.active_weapon_config_window_tag = window_tag
         window_width = 470
         window_height = 640
-        main_window_pos = dpg.get_viewport_pos()
-        main_window_width = dpg.get_viewport_width()
-        main_window_height = dpg.get_viewport_height()
-        x_pos = main_window_pos[0] + (main_window_width - window_width) / 2
-        y_pos = main_window_pos[1] + (main_window_height - window_height) / 2 - 100
+        x_pos, y_pos = self.get_centered_window_position(window_width, window_height)
         with dpg.window(label=f"Настройка оружия {weapon.name}", modal=True, show=True, tag=window_tag,
                         width=window_width, height=window_height, pos=(x_pos, y_pos)):
             with dpg.child_window(border=False, autosize_x=True, height=560):
@@ -1269,7 +1315,10 @@ class CalcAndModTab:
                                 )
                             if current_attachment:
                                 dpg.add_text(self.get_attachment_description(current_attachment), wrap=430)
-            dpg.add_button(label=self.tr("close", "Close"), callback=lambda: dpg.delete_item(window_tag))
+            dpg.add_button(
+                label=self.tr("close", "Close"),
+                callback=lambda: self.close_weapon_config_window(weapon),
+            )
 
     def update_weapon_stats(self, sender, app_data, user_data):
         weapon = user_data['weapon']
@@ -1452,19 +1501,25 @@ class CalcAndModTab:
                 width=780,
             )
             dpg.add_child_window(tag="attachment_selection_list", autosize_x=True, autosize_y=True)
-            dpg.add_button(label=self.tr("close", "Close"),
-                           callback=lambda: dpg.configure_item("attachment_selection_window", show=False))
+            dpg.add_button(
+                label=self.tr("close", "Close"),
+                callback=lambda: self.close_attachment_selection_window(reopen_weapon_config=True),
+            )
 
     def open_attachment_selection(self, sender, app_data, user_data):
-        if not self.player.weapon:
+        if not self.player.weapon or not isinstance(user_data, dict):
             return
-        self.current_attachment_slot = user_data.get("slot")
+        slot_name = user_data.get("slot")
+        if not slot_name:
+            return
+        self.current_attachment_slot = slot_name
         self.current_attachment_weapon = self.player.weapon
         self.attachment_search_query = ""
         if dpg.does_item_exist("attachment_search_input"):
             dpg.set_value("attachment_search_input", "")
-        self.populate_attachment_selection_list()
-        dpg.configure_item("attachment_selection_window", show=True)
+        self.close_weapon_config_window(self.player.weapon)
+        self.pending_attachment_window_open = True
+        self.pending_attachment_window_delay_frames = 1
 
     def populate_attachment_selection_list(self):
         if not self.current_attachment_weapon or not self.current_attachment_slot:
@@ -1528,7 +1583,7 @@ class CalcAndModTab:
         self.player.weapon.remove_attachment(user_data)
         self.player.equip_weapon(self.player.weapon)
         self.context.initialize()
-        dpg.configure_item("attachment_selection_window", show=False)
+        self.close_attachment_selection_window(reopen_weapon_config=False)
         self.render_weapon_selector()
         self.show_weapon_config_window(self.player.weapon)
         self.update_stats_display()
@@ -1539,7 +1594,7 @@ class CalcAndModTab:
         self.player.weapon.equip_attachment(self.current_attachment_slot, user_data)
         self.player.equip_weapon(self.player.weapon)
         self.context.initialize()
-        dpg.configure_item("attachment_selection_window", show=False)
+        self.close_attachment_selection_window(reopen_weapon_config=False)
         self.render_weapon_selector()
         self.show_weapon_config_window(self.player.weapon)
         self.update_stats_display()

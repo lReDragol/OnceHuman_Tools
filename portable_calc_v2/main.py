@@ -31,7 +31,7 @@ class PortableCalcApp:
         self.load_font()
 
         title = self.translations.get(self.current_language, {}).get("calc_and_mod_tab", {}).get("title", "Calculator")
-        dpg.create_viewport(title=f"Once Human {title} V2", width=1200, height=820, resizable=True)
+        dpg.create_viewport(title=f"Once Human {title} V2.5", width=1200, height=820, resizable=True)
         dpg.setup_dearpygui()
 
         with dpg.window(label=title, tag="PortableCalcWindow", width=1180, height=790):
