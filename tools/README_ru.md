@@ -57,13 +57,65 @@ python tools/extract_once_human_attachment_icons.py --game-path "E:\SteamLibrary
 python tools/extract_once_human_attachment_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --report attachment_icons_report.json
 ```
 
+`extract_once_human_deviations.py`
+- Собирает каталог девиаций/питомцев напрямую из локального `decompile`.
+- Вытаскивает `deviation_id`, имя, описание, asset-имена, боевую/небоевую классификацию, локализацию RU/EN из игровых translation-таблиц, базовые боевые профили и точные skill-коэффициенты из игровых bindict-таблиц (`deviation_base_data.pyc`, `deviation_preview_skill_data.pyc`, `deviation_combat_config_data.pyc`, `deviation_skills_data.pyc`, `translate_data_ru.pyc`, `translate_data_en.pyc`).
+- Генерирует `data/menu/calc/bd_json/deviations.json`, который использует калькулятор для выбора питомца и базовой симуляции боевых девиаций.
+
+Использование:
+```powershell
+python tools/extract_once_human_deviations.py --decompile-dir "E:\SteamLibrary\steamapps\common\Once Human\decompile" --output data\menu\calc\bd_json\deviations.json
+```
+
+`extract_once_human_deviation_icons.py`
+- Вытаскивает локальные игровые иконки девиаций/питомцев из `.npk` клиента Once Human.
+- Больше не требует `QuickBMS` и `PVRTexToolCLI`: читает `.npk` напрямую, декодирует игровые `PVR`-иконки в Python и сопоставляет их по `icon_asset`/`me_code`.
+- Складывает иконки в `data/icons/deviations/<deviation_id>.png`.
+
+Использование:
+```powershell
+python tools/extract_once_human_deviation_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human"
+python tools/extract_once_human_deviation_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --combat-only --report deviation_icons_report.json
+```
+
+`decompile_once_human.py`
+- Главный автоматический pipeline декомпиляции.
+- Создаёт рядом с игрой папку `decompile`.
+- Распаковывает `script.npk`, создаёт bindict sidecars и может сразу запустить декод модовых вторичных атрибутов.
+- Текущий декод модовых secondary attributes выгружает все `108` найденных игровых семейств в JSON калькулятора.
+- Безопасный дефолт для распаковки сейчас `workers=1`.
+- `bindict sidecars` сейчас экспериментальны и выключены по умолчанию.
+
+Использование:
+```powershell
+python tools/decompile_once_human.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --extract-mod-attributes
+python tools/decompile_once_human.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --skip-extract --extract-mod-attributes
+```
+
+`decompile_once_human_ui.py`
+- PySide6-обёртка над автоматическим pipeline.
+- Сценарий `выбрал папку игры -> нажал Запустить -> получил decompile`.
+- Генерация sidecars вынесена в отдельную опцию, потому что она нужна в основном для reverse engineering.
+
+Использование:
+```powershell
+python tools/decompile_once_human_ui.py
+```
+
 ## Типовой порядок работы
 
-1. Запусти `once_human_game_probe.py` на локальных файлах игры, чтобы найти полезные таблицы.
-2. Запусти `import_once_human_db.py --write`, чтобы обновить JSON-данные калькулятора.
-3. Запусти `sync_once_human_db_icons.py`, чтобы подтянуть оружие/броню и базовые mod-иконки.
-4. Запусти `extract_once_human_mod_icons.py`, если хочешь заменить mod-иконки на прямые ассеты из локального клиента.
-5. Запусти `extract_once_human_attachment_icons.py`, чтобы обновить игровые иконки обвесов.
+1. Запусти `decompile_once_human.py` или `decompile_once_human_ui.py`, чтобы получить локальную папку `decompile`.
+2. Запусти `once_human_game_probe.py` на `decompile`, чтобы найти полезные таблицы.
+3. Запусти `import_once_human_db.py --write`, чтобы обновить JSON-данные калькулятора.
+4. Запусти `sync_once_human_db_icons.py`, чтобы подтянуть оружие/броню и базовые mod-иконки.
+5. Запусти `extract_once_human_mod_icons.py`, если хочешь заменить mod-иконки на прямые ассеты из локального клиента.
+6. Запусти `extract_once_human_attachment_icons.py`, чтобы обновить игровые иконки обвесов.
+7. Запусти `extract_once_human_deviations.py`, чтобы обновить каталог девиаций/питомцев для калькулятора.
+8. Запусти `extract_once_human_deviation_icons.py`, чтобы подтянуть игровые иконки девиаций.
+
+## Полная документация по декомпиляции
+
+- [Автоматическая декомпиляция Once Human](DECOMPILE_PIPELINE_ru.md)
 
 ## Примечания
 
@@ -72,3 +124,6 @@ python tools/extract_once_human_attachment_icons.py --game-path "E:\SteamLibrary
 - `sync_once_human_db_icons.py` берёт иконки из синхронизированного публичного датасета, основанного на игровых ассетах.
 - `extract_once_human_mod_icons.py` требует локально доступные `quickbms.exe`, `Once_Human_Beta_NPK.bms` и `PVRTexToolCLI.exe`. Скрипт сначала пытается найти их автоматически во временной папке.
 - `extract_once_human_attachment_icons.py` использует тот же набор утилит, но извлекает игровые иконки оружейных аксессуаров.
+- `extract_once_human_deviations.py` теперь ещё и локализует имена/описания питомцев прямо из клиента, но не все скрытые combat id / cooldown-поля из bindict декодированы полностью.
+- `extract_once_human_deviation_icons.py` требует Python-пакет `texture2ddecoder`, зато не зависит от внешних `QuickBMS` / `PVRTexToolCLI`.
+- `decompile_once_human.py` сейчас полностью автоматизирует создание кэша `decompile`, но generic-декод bindict-хвоста ещё не завершён на 100%.

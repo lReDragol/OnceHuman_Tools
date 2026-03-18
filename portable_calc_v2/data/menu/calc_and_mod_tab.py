@@ -1,0 +1,3504 @@
+import copy
+import dearpygui.dearpygui as dpg
+import os
+import json
+import shutil
+import logging
+import time
+import re
+from tkinter import filedialog
+import tkinter as tk
+
+from data.menu.calc.player import Player
+from data.menu.calc.context_module import Context
+from data.menu.calc.config_manager import ConfigManager
+
+logging.basicConfig(level=logging.INFO)
+
+
+class CalcAndModTab:
+    def __init__(self, main_app):
+        self.main_app = main_app
+        self.translations = getattr(self.main_app, "translations", {})
+        self.player = Player()
+        self.context = Context(self.player)
+        self.refresh_translations()
+        self.armor_types = ['helmet', 'mask', 'top', 'gloves', 'pants', 'boots']
+        self.weapon_card_size = (92, 92)
+        self.armor_card_size = (92, 92)
+        self.mod_card_size = (92, 92)
+        self.attachment_card_size = (92, 92)
+
+        self.config_manager = ConfigManager(
+            self.context,
+            self.player,
+            self.dummy_update_item_stats,
+            self.open_mod_selection,
+            self.dummy_update_stats_display
+        )
+
+        self.default_font = None
+        self.is_editable = True
+        self.mod_images = {}
+        self.item_images = {}
+        self.weapon_images = {}
+        self.attachment_images = {}
+        self.deviation_images = {}
+        self.weapon_type_icons = {}
+        self.status_icon_textures = {}
+        self.item_search_query = ""
+        self.weapon_search_query = ""
+        self.mod_search_query = ""
+        self.attachment_search_query = ""
+        self.deviation_search_query = ""
+        self.mod_attribute_search_query = ""
+        self.current_item_selection_type = None
+        self.current_mod_selection_type = None
+        self.current_attachment_slot = None
+        self.current_attachment_weapon = None
+        self.current_deviation_name = None
+        self.current_mod_attribute_target = None
+        self.current_mod_attribute_tier_target = None
+        self.active_weapon_config_window_tag = None
+        self.pending_attachment_window_open = False
+        self.pending_attachment_window_delay_frames = 0
+        self.active_handler_tags = {}
+        self.attachment_slot_order = ["sight", "muzzle", "underbarrel", "magazine", "stock"]
+        self.last_equipment_signature = None
+        self.last_dps_graph_update = 0.0
+        self.dps_graph_floor = 25.0
+        self.dps_graph_y_limit = self.dps_graph_floor
+        self.compact_slot_view = True
+
+        self.mouse_pressed = False
+        self.scheduled_deletions = []
+        self.last_click_pos = (0, 0)
+        self.last_damage_text_time = 0
+
+        self.context.damage_text_settings.update({
+            'speed': 100,
+            'fade_delay': 1.0,
+            'angle_min': 45,
+            'angle_max': 135,
+            'crit_color': [255, 165, 0, 255],
+            'weakspot_color': [255, 0, 0, 255],
+            'crit_weakspot_color': [0, 255, 0, 255],
+            'normal_color': [255, 255, 255, 255]
+        })
+
+        self.setup_fonts()
+        self.load_images()
+        self.example_builds = self.load_example_builds()
+        self.build_ui()
+
+    def dummy_update_item_stats(self):
+        pass
+
+    def dummy_open_mod_selection(self):
+        pass
+
+    def dummy_update_stats_display(self):
+        pass
+
+    def refresh_translations(self):
+        language = getattr(self.main_app, "current_language", "ru")
+        self.trans = self.translations.get(language, {}).get("calc_and_mod_tab", {})
+        self.context.set_language(language)
+        self.last_equipment_signature = None
+
+    def tr(self, key, default):
+        return self.trans.get(key, default)
+
+    def get_target_image_path(self):
+        return os.path.join("data", "icons", "target_image.png")
+
+    @staticmethod
+    def normalize_search_value(value):
+        return " ".join(str(value or "").lower().split())
+
+    def matches_search_query(self, query, *parts):
+        normalized_query = self.normalize_search_value(query)
+        if not normalized_query:
+            return True
+        searchable = " ".join(
+            self.normalize_search_value(part)
+            for part in parts
+            if part
+        )
+        return normalized_query in searchable
+
+    def on_item_search_changed(self, sender, app_data, user_data):
+        self.item_search_query = app_data or ""
+        if self.current_item_selection_type:
+            self.populate_item_selection_list(self.current_item_selection_type)
+
+    def on_weapon_search_changed(self, sender, app_data, user_data):
+        self.weapon_search_query = app_data or ""
+        self.populate_weapon_selection_list()
+
+    def on_mod_search_changed(self, sender, app_data, user_data):
+        self.mod_search_query = app_data or ""
+        if self.current_mod_selection_type:
+            self.populate_mod_selection_list(self.current_mod_selection_type)
+
+    def on_attachment_search_changed(self, sender, app_data, user_data):
+        self.attachment_search_query = app_data or ""
+        if self.current_attachment_weapon and self.current_attachment_slot:
+            self.populate_attachment_selection_list()
+
+    def open_mod_selection(self, sender, app_data, user_data):
+        self.current_mod_selection_type = user_data
+        self.mod_search_query = ""
+        if dpg.does_item_exist("mod_search_input"):
+            dpg.set_value("mod_search_input", "")
+        self.populate_mod_selection_list(user_data)
+        dpg.configure_item("mod_selection_window", show=True)
+
+    def setup_fonts(self):
+        if hasattr(self.main_app, "default_font_tag") and dpg.does_item_exist(self.main_app.default_font_tag):
+            self.default_font = self.main_app.default_font_tag
+            return
+
+        font_path = os.path.join("data", "file", "ru.ttf")
+        if os.path.exists(font_path):
+            with dpg.font_registry():
+                with dpg.font(font_path, 15) as self.default_font:
+                    dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
+
+    def create_default_texture(self):
+        width, height = 85, 85
+        data = [255, 255, 255, 255] * width * height
+        with dpg.texture_registry():
+            texture_id = dpg.add_static_texture(width, height, data)
+        return texture_id
+
+    def load_mod_images(self):
+        mod_images = {}
+        mod_images['default'] = self.create_default_texture()
+        for category_key, mod_key in self.context.category_key_mapping.items():
+            category_folder = os.path.join('data', 'icons', 'mods', mod_key)
+            if os.path.exists(category_folder):
+                mod_images[mod_key] = {}
+                best_areas = {}
+                for filename in sorted(os.listdir(category_folder)):
+                    if filename.endswith('.png'):
+                        mod_name_key = os.path.splitext(filename)[0].lower().replace(' ', '_')
+                        image_path = os.path.join(category_folder, filename)
+                        width, height, channels, data = dpg.load_image(image_path)
+                        area = width * height
+                        if area < best_areas.get(mod_name_key, 0):
+                            continue
+                        with dpg.texture_registry():
+                            texture_id = dpg.add_static_texture(width, height, data)
+                        best_areas[mod_name_key] = area
+                        mod_images[mod_key][mod_name_key] = texture_id
+        return mod_images
+
+    def load_item_images(self):
+        item_images = {}
+        item_images['default'] = self.create_default_texture()
+        item_icons_folder = os.path.join('data', 'icons', 'armor')
+        if os.path.exists(item_icons_folder):
+            for root, dirs, files in os.walk(item_icons_folder):
+                for filename in files:
+                    if filename.endswith('.png'):
+                        item_id = os.path.splitext(filename)[0]
+                        image_path = os.path.join(root, filename)
+                        try:
+                            width, height, channels, data = dpg.load_image(image_path)
+                            with dpg.texture_registry():
+                                texture_id = dpg.add_static_texture(width, height, data)
+                            item_images[item_id] = texture_id
+                        except Exception as e:
+                            print(f"Ошибка при загрузке изображения {image_path}: {e}")
+        return item_images
+
+    def load_weapon_images(self):
+        weapon_images = {}
+        weapon_images['default'] = self.create_default_texture()
+        weapon_icons_folder = os.path.join('data', 'icons', 'weapons')
+        if not os.path.exists(weapon_icons_folder):
+            os.makedirs(weapon_icons_folder)
+        for root, dirs, files in os.walk(weapon_icons_folder):
+            for filename in files:
+                if filename.endswith('.png'):
+                    weapon_id = os.path.splitext(filename)[0]
+                    image_path = os.path.join(root, filename)
+                    try:
+                        width, height, channels, data = dpg.load_image(image_path)
+                        with dpg.texture_registry():
+                            texture_id = dpg.add_static_texture(width, height, data)
+                        weapon_images[weapon_id] = texture_id
+                    except Exception as e:
+                        print(f"Ошибка при загрузке изображения {image_path}: {e}")
+        return weapon_images
+
+    def load_weapon_type_icons(self):
+        type_icons = {}
+        icons_folder = os.path.join('data', 'icons', 'menu_weapon_icons')
+        if os.path.exists(icons_folder):
+            for filename in os.listdir(icons_folder):
+                if filename.endswith('.png'):
+                    base_name = os.path.splitext(filename)[0].lower().replace(' ', '_')
+                    if base_name.endswith('_icon'):
+                        type_name = base_name[:-5]
+                    else:
+                        type_name = base_name
+                    image_path = os.path.join(icons_folder, filename)
+                    try:
+                        width, height, channels, data = dpg.load_image(image_path)
+                        with dpg.texture_registry():
+                            texture_id = dpg.add_static_texture(width, height, data)
+                        type_icons[type_name] = texture_id
+                    except:
+                        pass
+        return type_icons
+
+    def load_attachment_images(self):
+        attachment_images = {}
+        attachment_images['default'] = self.create_default_texture()
+        icons_folder = os.path.join('data', 'icons', 'attachments')
+        if not os.path.exists(icons_folder):
+            return attachment_images
+        for filename in os.listdir(icons_folder):
+            if not filename.endswith('.png'):
+                continue
+            attachment_id = os.path.splitext(filename)[0]
+            image_path = os.path.join(icons_folder, filename)
+            try:
+                width, height, channels, data = dpg.load_image(image_path)
+                with dpg.texture_registry():
+                    texture_id = dpg.add_static_texture(width, height, data)
+                attachment_images[attachment_id] = texture_id
+            except Exception as exc:
+                logging.warning("Failed to load attachment icon %s: %s", image_path, exc)
+        return attachment_images
+
+    def load_status_icons(self):
+        status_icons = {}
+        status_folder = os.path.join('data', 'icons', 'statuses')
+        if not os.path.exists(status_folder):
+            return status_icons
+        for filename in os.listdir(status_folder):
+            if not filename.endswith('.png'):
+                continue
+            status_id = os.path.splitext(filename)[0]
+            image_path = os.path.join(status_folder, filename)
+            try:
+                width, height, channels, data = dpg.load_image(image_path)
+                with dpg.texture_registry():
+                    texture_id = dpg.add_static_texture(width, height, data)
+                status_icons[status_id] = texture_id
+            except Exception as exc:
+                logging.warning("Failed to load status icon %s: %s", image_path, exc)
+        return status_icons
+
+    def load_deviation_images(self):
+        deviation_images = {}
+        deviation_images['default'] = self.create_default_texture()
+        icons_folder = os.path.join('data', 'icons', 'deviations')
+        if not os.path.exists(icons_folder):
+            return deviation_images
+        for filename in os.listdir(icons_folder):
+            if not filename.endswith('.png'):
+                continue
+            deviation_id = os.path.splitext(filename)[0]
+            image_path = os.path.join(icons_folder, filename)
+            try:
+                width, height, channels, data = dpg.load_image(image_path)
+                with dpg.texture_registry():
+                    texture_id = dpg.add_static_texture(width, height, data)
+                deviation_images[deviation_id] = texture_id
+            except Exception as exc:
+                logging.warning("Failed to load deviation icon %s: %s", image_path, exc)
+        return deviation_images
+
+    def load_images(self):
+        self.mod_images = self.load_mod_images()
+        self.item_images = self.load_item_images()
+        self.weapon_images = self.load_weapon_images()
+        self.attachment_images = self.load_attachment_images()
+        self.deviation_images = self.load_deviation_images()
+        self.weapon_type_icons = self.load_weapon_type_icons()
+        self.status_icon_textures = self.load_status_icons()
+
+    def load_example_builds(self):
+        path = os.path.join("data", "menu", "calc", "bd_json", "example_builds.json")
+        if not os.path.exists(path):
+            return []
+        with open(path, "r", encoding="utf-8") as fh:
+            payload = json.load(fh)
+        return payload.get("builds", [])
+
+    def get_slot_label(self, slot):
+        return self.tr(f"slot_{slot}", slot.capitalize())
+
+    def get_rarity_label(self, rarity):
+        return self.tr(f"rarity_{rarity}", rarity.capitalize())
+
+    def get_item_description(self, item_data):
+        description = item_data.get("description")
+        if description:
+            return description
+
+        parts = []
+        rarity = item_data.get("rarity")
+        if rarity:
+            parts.append(
+                f"{self.get_rarity_label(rarity)} {self.get_slot_label(item_data.get('type', 'item')).lower()}"
+            )
+
+        set_id = item_data.get("set_id")
+        if set_id:
+            game_set = self.context.get_set_by_id(set_id)
+            if game_set:
+                parts.append(
+                    f"{self.tr('set_label', 'Set')}: {game_set.get('name', set_id)}"
+                )
+
+        stat_hint = item_data.get("base_stat_hint", {})
+        if stat_hint:
+            hint_parts = []
+            for stat_name, stat_value in stat_hint.items():
+                hint_parts.append(
+                    f"{self.context.format_stat_name(stat_name)} {self.context.format_value(stat_value)}"
+                )
+            if hint_parts:
+                parts.append(
+                    f"{self.tr('base_stats_hint', 'Base stats')}: {', '.join(hint_parts)}"
+                )
+
+        return ". ".join(parts) if parts else self.tr(
+            "item_description_missing", "No description available for this item."
+        )
+
+    def get_weapon_description(self, weapon_data):
+        description = weapon_data.get("description")
+        if description:
+            return description
+
+        base_stats = weapon_data.get("base_stats", {})
+        parts = []
+        for stat_name in ("damage_per_projectile", "fire_rate", "magazine_capacity", "crit_rate_percent"):
+            if stat_name in base_stats:
+                parts.append(
+                    f"{self.context.format_stat_name(stat_name)} {self.context.format_value(base_stats[stat_name])}"
+                )
+        return ". ".join(parts) if parts else self.tr(
+            "weapon_description_missing", "No description available for this weapon."
+        )
+
+    def get_deviation_texture(self, deviation_data):
+        if not deviation_data:
+            return self.deviation_images.get("default")
+        return self.deviation_images.get(deviation_data.get("id"), self.deviation_images.get("default"))
+
+    def get_deviation_description(self, deviation_data):
+        if not deviation_data:
+            return ""
+        description = self.context.get_deviation_display_description(deviation_data)
+        combat_profile = deviation_data.get("combat_profile") or {}
+        combat_description = combat_profile.get("description") or ""
+        if description and combat_description:
+            return f"{description}\n\n{self.tr('combat_behavior', 'Combat behavior')}: {combat_description}"
+        return description or combat_description
+
+    def get_deviation_search_blob(self, deviation_data):
+        if not deviation_data:
+            return ""
+        parts = [
+            self.context.get_deviation_display_name(deviation_data),
+            deviation_data.get("name", ""),
+            " ".join(deviation_data.get("aliases") or []),
+            deviation_data.get("me_code", ""),
+            self.get_deviation_description(deviation_data),
+        ]
+        for skill in self.context.get_deviation_skill_entries(deviation_data):
+            parts.append(skill.get("name", ""))
+            parts.append(skill.get("description", ""))
+            parts.append(skill.get("exact_description", ""))
+            for variant in skill.get("exact_variants") or []:
+                parts.append(variant.get("description", ""))
+        for skill in self.context.get_deviation_skill_display_entries(deviation_data):
+            parts.append(skill.get("display_name", ""))
+            parts.append(skill.get("display_description", ""))
+            parts.append(skill.get("display_exact_description", ""))
+            for variant in skill.get("exact_variants") or []:
+                parts.append(variant.get("display_description", ""))
+        return " ".join(part for part in parts if part)
+
+    def get_attachment_texture(self, attachment_id):
+        return self.attachment_images.get(attachment_id, self.attachment_images.get("default"))
+
+    def get_attachment_slot_label(self, slot_name):
+        labels = {
+            "sight": self.tr("attachment_slot_sight", "Sight"),
+            "muzzle": self.tr("attachment_slot_muzzle", "Muzzle"),
+            "underbarrel": self.tr("attachment_slot_underbarrel", "Underbarrel"),
+            "magazine": self.tr("attachment_slot_magazine", "Magazine"),
+            "stock": self.tr("attachment_slot_stock", "Stock"),
+        }
+        return labels.get(slot_name, slot_name.replace("_", " ").title())
+
+    def get_attachment_description(self, attachment_data):
+        parts = []
+        description = attachment_data.get("description")
+        if description:
+            parts.append(description)
+        stat_parts = []
+        for stat_name, stat_value in attachment_data.get("stats", {}).items():
+            stat_parts.append(
+                f"{self.context.format_stat_name(stat_name)} {self.context.format_value(stat_value)}"
+            )
+        if stat_parts:
+            stats_text = ", ".join(stat_parts)
+            if description and stats_text in description:
+                return description
+            parts.append(f"{self.tr('attachment_stats', 'Stats')}: {stats_text}")
+        return "\n".join(part for part in parts if part).strip()
+
+    def get_card_background_color(self, card_kind="item", rarity=None):
+        if card_kind == "mod":
+            return [94, 73, 26, 255]
+        if card_kind == "attachment":
+            return [42, 49, 61, 255]
+        if card_kind == "deviation":
+            return [68, 63, 37, 255]
+
+        palette = {
+            "legendary": [104, 82, 24, 255],
+            "epic": [74, 48, 112, 255],
+            "rare": [37, 101, 67, 255],
+            "uncommon": [33, 78, 63, 255],
+            "common": [52, 58, 70, 255],
+        }
+        return palette.get(str(rarity or "").lower(), [52, 58, 70, 255])
+
+    def add_colored_image_button(
+        self,
+        texture_id,
+        *,
+        width,
+        height,
+        callback=None,
+        user_data=None,
+        tag=None,
+        parent=None,
+        card_kind="item",
+        rarity=None,
+    ):
+        kwargs = {
+            "width": width,
+            "height": height,
+            "callback": callback,
+            "user_data": user_data,
+            "background_color": self.get_card_background_color(card_kind=card_kind, rarity=rarity),
+            "tint_color": [255, 255, 255, 255],
+        }
+        if tag is not None:
+            kwargs["tag"] = tag
+        if parent is not None:
+            kwargs["parent"] = parent
+        return dpg.add_image_button(texture_id, **kwargs)
+
+    def get_centered_window_position(self, window_width, window_height, y_offset=-100):
+        main_window_pos = dpg.get_viewport_pos()
+        main_window_width = dpg.get_viewport_width()
+        main_window_height = dpg.get_viewport_height()
+        x_pos = int(main_window_pos[0] + (main_window_width - window_width) / 2)
+        y_pos = int(main_window_pos[1] + (main_window_height - window_height) / 2 + y_offset)
+        return x_pos, y_pos
+
+    def close_weapon_config_window(self, weapon=None):
+        window_tag = self.active_weapon_config_window_tag
+        if not window_tag and weapon:
+            window_tag = f"{weapon.id}_config_window"
+        if window_tag and dpg.does_item_exist(window_tag):
+            dpg.delete_item(window_tag)
+        if self.active_weapon_config_window_tag == window_tag:
+            self.active_weapon_config_window_tag = None
+
+    def close_attachment_selection_window(self, reopen_weapon_config=False):
+        if dpg.does_item_exist("attachment_selection_window"):
+            dpg.configure_item("attachment_selection_window", show=False)
+        if dpg.does_item_exist("attachment_search_input"):
+            dpg.set_value("attachment_search_input", "")
+        self.pending_attachment_window_open = False
+        self.pending_attachment_window_delay_frames = 0
+        self.attachment_search_query = ""
+        self.current_attachment_slot = None
+        self.current_attachment_weapon = None
+        if reopen_weapon_config and self.player.weapon:
+            self.show_weapon_config_window(self.player.weapon)
+
+    def process_pending_attachment_window(self):
+        if not self.pending_attachment_window_open:
+            return
+        if self.pending_attachment_window_delay_frames > 0:
+            self.pending_attachment_window_delay_frames -= 1
+            return
+        if not self.current_attachment_weapon or not self.current_attachment_slot:
+            self.pending_attachment_window_open = False
+            return
+        self.populate_attachment_selection_list()
+        x_pos, y_pos = self.get_centered_window_position(820, 560)
+        dpg.configure_item("attachment_selection_window", pos=(x_pos, y_pos), show=True)
+        self.pending_attachment_window_open = False
+        dpg.focus_item("attachment_selection_window")
+
+    def get_weapon_attachment_slots(self, weapon):
+        if not weapon:
+            return []
+        available_slots = []
+        for slot_name in self.attachment_slot_order:
+            if self.context.get_attachments_for_weapon(weapon, slot=slot_name):
+                available_slots.append(slot_name)
+        return available_slots
+
+    def get_weapon_attachment_summary(self, weapon):
+        if not weapon or not weapon.equipped_attachments:
+            return ""
+        summary_parts = []
+        for slot_name in self.attachment_slot_order:
+            attachment = weapon.equipped_attachments.get(slot_name)
+            if not attachment:
+                continue
+            summary_parts.append(
+                f"{self.get_attachment_slot_label(slot_name)}: {attachment.get('name', attachment.get('id', ''))}"
+            )
+        if not summary_parts:
+            return ""
+        return f"{self.tr('attachments_title', 'Attachments')}: " + "; ".join(summary_parts)
+
+    def get_status_icon_texture(self, status_name):
+        status_aliases = {
+            "power_surge": ["power_surge", "shock"],
+            "shock": ["shock", "power_surge"],
+            "burn": ["burn"],
+            "special_burn": ["burn"],
+            "frost_vortex": ["frost_vortex", "frost", "freeze"],
+            "frost": ["frost", "frost_vortex", "freeze"],
+            "frostbite": ["frost", "frost_vortex", "freeze"],
+            "shielded": ["shielded", "shield"],
+            "fortress_warfare": ["fortress_warfare", "shielded", "shield"],
+            "the_bulls_eye": ["the_bulls_eye", "bullseye", "marked"],
+            "bulls_eye": ["the_bulls_eye", "bullseye", "marked"],
+            "fast_gunner": ["fast_gunner"],
+            "unstable_bomber": ["unstable_bomber", "explosion", "bomb"],
+            "shrapnel": ["shrapnel"],
+        }
+        for key in status_aliases.get(status_name, [status_name]):
+            if key in self.status_icon_textures:
+                return self.status_icon_textures[key]
+        return None
+
+    def get_status_display_name(self, status_name):
+        ru_names = {
+            "burn": "Горение",
+            "special_burn": "Горение",
+            "frost_vortex": "Заморозка",
+            "frost": "Заморозка",
+            "frostbite": "Обморожение",
+            "shock": "Шок",
+            "power_surge": "Шок",
+            "shielded": "Щит",
+            "fortress_warfare": "Fortress",
+            "the_bulls_eye": "Метка",
+            "bulls_eye": "Метка",
+            "fast_gunner": "Fast Gunner",
+            "unstable_bomber": "Бомбер",
+            "shrapnel": "Shrapnel",
+        }
+        en_names = {
+            "burn": "Burn",
+            "special_burn": "Burn",
+            "frost_vortex": "Frost",
+            "frost": "Frost",
+            "frostbite": "Frostbite",
+            "shock": "Shock",
+            "power_surge": "Shock",
+            "shielded": "Shield",
+            "fortress_warfare": "Fortress",
+            "the_bulls_eye": "Bull's Eye",
+            "bulls_eye": "Bull's Eye",
+            "fast_gunner": "Fast Gunner",
+            "unstable_bomber": "Bomber",
+            "shrapnel": "Shrapnel",
+        }
+        label_map = ru_names if getattr(self.main_app, "current_language", "ru") == "ru" else en_names
+        return label_map.get(status_name, status_name.replace("_", " ").title())
+
+    def get_mod_texture(self, item_type, mod_name):
+        mod_key = self.context.category_key_mapping.get(item_type, "mod_weapon")
+        normalized_name = mod_name.lower().replace(" ", "_")
+        return self.mod_images.get(mod_key, {}).get(normalized_name, self.mod_images.get("default"))
+
+    def bind_right_click_handler(self, item_tag, handler_key, callback, user_data=None):
+        previous_tag = self.active_handler_tags.get(handler_key)
+        if previous_tag and dpg.does_item_exist(previous_tag):
+            dpg.delete_item(previous_tag)
+
+        registry_tag = f"{handler_key}_{dpg.generate_uuid()}"
+        with dpg.item_handler_registry(tag=registry_tag):
+            dpg.add_item_clicked_handler(
+                button=dpg.mvMouseButton_Right,
+                callback=callback,
+                user_data=user_data,
+            )
+        self.active_handler_tags[handler_key] = registry_tag
+        dpg.bind_item_handler_registry(item_tag, registry_tag)
+
+    def clone_mod_for_equip(self, mod):
+        cloned = copy.deepcopy(mod)
+        cloned.setdefault('secondary_attributes', [])
+        return cloned
+
+    @staticmethod
+    def build_mod_signature(mod):
+        if not mod:
+            return None
+        secondary_attributes = tuple(
+            (
+                roll.get('attribute_id'),
+                roll.get('tier_code'),
+                json.dumps(roll.get('effects', []), ensure_ascii=False, sort_keys=True),
+            )
+            for roll in mod.get('secondary_attributes', [])
+        )
+        return (
+            mod.get('name'),
+            mod.get('description'),
+            mod.get('category'),
+            secondary_attributes,
+        )
+
+    @staticmethod
+    def build_item_signature(item):
+        if not item:
+            return None
+        return (
+            getattr(item, 'id', None),
+            getattr(item, 'star', None),
+            getattr(item, 'level', None),
+            getattr(item, 'calibration', None),
+            getattr(item, 'rarity', None),
+            getattr(item, 'set_id', None),
+        )
+
+    @staticmethod
+    def format_progression(stars=None, level=None, calibration=None):
+        parts = []
+        if stars is not None:
+            parts.append(f"*{stars}")
+        if level is not None:
+            parts.append(f"Lv{level}")
+        if calibration is not None:
+            parts.append(f"Cal {calibration}")
+        return " | ".join(parts)
+
+    def get_mod_attribute_option_map(self):
+        language = getattr(self.main_app, 'current_language', 'ru')
+        option_map = {}
+        for attribute in self.context.get_mod_secondary_attribute_options():
+            display = attribute.get('display_name', {}).get(language) or attribute.get('display_name', {}).get('en') or attribute.get('game_name', attribute.get('id'))
+            support_suffix = ''
+            if not attribute.get('implemented'):
+                support_suffix = f" [{self.tr('secondary_attribute_info_only', 'Info only')}]"
+            option_map[f"{display} | {attribute.get('game_name', attribute.get('id'))}{support_suffix}"] = attribute.get('id')
+        return option_map
+
+    def get_mod_tier_option_map(self, attribute_id):
+        return {
+            f"T{tier_code.upper()}": tier_code
+            for tier_code in self.context.get_mod_secondary_tier_codes(attribute_id)
+        }
+
+    def get_mod_rolls_summary(self, mod):
+        return self.context.summarize_mod_secondary_rolls(mod) if mod else ''
+
+    def get_mod_description_text(self, mod):
+        base_description = mod.get('description', '') or self.tr('description_missing', 'Description is not available.')
+        rolls_summary = self.get_mod_rolls_summary(mod)
+        if not rolls_summary:
+            return base_description
+        return f"{base_description}\n\n{self.tr('secondary_attributes', 'Secondary attributes')}:\n{rolls_summary}"
+
+    def get_mod_attribute_display_name(self, attribute_id):
+        attribute = self.context.get_mod_secondary_attribute(attribute_id)
+        if not attribute:
+            return self.tr("select_attribute", "Select attribute")
+        language = getattr(self.main_app, "current_language", "ru")
+        display_name = attribute.get("display_name", {})
+        return display_name.get(language) or display_name.get("en") or attribute.get("game_name", attribute_id)
+
+    @staticmethod
+    def is_ui_preview_text(value):
+        text = str(value or "").strip()
+        if not text:
+            return False
+        allowed_pattern = r"^[A-Za-z0-9А-Яа-яЁё\s%+\-.,:;()/\[\]'\"!?&]+$"
+        return re.fullmatch(allowed_pattern, text) is not None
+
+    def is_compact_slot_view_enabled(self):
+        if dpg.does_item_exist("compact_slot_view_checkbox"):
+            try:
+                return bool(dpg.get_value("compact_slot_view_checkbox"))
+            except Exception:
+                return self.compact_slot_view
+        return self.compact_slot_view
+
+    def toggle_compact_slot_view(self, sender, app_data, user_data):
+        self.compact_slot_view = bool(app_data)
+        self.refresh_equipment_ui()
+        self.handle_viewport_resize()
+
+    def get_mod_attribute_preview_lines(self, attribute, *, tier_code=None):
+        if not attribute:
+            return []
+        values = attribute.get("values", {}) or {}
+        tier_codes = list(attribute.get("tier_codes", []))
+        preview_codes = [str(tier_code)] if tier_code is not None else tier_codes[:4]
+        preview_parts = []
+        for code in preview_codes:
+            value = values.get(str(code))
+            if value is None:
+                continue
+            try:
+                numeric = float(value)
+                if numeric.is_integer():
+                    value_text = str(int(numeric))
+                else:
+                    value_text = f"{numeric:.2f}".rstrip("0").rstrip(".")
+            except (TypeError, ValueError):
+                value_text = str(value)
+            preview_parts.append(f"T{str(code).upper()} +{value_text}%")
+        effect = attribute.get("effect", {}) or {}
+        effect_stat = effect.get("stat")
+        effect_line = None
+        if effect_stat:
+            effect_line = self.context.format_stat_name(effect_stat)
+        lines = []
+        if effect_line:
+            lines.append(effect_line)
+        if preview_parts:
+            lines.append(", ".join(preview_parts))
+        return lines
+
+    def get_default_mod_tier_code(self, attribute_id):
+        tier_codes = self.context.get_mod_secondary_tier_codes(attribute_id)
+        if not tier_codes:
+            return ""
+
+        def tier_sort_key(code):
+            text = str(code)
+            return (0, int(text)) if text.isdigit() else (1, text)
+
+        return sorted(tier_codes, key=tier_sort_key)[-1]
+
+    def get_mod_roll_slot(self, mod, row_index):
+        if not mod:
+            return None
+        rolls = mod.get("secondary_attributes", []) or []
+        if row_index < 0 or row_index >= len(rolls):
+            return None
+        roll = rolls[row_index]
+        return roll if isinstance(roll, dict) and roll.get("attribute_id") else None
+
+    def update_equipped_mod_roll(self, item_type, row_index, roll):
+        mod = self.player.equipped_mods.get(item_type)
+        if not mod:
+            return
+        rolls = [copy.deepcopy(entry) if isinstance(entry, dict) else {} for entry in (mod.get("secondary_attributes", []) or [])]
+        while len(rolls) <= row_index:
+            rolls.append({})
+        rolls[row_index] = roll or {}
+        while rolls and not rolls[-1].get("attribute_id"):
+            rolls.pop()
+        mod["secondary_attributes"] = rolls
+        self.player.equip_mod(self.clone_mod_for_equip(mod), item_type)
+        self.refresh_slot_ui(item_type)
+        self.update_stats_display()
+
+    def open_mod_attribute_selection(self, sender, app_data, user_data):
+        if not isinstance(user_data, dict):
+            return
+        item_type = user_data.get("type")
+        row_index = user_data.get("row_index")
+        if not self.player.equipped_mods.get(item_type):
+            return
+        self.current_mod_attribute_target = {"type": item_type, "row_index": row_index}
+        self.mod_attribute_search_query = ""
+        if dpg.does_item_exist("mod_attribute_search_input"):
+            dpg.set_value("mod_attribute_search_input", "")
+        self.populate_mod_attribute_selection_list()
+        dpg.configure_item("mod_attribute_selection_window", show=True)
+
+    def on_mod_attribute_search_changed(self, sender, app_data, user_data):
+        self.mod_attribute_search_query = app_data or ""
+        self.populate_mod_attribute_selection_list()
+
+    def populate_mod_attribute_selection_list(self):
+        if not dpg.does_item_exist("mod_attribute_selection_list"):
+            return
+        dpg.delete_item("mod_attribute_selection_list", children_only=True)
+        attributes = [
+            attribute
+            for attribute in self.context.get_mod_secondary_attribute_options()
+            if self.matches_search_query(
+                self.mod_attribute_search_query,
+                self.get_mod_attribute_display_name(attribute.get("id")),
+                attribute.get("game_name", ""),
+                " ".join(self.get_mod_attribute_preview_lines(attribute)),
+            )
+        ]
+        with dpg.table(
+            header_row=False,
+            resizable=True,
+            policy=dpg.mvTable_SizingStretchProp,
+            parent="mod_attribute_selection_list",
+        ):
+            dpg.add_table_column(init_width_or_weight=0.28)
+            dpg.add_table_column(init_width_or_weight=0.72)
+            for attribute in attributes:
+                attribute_id = attribute.get("id")
+                with dpg.table_row():
+                    dpg.add_button(
+                        label=self.get_mod_attribute_display_name(attribute_id),
+                        callback=self.select_mod_attribute_for_slot,
+                        user_data=attribute_id,
+                        width=-1,
+                    )
+                    with dpg.group():
+                        preview_lines = self.get_mod_attribute_preview_lines(attribute)
+                        if preview_lines:
+                            dpg.add_text(preview_lines[0], color=[168, 181, 198], wrap=430)
+                            for line in preview_lines[1:]:
+                                dpg.add_text(line, wrap=430)
+                        else:
+                            dpg.add_text(attribute.get("game_name", attribute_id), wrap=430)
+
+    def select_mod_attribute_for_slot(self, sender, app_data, user_data):
+        target = self.current_mod_attribute_target or {}
+        item_type = target.get("type")
+        row_index = target.get("row_index")
+        attribute_id = user_data
+        if item_type is None or row_index is None or not attribute_id:
+            return
+        current_roll = self.get_mod_roll_slot(self.player.equipped_mods.get(item_type), row_index) or {}
+        tier_code = str(current_roll.get("tier_code")) if current_roll.get("tier_code") is not None else ""
+        if tier_code not in self.context.get_mod_secondary_tier_codes(attribute_id):
+            tier_code = self.get_default_mod_tier_code(attribute_id)
+        roll = self.context.build_mod_secondary_roll(attribute_id, tier_code) if tier_code else None
+        if roll is None:
+            roll = {
+                "attribute_id": attribute_id,
+                "tier_code": tier_code,
+                "game_name": (self.context.get_mod_secondary_attribute(attribute_id) or {}).get("game_name"),
+            }
+        self.update_equipped_mod_roll(item_type, row_index, roll)
+        if dpg.does_item_exist("mod_attribute_selection_window"):
+            dpg.configure_item("mod_attribute_selection_window", show=False)
+
+    def open_mod_attribute_tier_selection(self, sender, app_data, user_data):
+        if not isinstance(user_data, dict):
+            return
+        item_type = user_data.get("type")
+        row_index = user_data.get("row_index")
+        roll = self.get_mod_roll_slot(self.player.equipped_mods.get(item_type), row_index)
+        if not roll or not roll.get("attribute_id"):
+            return
+        self.current_mod_attribute_tier_target = {"type": item_type, "row_index": row_index}
+        self.populate_mod_attribute_tier_selection_list()
+        dpg.configure_item("mod_attribute_tier_window", show=True)
+
+    def populate_mod_attribute_tier_selection_list(self):
+        if not dpg.does_item_exist("mod_attribute_tier_list"):
+            return
+        dpg.delete_item("mod_attribute_tier_list", children_only=True)
+        target = self.current_mod_attribute_tier_target or {}
+        item_type = target.get("type")
+        row_index = target.get("row_index")
+        roll = self.get_mod_roll_slot(self.player.equipped_mods.get(item_type), row_index)
+        if not roll:
+            return
+        attribute = self.context.get_mod_secondary_attribute(roll.get("attribute_id"))
+        if not attribute:
+            return
+        preview_header = self.get_mod_attribute_display_name(roll.get("attribute_id"))
+        dpg.add_text(preview_header, parent="mod_attribute_tier_list")
+        with dpg.table(
+            header_row=False,
+            resizable=True,
+            policy=dpg.mvTable_SizingStretchProp,
+            parent="mod_attribute_tier_list",
+        ):
+            dpg.add_table_column(init_width_or_weight=0.18)
+            dpg.add_table_column(init_width_or_weight=0.82)
+            for tier_code in self.context.get_mod_secondary_tier_codes(roll.get("attribute_id")):
+                preview_lines = self.get_mod_attribute_preview_lines(attribute, tier_code=tier_code)
+                metadata = [
+                    entry
+                    for entry in self.context.mod_secondary_catalog.get_tier_metadata(roll.get("attribute_id"), tier_code)
+                    if self.is_ui_preview_text(entry)
+                ]
+                with dpg.table_row():
+                    dpg.add_button(
+                        label=f"T{str(tier_code).upper()}",
+                        callback=self.select_mod_attribute_tier,
+                        user_data=str(tier_code),
+                        width=-1,
+                    )
+                    with dpg.group():
+                        for line in preview_lines:
+                            dpg.add_text(line, wrap=380)
+                        if metadata:
+                            dpg.add_text(" / ".join(metadata), wrap=380, color=[168, 181, 198])
+
+    def select_mod_attribute_tier(self, sender, app_data, user_data):
+        target = self.current_mod_attribute_tier_target or {}
+        item_type = target.get("type")
+        row_index = target.get("row_index")
+        roll = self.get_mod_roll_slot(self.player.equipped_mods.get(item_type), row_index)
+        if not roll:
+            return
+        attribute_id = roll.get("attribute_id")
+        tier_code = str(user_data)
+        updated_roll = self.context.build_mod_secondary_roll(attribute_id, tier_code)
+        if updated_roll:
+            self.update_equipped_mod_roll(item_type, row_index, updated_roll)
+        if dpg.does_item_exist("mod_attribute_tier_window"):
+            dpg.configure_item("mod_attribute_tier_window", show=False)
+
+    def clear_mod_attribute_for_slot(self, sender, app_data, user_data):
+        if not isinstance(user_data, dict):
+            return
+        item_type = user_data.get("type")
+        row_index = user_data.get("row_index")
+        if item_type is None or row_index is None:
+            return
+        self.update_equipped_mod_roll(item_type, row_index, {})
+
+    def render_mod_attribute_column(self, item_type, parent=None):
+        mod = self.player.equipped_mods.get(item_type)
+        if not mod:
+            return
+        group_kwargs = {}
+        if parent is not None:
+            group_kwargs["parent"] = parent
+        compact_view = self.is_compact_slot_view_enabled()
+        with dpg.group(**group_kwargs):
+            if not compact_view:
+                dpg.add_text(self.tr("secondary_attributes", "Secondary attributes"))
+            for row_index in range(4):
+                roll = self.get_mod_roll_slot(mod, row_index)
+                attribute_id = roll.get("attribute_id") if roll else None
+                attribute = self.context.get_mod_secondary_attribute(attribute_id) if attribute_id else None
+                attribute_label = self.get_mod_attribute_display_name(attribute_id) if attribute_id else self.tr("select_attribute", "Select attribute")
+                tier_label = f"T{str(roll.get('tier_code')).upper()}" if roll and roll.get("tier_code") is not None else self.tr("tier", "Tier")
+                with dpg.group(horizontal=True):
+                    dpg.add_button(
+                        label=attribute_label,
+                        width=170 if compact_view else 185,
+                        callback=self.open_mod_attribute_selection,
+                        user_data={"type": item_type, "row_index": row_index},
+                    )
+                    dpg.add_button(
+                        label=tier_label,
+                        width=58,
+                        callback=self.open_mod_attribute_tier_selection,
+                        user_data={"type": item_type, "row_index": row_index},
+                        enabled=bool(attribute_id),
+                    )
+                    dpg.add_button(
+                        label="X",
+                        width=28,
+                        callback=self.clear_mod_attribute_for_slot,
+                        user_data={"type": item_type, "row_index": row_index},
+                        enabled=bool(attribute_id),
+                    )
+                if attribute:
+                    preview_lines = self.get_mod_attribute_preview_lines(attribute, tier_code=roll.get("tier_code"))
+                    if preview_lines and not compact_view:
+                        dpg.add_text(preview_lines[0], wrap=270, color=[168, 181, 198])
+                        if len(preview_lines) > 1:
+                            dpg.add_text(preview_lines[-1], wrap=270, color=[203, 213, 225])
+
+    def update_mod_roll_tier_options(self, window_tag, row_index, selected_label=None, selected_tier=None):
+        option_map = self.get_mod_attribute_option_map()
+        attribute_combo_tag = f"{window_tag}_attr_{row_index}"
+        tier_combo_tag = f"{window_tag}_tier_{row_index}"
+        selected_label = selected_label if selected_label is not None else (dpg.get_value(attribute_combo_tag) if dpg.does_item_exist(attribute_combo_tag) else '')
+        attribute_id = option_map.get(selected_label)
+        tier_option_map = self.get_mod_tier_option_map(attribute_id) if attribute_id else {}
+        tier_labels = list(tier_option_map.keys())
+        current_tier = selected_tier if selected_tier is not None else (dpg.get_value(tier_combo_tag) if dpg.does_item_exist(tier_combo_tag) else '')
+        if current_tier not in tier_labels:
+            current_tier = next((label for label, tier_code in tier_option_map.items() if tier_code == current_tier), '')
+        if dpg.does_item_exist(tier_combo_tag):
+            dpg.configure_item(tier_combo_tag, items=tier_labels)
+            if current_tier in tier_labels:
+                dpg.set_value(tier_combo_tag, current_tier)
+            elif tier_labels:
+                dpg.set_value(tier_combo_tag, tier_labels[0])
+            else:
+                dpg.set_value(tier_combo_tag, '')
+
+    def on_mod_roll_attribute_changed(self, sender, app_data, user_data):
+        if not isinstance(user_data, dict):
+            return
+        self.update_mod_roll_tier_options(user_data.get('window_tag'), user_data.get('row_index'), selected_label=app_data)
+
+    def save_mod_secondary_attributes(self, sender, app_data, user_data):
+        if not isinstance(user_data, dict):
+            return
+        mod = user_data.get('mod')
+        item_type = user_data.get('type')
+        window_tag = user_data.get('window_tag')
+        if not mod or not item_type or not window_tag:
+            return
+        option_map = self.get_mod_attribute_option_map()
+        secondary_attributes = []
+        for row_index in range(4):
+            attr_tag = f"{window_tag}_attr_{row_index}"
+            tier_tag = f"{window_tag}_tier_{row_index}"
+            if not dpg.does_item_exist(attr_tag) or not dpg.does_item_exist(tier_tag):
+                continue
+            selected_label = dpg.get_value(attr_tag)
+            selected_tier = dpg.get_value(tier_tag)
+            attribute_id = option_map.get(selected_label)
+            if attribute_id:
+                selected_tier = self.get_mod_tier_option_map(attribute_id).get(selected_tier, selected_tier)
+            if not attribute_id or not selected_tier:
+                continue
+            roll = self.context.build_mod_secondary_roll(attribute_id, selected_tier)
+            if roll:
+                secondary_attributes.append(roll)
+        mod['secondary_attributes'] = secondary_attributes
+        if self.player.equipped_mods.get(item_type) is mod:
+            self.player.equip_mod(self.clone_mod_for_equip(mod), item_type)
+            self.refresh_slot_ui(item_type)
+            self.update_stats_display()
+        if dpg.does_item_exist(window_tag):
+            dpg.delete_item(window_tag)
+
+    def get_current_build(self):
+        return next(
+            (build for build in self.example_builds if build.get("id") == getattr(self, "selected_build_id", None)),
+            None,
+        )
+
+    def get_build_display_name(self, build):
+        language = getattr(self.main_app, "current_language", "ru")
+        localized_name = build.get("name", {})
+        if isinstance(localized_name, dict):
+            return localized_name.get(language) or localized_name.get("en") or build.get("id", "")
+        return str(localized_name)
+
+    def get_build_description(self, build):
+        language = getattr(self.main_app, "current_language", "ru")
+        localized_description = build.get("description", {})
+        if isinstance(localized_description, dict):
+            description = localized_description.get(language) or localized_description.get("en") or ""
+        else:
+            description = str(localized_description or "")
+        return description
+
+    def set_build_description(self, build):
+        if dpg.does_item_exist("build_description_text"):
+            dpg.set_value("build_description_text", self.get_build_description(build) if build else "")
+
+    def create_build_presets_section(self):
+        preset_items = [self.get_build_display_name(build) for build in self.example_builds]
+        default_value = preset_items[0] if preset_items else ""
+        with dpg.group(horizontal=True):
+            dpg.add_text(self.tr("build_presets", "Example builds:"))
+            dpg.add_combo(
+                items=preset_items,
+                default_value=default_value,
+                width=280,
+                callback=self.on_build_preset_selected,
+                tag="build_presets_combo",
+            )
+            dpg.add_button(
+                label=self.tr("apply_preset", "Apply"),
+                callback=self.apply_selected_build_preset,
+                tag="apply_build_preset_button",
+            )
+        dpg.add_text("", tag="build_description_text", wrap=520)
+        if self.example_builds:
+            self.selected_build_id = self.example_builds[0].get("id")
+            self.set_build_description(self.example_builds[0])
+
+    def on_build_preset_selected(self, sender, app_data, user_data):
+        selected_name = app_data
+        selected_build = next(
+            (build for build in self.example_builds if self.get_build_display_name(build) == selected_name),
+            None,
+        )
+        self.selected_build_id = selected_build.get("id") if selected_build else None
+        self.set_build_description(selected_build)
+
+    def find_item_data_by_id(self, item_id):
+        return next((item for item in self.context.items_data if item.get("id") == item_id), None)
+
+    def find_weapon_data(self, weapon_id=None, weapon_name=None):
+        for weapon in self.context.weapons_data:
+            if weapon_id and weapon.get("id") == weapon_id:
+                return weapon
+            if weapon_name and weapon.get("name") == weapon_name:
+                return weapon
+        return None
+
+    @staticmethod
+    def weapon_has_event(weapon, event_name):
+        mechanics = getattr(weapon, "mechanics_data", {}) or {}
+        for effect in mechanics.get("effects", []):
+            if isinstance(effect, dict) and effect.get("type") == "on_event" and effect.get("event") == event_name:
+                return True
+        return False
+
+    def simulate_weapon_event(self, sender, app_data, user_data):
+        if not user_data:
+            return
+        self.context.simulate_special_event(user_data)
+        self.update_stats_display()
+
+    def find_mod_data(self, item_type, mod_name):
+        mod_key = self.context.category_key_mapping.get(item_type, "mod_weapon")
+        return next(
+            (mod for mod in self.context.mods_data.get(mod_key, []) if mod.get("name") == mod_name),
+            None,
+        )
+
+    def build_preset_mod_roll(self, roll_spec):
+        if isinstance(roll_spec, str):
+            attribute_id = roll_spec
+            tier_code = self.get_default_mod_tier_code(attribute_id)
+        elif isinstance(roll_spec, dict):
+            attribute_id = roll_spec.get("attribute_id") or roll_spec.get("id")
+            tier_code = roll_spec.get("tier_code")
+            if attribute_id and tier_code is None:
+                tier_code = self.get_default_mod_tier_code(attribute_id)
+        else:
+            return None
+
+        if not attribute_id:
+            return None
+        valid_tiers = self.context.get_mod_secondary_tier_codes(attribute_id)
+        if not valid_tiers:
+            return None
+        tier_code = str(tier_code) if tier_code is not None else self.get_default_mod_tier_code(attribute_id)
+        if tier_code not in valid_tiers:
+            tier_code = self.get_default_mod_tier_code(attribute_id)
+        return self.context.build_mod_secondary_roll(attribute_id, tier_code)
+
+    def apply_preset_mod_secondary_attributes(self, build):
+        preset_rolls = copy.deepcopy(build.get("mod_secondary_attributes", {}) or {})
+        for slot_name, mod_spec in (build.get("mods", {}) or {}).items():
+            if slot_name in preset_rolls or not isinstance(mod_spec, dict):
+                continue
+            if mod_spec.get("secondary_attributes"):
+                preset_rolls[slot_name] = mod_spec.get("secondary_attributes")
+
+        for slot_name, roll_specs in preset_rolls.items():
+            equipped_mod = self.player.equipped_mods.get(slot_name)
+            if not equipped_mod:
+                continue
+            built_rolls = []
+            for roll_spec in (roll_specs or [])[:4]:
+                roll = self.build_preset_mod_roll(roll_spec)
+                if roll and roll.get("attribute_id"):
+                    built_rolls.append(roll)
+            updated_mod = self.clone_mod_for_equip(equipped_mod)
+            updated_mod["secondary_attributes"] = built_rolls
+            self.player.equip_mod(updated_mod, slot_name)
+
+    def refresh_slot_ui(self, slot_name):
+        if slot_name == "weapon":
+            self.render_weapon_selector()
+            return
+        self.render_armor_slot(slot_name)
+
+    def clear_build(self):
+        self.current_attachment_slot = None
+        self.current_attachment_weapon = None
+        self.player.remove_weapon()
+        self.player.remove_mod("weapon")
+        for armor_type in self.armor_types:
+            self.player.remove_item(armor_type)
+            self.player.remove_mod(armor_type)
+        self.context.clear_selected_deviation()
+        self.context.initialize()
+        self.dps_graph_y_limit = self.dps_graph_floor
+        self.last_dps_graph_update = 0.0
+        self.refresh_equipment_ui()
+        self.update_stats_display()
+
+    def apply_selected_build_preset(self):
+        build = self.get_current_build()
+        if build:
+            self.apply_build_preset(build)
+
+    def apply_build_preset(self, build):
+        self.clear_build()
+
+        weapon_spec = build.get("weapon")
+        if weapon_spec:
+            weapon_data = self.find_weapon_data(
+                weapon_id=weapon_spec.get("id"),
+                weapon_name=weapon_spec.get("name"),
+            )
+            if weapon_data:
+                self.player.equip_weapon(self.context.create_weapon_instance(weapon_data))
+
+        for slot_name, item_id in build.get("items", {}).items():
+            item_data = self.find_item_data_by_id(item_id)
+            if not item_data:
+                continue
+            item = self.context.create_item_instance(item_data)
+            item_settings = build.get("item_settings", {}).get(slot_name, {})
+            item.star = max(1, min(item.max_stars, item_settings.get("star", item.star)))
+            item.level = max(1, min(5, item_settings.get("level", item.level)))
+            item.calibration = max(0, min(item.get_max_calibration(), item_settings.get("calibration", item.calibration)))
+            self.player.equip_item(item)
+
+        for slot_name, mod_spec in build.get("mods", {}).items():
+            mod_name = mod_spec.get("name") if isinstance(mod_spec, dict) else mod_spec
+            mod_data = self.find_mod_data(slot_name, mod_name)
+            if mod_data:
+                self.player.equip_mod(self.clone_mod_for_equip(mod_data), slot_name)
+
+        weapon_settings = build.get("weapon_settings", {})
+        if self.player.weapon:
+            self.player.weapon.star = max(1, min(6, weapon_settings.get("star", self.player.weapon.star)))
+            self.player.weapon.level = max(1, min(5, weapon_settings.get("level", self.player.weapon.level)))
+            self.player.weapon.calibration = max(0, min(6, weapon_settings.get("calibration", self.player.weapon.calibration)))
+            for slot_name, attachment_spec in (weapon_settings.get("attachments") or {}).items():
+                attachment_id = attachment_spec.get("id") if isinstance(attachment_spec, dict) else attachment_spec
+                attachment_data = self.context.get_attachment_by_id(attachment_id)
+                if attachment_data:
+                    self.player.weapon.equip_attachment(slot_name, attachment_data)
+            self.player.weapon.get_stats()
+
+        self.context.initialize()
+        deviation_spec = build.get("deviation")
+        if deviation_spec:
+            deviation_name = deviation_spec.get("name") if isinstance(deviation_spec, dict) else deviation_spec
+            selected_deviation = self.context.select_deviation(deviation_name)
+            if selected_deviation and isinstance(deviation_spec, dict):
+                self.context.selected_deviation_degree = int(deviation_spec.get("degree", 0) or 0)
+                self.context.reset_selected_deviation_runtime()
+        self.apply_preset_mod_secondary_attributes(build)
+        self.context.refresh_player_stats()
+        self.context.current_ammo = self.player.stats.get('magazine_capacity', 0)
+        self.dps_graph_y_limit = self.dps_graph_floor
+        self.last_dps_graph_update = 0.0
+        self.refresh_equipment_ui()
+        self.update_stats_display()
+
+    def build_ui(self):
+        with dpg.group():
+            with dpg.tab_bar():
+                self.create_calc_tab()
+                self.create_create_tab()
+            dpg.add_button(label=self.tr("save_config", "Save configuration"), callback=self.save_config_callback, tag="calc_save_config_button")
+            dpg.add_button(label=self.tr("load_config", "Load configuration"), callback=self.load_config_callback, tag="calc_load_config_button")
+
+        self.create_item_selection_window()
+        self.create_mod_selection_window()
+        self.create_weapon_selection_window()
+        self.create_attachment_selection_window()
+        self.create_deviation_selection_window()
+        self.create_mod_attribute_selection_window()
+        self.create_mod_attribute_tier_window()
+        self.create_error_modals()
+        self.create_item_edit_window()
+
+        self.initialize()
+
+    def initialize(self):
+        self.context.initialize()
+        self.dps_graph_y_limit = self.dps_graph_floor
+        self.last_dps_graph_update = 0.0
+        if self.default_font is not None:
+            dpg.bind_font(self.default_font)
+        self.player.recalculate_stats()
+        if not self.context.mannequin.show_hotbar:
+            if dpg.does_item_exist("hotbar_group"):
+                dpg.configure_item("hotbar_group", show=False)
+        self.refresh_equipment_ui()
+        self.handle_viewport_resize()
+        self.update_stats_display()
+        self.update_dps_display()
+
+    def update(self):
+        self.process_pending_attachment_window()
+        self.context.update()
+        if self.context.mouse_pressed:
+            self.context.try_fire_weapon()
+
+        self.update_dps_display()
+        self.context.update_damage_layer()
+        self.update_stats_display()
+
+        active_effects = list(self.context.mannequin.effects.keys())
+        active_effects.extend(
+            f"{status} x{count}" if count > 1 else status
+            for status, count in self.context.status_stack_counts.items()
+        )
+        effects_str = ", ".join(active_effects) if active_effects else self.tr("no_active_statuses", "No active statuses")
+        if dpg.does_item_exist("active_statuses_text"):
+            dpg.set_value("active_statuses_text", f"{self.tr('active_statuses', 'Active statuses')}: {effects_str}")
+
+        self.draw_mannequin_hp_bar()
+
+    def create_calc_tab(self):
+        with dpg.tab(label=self.tr("calc_tab", "Calc"), tag="calc_tab_root"):
+            with dpg.group(horizontal=True, tag="calc_layout_group"):
+                with dpg.child_window(tag="calc_parameters_panel", width=460, height=720, horizontal_scrollbar=True):
+                    self.create_parameters_section()
+                with dpg.child_window(tag="calc_combat_panel", width=620, height=720):
+                    self.create_combat_section()
+
+    def create_create_tab(self):
+        with dpg.tab(label=self.tr("create_tab", "Create")):
+            dpg.add_text(self.tr("create_prompt", "Choose what you want to create:"), color=[255, 255, 0])
+            dpg.add_radio_button(items=["Мод", "Предмет", "Сет"], default_value="Мод", horizontal=True,
+                                 callback=lambda s,a,u: self.toggle_creation_menu(a))
+
+            with dpg.group(tag="mod_creation_group", show=True):
+                self.create_mod_creation_section()
+
+            with dpg.group(show=False, tag="item_creation_group"):
+                self.create_item_creation_section()
+
+            with dpg.group(show=False, tag="set_creation_group"):
+                self.create_set_creation_section()
+
+    def create_parameters_section(self):
+        dpg.add_text(self.tr("parameters_title", "Parameters:"))
+        dpg.add_spacer(height=5)
+        dpg.add_separator()
+        dpg.add_spacer(height=5)
+        self.create_build_presets_section()
+        dpg.add_checkbox(
+            label=self.tr("compact_slot_view", "Hide slot text"),
+            default_value=self.compact_slot_view,
+            callback=self.toggle_compact_slot_view,
+            tag="compact_slot_view_checkbox",
+        )
+        dpg.add_spacer(height=8)
+        dpg.add_separator()
+        dpg.add_spacer(height=8)
+        self.create_parameters_table(self.tr("base_stats_header", "Base stats:"), [
+            (self.tr("base_damage", "Damage (DMG):"), 0, "base_damage_input", True),
+            (self.tr("psi_intensity", "PSI intensity:"), 125, "psi_intensity_input", True),
+            (self.tr("hp_label", "HP:"), 700, "hp_input", True),
+            (self.tr("pollution_resist", "Pollution resistance:"), 15, "contamination_resistance_input", True)
+        ])
+        self.create_parameters_table(self.tr("combat_stats_header", "Combat stats:"), [
+            (self.tr("crit_rate", "Critical hit chance %:"), 0, "crit_chance_input", True),
+            (self.tr("crit_damage", "Critical damage %:"), 0, "crit_dmg_input", True),
+            (self.tr("weakspot_damage", "Weakspot damage %:"), 0, "weakspot_damage_bonus_input", True),
+            (self.tr("weapon_damage_bonus", "Weapon damage bonus %:"), 0, "weapon_damage_bonus_input", True),
+            (self.tr("status_damage_bonus", "Status damage bonus %:"), 4, "status_damage_bonus_input", True),
+            (self.tr("damage_bonus_normal", "Damage vs normal %:"), 0, "damage_bonus_normal_input", True),
+            (self.tr("damage_bonus_elite", "Damage vs elite %:"), 0, "damage_bonus_elite_input", True),
+            (self.tr("damage_bonus_boss", "Damage vs bosses %:"), 0, "damage_bonus_boss_input", True),
+            (self.tr("fire_rate", "Fire rate (shots/min):"), 0, "fire_rate_input", True),
+            (self.tr("magazine_capacity", "Magazine capacity:"), 0, "magazine_capacity_input", True),
+            (self.tr("reload_speed", "Reload speed (sec):"), 0, "reload_speed_input", True)
+        ])
+        self.create_parameters_table(self.tr("defense_stats_header", "Defense stats:"), [
+            (self.tr("damage_reduction", "Damage reduction %:"), 0, "damage_reduction_input", True),
+            (self.tr("pollution_resist", "Pollution resistance:"), 15, "resistance_to_pollution", True)
+        ])
+        dpg.add_input_int(label=self.tr("enemies_within_distance", "Enemies nearby (m):"), default_value=0,
+                          tag="enemies_within_distance_input", width=100,
+                          callback=self.on_parameter_change)
+        dpg.add_input_int(label=self.tr("players_in_fortress", "Players in Fortress Warfare:"), default_value=1,
+                          tag="players_in_fortress_input", width=100,
+                          callback=self.on_parameter_change)
+        dpg.add_text(self.tr("weapon_selection", "Weapon selection:"), color=[255, 255, 255], bullet=True)
+        with dpg.group(horizontal=True, tag="weapon_selection_group"):
+            self.render_weapon_selector()
+        dpg.add_text(self.tr("armor_selection", "Armor selection:"), color=[255, 255, 255], bullet=True)
+        with dpg.group(horizontal=False, tag="armor_selection_group"):
+            for armor_type in self.armor_types:
+                self.render_armor_slot(armor_type)
+        dpg.add_text(self.tr("deviation_selection", "Deviation selection:"), color=[255, 255, 255], bullet=True)
+        with dpg.group(horizontal=True, tag="deviation_selection_group"):
+            self.render_deviation_selector()
+
+    def create_parameters_table(self, title, params):
+        with dpg.collapsing_header(label=title, default_open=False):
+            with dpg.table(header_row=False, resizable=False, policy=dpg.mvTable_SizingFixedFit):
+                dpg.add_table_column()
+                dpg.add_table_column()
+                for label, default, tag, editable in params:
+                    with dpg.table_row():
+                        dpg.add_text(label)
+                        dpg.add_input_int(default_value=default, min_value=0, max_value=9999999, step=0,
+                                          width=100, callback=self.on_parameter_change,
+                                          tag=tag, enabled=editable)
+        dpg.add_spacer(height=5)
+        dpg.add_separator()
+        dpg.add_spacer(height=5)
+
+    def render_weapon_selector(self):
+        parent_tag = "weapon_selection_group"
+        dpg.delete_item(parent_tag, children_only=True)
+        weapon = self.player.weapon
+        compact_view = self.is_compact_slot_view_enabled()
+        item_panel_width = 110 if compact_view else 250
+        mod_panel_width = 110 if compact_view else 235
+        attr_panel_width = 280
+        if weapon:
+            weapon_data = self.find_weapon_data(weapon_id=weapon.id) or {"name": weapon.name}
+            weapon_type = weapon_data.get("type", "").lower().replace(" ", "_")
+            with dpg.group(horizontal=True, parent=parent_tag):
+                with dpg.child_window(width=item_panel_width, height=185 if compact_view else 250, border=False):
+                    texture_id = self.weapon_images.get(weapon.id, self.weapon_images['default'])
+                    self.add_colored_image_button(
+                        texture_id,
+                        card_kind="weapon",
+                        rarity=weapon_data.get("rarity", getattr(weapon, "rarity", None)),
+                        width=self.weapon_card_size[0],
+                        height=self.weapon_card_size[1],
+                        callback=self.open_weapon_selection,
+                        tag="weapon_image",
+                    )
+                    self.bind_right_click_handler(
+                        "weapon_image",
+                        "weapon_item_handler",
+                        self.open_weapon_config_window,
+                    )
+                    if not compact_view:
+                        dpg.add_text(weapon.name, wrap=230)
+                        if weapon_type:
+                            dpg.add_text(
+                                self.tr(f"weapon_type_{weapon_type}", weapon_type.replace("_", " ").title()),
+                                color=[168, 181, 198],
+                            )
+                        dpg.add_text(self.get_weapon_description(weapon_data), wrap=230)
+                        attachment_summary = self.get_weapon_attachment_summary(weapon)
+                        if attachment_summary:
+                            dpg.add_text(attachment_summary, wrap=230, color=[168, 181, 198])
+
+                with dpg.child_window(width=mod_panel_width, height=185 if compact_view else 250, border=False):
+                    equipped_mod = self.player.equipped_mods.get("weapon")
+                    if equipped_mod:
+                        texture_id = self.get_mod_texture("weapon", equipped_mod["name"])
+                        self.add_colored_image_button(
+                            texture_id,
+                            card_kind="mod",
+                            width=self.mod_card_size[0],
+                            height=self.mod_card_size[1],
+                            callback=self.open_mod_selection,
+                            user_data="weapon",
+                            tag="weapon_mod_image",
+                        )
+                        self.bind_right_click_handler(
+                            "weapon_mod_image",
+                            "weapon_mod_handler",
+                            self.open_mod_config_window,
+                            {'mod': equipped_mod, 'type': 'weapon', 'editable': True},
+                        )
+                        if not compact_view:
+                            dpg.add_text(equipped_mod["name"], wrap=220)
+                            weapon_mod_rolls = self.get_mod_rolls_summary(equipped_mod)
+                            if weapon_mod_rolls:
+                                dpg.add_text(weapon_mod_rolls, wrap=220, color=[168, 181, 198])
+                    else:
+                        dpg.add_button(
+                            label="+" if compact_view else self.tr("select_mod", "Select mod"),
+                            callback=self.open_mod_selection,
+                            user_data="weapon",
+                            tag="weapon_mod_selector",
+                            width=self.mod_card_size[0] if compact_view else 150,
+                            height=self.mod_card_size[1] if compact_view else 0,
+                        )
+                if self.player.equipped_mods.get("weapon"):
+                    with dpg.child_window(width=attr_panel_width, height=190 if compact_view else 250, border=False):
+                        self.render_mod_attribute_column("weapon")
+        else:
+            dpg.add_button(
+                label="+" if compact_view else self.tr("select_weapon", "Select weapon"),
+                callback=self.open_weapon_selection,
+                tag="weapon_selector",
+                parent=parent_tag,
+                width=self.weapon_card_size[0] if compact_view else 150,
+                height=self.weapon_card_size[1] if compact_view else 0,
+            )
+
+    def render_armor_slot(self, item_type):
+        row_tag = f"{item_type}_row"
+        if dpg.does_item_exist(row_tag):
+            dpg.delete_item(row_tag)
+
+        compact_view = self.is_compact_slot_view_enabled()
+        item_panel_width = 110 if compact_view else 230
+        mod_panel_width = 110 if compact_view else 230
+        attr_panel_width = 280
+        with dpg.group(horizontal=True, tag=row_tag, parent="armor_selection_group"):
+            with dpg.child_window(tag=f"{item_type}_item_panel", width=item_panel_width, height=150 if compact_view else 220, border=False):
+                item = self.player.equipped_items.get(item_type)
+                if item:
+                    item_data = self.find_item_data_by_id(item.id) or {}
+                    texture_id = self.item_images.get(item.id, self.item_images['default'])
+                    image_tag = f"{item_type}_item_image"
+                    self.add_colored_image_button(
+                        texture_id,
+                        card_kind="item",
+                        rarity=getattr(item, "rarity", item_data.get("rarity")),
+                        width=self.armor_card_size[0],
+                        height=self.armor_card_size[1],
+                        callback=self.open_item_selection,
+                        user_data=item_type,
+                        tag=image_tag,
+                    )
+                    self.bind_right_click_handler(
+                        image_tag,
+                        f"{item_type}_item_handler",
+                        self.open_item_config_window,
+                        item_type,
+                    )
+                    if not compact_view:
+                        dpg.add_text(item.name, wrap=170)
+                        dpg.add_text(self.get_item_description(item_data), wrap=220)
+                else:
+                    dpg.add_button(
+                        label="+" if compact_view else self.get_slot_label(item_type),
+                        callback=self.open_item_selection,
+                        user_data=item_type,
+                        tag=f"{item_type}_item_selector",
+                        width=self.armor_card_size[0] if compact_view else 150,
+                        height=self.armor_card_size[1] if compact_view else 0,
+                    )
+
+            with dpg.child_window(tag=f"{item_type}_mod_panel", width=mod_panel_width, height=150 if compact_view else 220, border=False):
+                equipped_mod = self.player.equipped_mods.get(item_type)
+                if item and equipped_mod:
+                    texture_id = self.get_mod_texture(item_type, equipped_mod["name"])
+                    image_tag = f"{item_type}_mod_image"
+                    self.add_colored_image_button(
+                        texture_id,
+                        card_kind="mod",
+                        width=self.mod_card_size[0],
+                        height=self.mod_card_size[1],
+                        callback=self.open_mod_selection,
+                        user_data=item_type,
+                        tag=image_tag,
+                    )
+                    self.bind_right_click_handler(
+                        image_tag,
+                        f"{item_type}_mod_handler",
+                        self.open_mod_config_window,
+                        {'mod': equipped_mod, 'type': item_type, 'editable': True},
+                    )
+                    if not compact_view:
+                        dpg.add_text(equipped_mod["name"], wrap=170)
+                        armor_mod_rolls = self.get_mod_rolls_summary(equipped_mod)
+                        if armor_mod_rolls:
+                            dpg.add_text(armor_mod_rolls, wrap=220, color=[168, 181, 198])
+                elif item:
+                    dpg.add_button(
+                        label="+" if compact_view else self.tr("select_mod", "Select mod"),
+                        callback=self.open_mod_selection,
+                        user_data=item_type,
+                        tag=f"{item_type}_mod_selector",
+                        width=self.mod_card_size[0] if compact_view else 150,
+                        height=self.mod_card_size[1] if compact_view else 0,
+                    )
+                else:
+                    dpg.add_spacer(height=1)
+
+            if item and equipped_mod:
+                with dpg.child_window(width=attr_panel_width, height=155 if compact_view else 220, border=False):
+                    self.render_mod_attribute_column(item_type)
+
+    def render_deviation_selector(self):
+        parent_tag = "deviation_selection_group"
+        if not dpg.does_item_exist(parent_tag):
+            return
+        dpg.delete_item(parent_tag, children_only=True)
+        compact_view = self.is_compact_slot_view_enabled()
+        deviation = self.context.selected_deviation
+        panel_width = 110 if compact_view else 290
+        panel_height = 150 if compact_view else 235
+        if not deviation:
+            dpg.add_button(
+                label="+" if compact_view else self.tr("select_deviation", "Select deviation"),
+                callback=self.open_deviation_selection,
+                tag="deviation_selector",
+                parent=parent_tag,
+                width=self.armor_card_size[0] if compact_view else 180,
+                height=self.armor_card_size[1] if compact_view else 0,
+            )
+            return
+
+        with dpg.group(horizontal=True, parent=parent_tag):
+            with dpg.child_window(width=panel_width, height=panel_height, border=False):
+                image_tag = "selected_deviation_image"
+                self.add_colored_image_button(
+                    self.get_deviation_texture(deviation),
+                    card_kind="deviation",
+                    width=self.armor_card_size[0],
+                    height=self.armor_card_size[1],
+                    callback=self.open_deviation_selection,
+                    tag=image_tag,
+                )
+                self.bind_right_click_handler(
+                    image_tag,
+                    "selected_deviation_handler",
+                    self.open_deviation_config_window,
+                )
+                if not compact_view:
+                    dpg.add_text(self.context.get_deviation_display_name(deviation), wrap=260)
+                    dpg.add_text(self.get_deviation_description(deviation), wrap=270, color=[168, 181, 198])
+
+    def refresh_equipment_ui(self):
+        self.render_weapon_selector()
+        for armor_type in self.armor_types:
+            self.render_armor_slot(armor_type)
+        self.render_deviation_selector()
+        self.update_equipment_summary()
+
+    def create_combat_section(self):
+        with dpg.group(horizontal=False, tag="combat_section_root"):
+            dpg.add_spacer(height=10)
+            with dpg.group(horizontal=True, tag="combat_stats_header"):
+                dpg.add_text(
+                    "DPS: 0    Max DPS: 0    Total DMG: 0    Max Total DMG: 0",
+                    color=[120, 219, 226],
+                    tag="dps_text",
+                )
+                dpg.add_button(
+                    label="X",
+                    width=24,
+                    height=24,
+                    callback=self.reset_combat_tracking,
+                    tag="reset_combat_button",
+                )
+                dpg.add_text(f"{self.tr('ammo', 'Ammo')}: 0/0", tag="ammo_text")
+
+            with dpg.group(horizontal=True, tag="combat_top_row"):
+                with dpg.child_window(tag="mannequin_panel", width=400, height=380, border=False):
+                    target_img = self.get_target_image_path()
+                    if os.path.exists(target_img):
+                        width_img, height_img, channels, data = dpg.load_image(target_img)
+                    else:
+                        width_img, height_img = 300, 300
+                        data = [255] * width_img * height_img * 4
+
+                    with dpg.texture_registry():
+                        texture_id = dpg.add_static_texture(width_img, height_img, data)
+
+                    with dpg.drawlist(width=390, height=330, tag="damage_layer"):
+                        dpg.draw_image(texture_id, pmin=[0, 30], pmax=[300, 330])
+                        dpg.draw_rectangle(pmin=[90, 80], pmax=[210, 320],
+                                           color=[0, 0, 255, 100], fill=[0, 0, 255, 50])
+                        dpg.draw_rectangle(pmin=[130, 40], pmax=[170, 80],
+                                           color=[255, 0, 0, 100], fill=[255, 0, 0, 50])
+                        with dpg.draw_layer(tag="hp_bar_layer", parent="damage_layer"):
+                            pass
+
+                    with dpg.item_handler_registry(tag="damage_layer_handlers") as handler_id:
+                        dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Left, callback=self.mouse_down_callback)
+                        dpg.add_item_deactivated_handler(callback=self.mouse_up_callback)
+                        dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Right,
+                                                     callback=self.open_mannequin_settings_window)
+                    dpg.bind_item_handler_registry("damage_layer", "damage_layer_handlers")
+
+                    with dpg.group(tag="hotbar_group"):
+                        dpg.add_text(f"{self.tr('active_statuses', 'Active statuses')}:",
+                                     tag="active_statuses_text")
+
+                with dpg.child_window(tag="dps_plot_panel", width=280, height=380):
+                    dpg.add_text(self.tr("dps_history_title", "DPS history (30s)"))
+                    with dpg.plot(
+                        label="##dps_plot",
+                        height=330,
+                        width=-1,
+                        anti_aliased=True,
+                        tag="dps_history_plot",
+                    ):
+                        dpg.add_plot_legend(show=False)
+                        dpg.add_plot_axis(dpg.mvXAxis, label=self.tr("time_seconds", "Seconds"), tag="dps_plot_x")
+                        with dpg.plot_axis(dpg.mvYAxis, label="DPS", tag="dps_plot_y"):
+                            dpg.add_line_series([], [], tag="dps_history_series")
+
+            with dpg.group(horizontal=True, tag="equipment_summary_group"):
+                with dpg.child_window(tag="weapon_summary_panel", width=300, height=220):
+                    dpg.add_text(self.tr("weapon_summary", "Weapon summary"))
+                with dpg.child_window(tag="armor_summary_panel", width=300, height=220):
+                    dpg.add_text(self.tr("armor_summary", "Armor summary"))
+
+            dpg.add_text("", tag="stats_display_text", wrap=540)
+
+    def on_parameter_change(self, sender, app_data, user_data):
+        self.context.update_parameter(sender, app_data)
+        self.update_stats_display()
+
+    def open_item_selection(self, sender, app_data, user_data):
+        item_type = user_data
+        self.current_item_selection_type = item_type
+        self.item_search_query = ""
+        if dpg.does_item_exist("item_search_input"):
+            dpg.set_value("item_search_input", "")
+        self.populate_item_selection_list(item_type)
+        dpg.configure_item("item_selection_window", show=True)
+
+    def populate_item_selection_list(self, item_type):
+        dpg.delete_item("item_selection_list", children_only=True)
+        items = sorted(
+            [
+                itm for itm in self.context.items_data
+                if itm['type'] == item_type and self.matches_search_query(
+                    self.item_search_query,
+                    itm.get('name', ''),
+                    self.get_item_description(itm),
+                )
+            ],
+            key=lambda item: item['name'],
+        )
+        dpg.add_button(
+            label=self.tr("clear_slot", "Clear slot"),
+            callback=self.remove_item_from_slot,
+            user_data=item_type,
+            parent="item_selection_list",
+        )
+        with dpg.table(
+            header_row=False,
+            resizable=True,
+            policy=dpg.mvTable_SizingStretchProp,
+            parent="item_selection_list",
+        ):
+            dpg.add_table_column(init_width_or_weight=0.18)
+            dpg.add_table_column(init_width_or_weight=0.25)
+            dpg.add_table_column(init_width_or_weight=0.57)
+            for itm in items:
+                texture_id = self.item_images.get(itm['id'], self.item_images['default'])
+                with dpg.table_row():
+                    self.add_colored_image_button(
+                        texture_id,
+                        card_kind="item",
+                        rarity=itm.get("rarity"),
+                        width=self.armor_card_size[0],
+                        height=self.armor_card_size[1],
+                        callback=self.select_item_for_slot,
+                        user_data={'item': itm, 'type': item_type},
+                    )
+                    with dpg.group():
+                        dpg.add_button(
+                            label=itm['name'],
+                            callback=self.select_item_for_slot,
+                            user_data={'item': itm, 'type': item_type},
+                        )
+                        dpg.add_text(
+                            self.get_rarity_label(itm.get('rarity', 'common')),
+                            color=[168, 181, 198],
+                        )
+                    dpg.add_text(self.get_item_description(itm), wrap=320)
+
+    def remove_item_from_slot(self, sender, app_data, user_data):
+        item_type = user_data
+        self.player.remove_item(item_type)
+        self.player.remove_mod(item_type)
+        self.render_armor_slot(item_type)
+        dpg.configure_item("item_selection_window", show=False)
+        self.update_stats_display()
+
+    def select_item_for_slot(self, sender, app_data, user_data):
+        try:
+            item_data = user_data['item']
+            item_type = user_data['type']
+            item = self.context.create_item_instance(item_data)
+            self.player.equip_item(item)
+            self.render_armor_slot(item_type)
+            dpg.configure_item("item_selection_window", show=False)
+            self.update_stats_display()
+        except Exception as e:
+            print(f"Ошибка при выборе предмета для слота: {e}")
+
+    def open_item_config_window(self, sender, app_data, user_data):
+        item_type = user_data
+        item = self.player.equipped_items.get(item_type)
+        if item:
+            self.show_item_config_window(item, item_type)
+
+    def show_item_config_window(self, item, item_type):
+        window_tag = f"{item_type}_config_window"
+        if dpg.does_item_exist(window_tag):
+            dpg.delete_item(window_tag)
+        window_width = 400
+        window_height = 430
+        main_window_pos = dpg.get_viewport_pos()
+        main_window_width = dpg.get_viewport_width()
+        main_window_height = dpg.get_viewport_height()
+        x_pos = main_window_pos[0] + (main_window_width - window_width) / 2
+        y_pos = main_window_pos[1] + (main_window_height - window_height) / 2 - 100
+        with dpg.window(label=f"Настройка {item.name}", modal=True, show=True, tag=window_tag,
+                        width=window_width, height=window_height, pos=(x_pos, y_pos)):
+            dpg.add_text(f"{item.name} ({self.get_slot_label(item_type)})")
+            item_data = self.find_item_data_by_id(item.id) or {}
+            dpg.add_separator()
+            dpg.add_text(self.tr("description", "Description:"))
+            dpg.add_text(self.get_item_description(item_data), wrap=380)
+            dpg.add_separator()
+            item_stats = item.get_stats()
+            for stat_name, stat_value in item_stats.items():
+                dpg.add_text(f"{self.context.format_stat_name(stat_name)}: {self.context.format_value(stat_value)}", wrap=380)
+            dpg.add_slider_int(label=self.tr("stars_count", "Stars"), min_value=1, max_value=item.max_stars,
+                               default_value=item.star, callback=self.update_item_stats,
+                               user_data={'item': item, 'item_type': item_type},
+                               tag=f"{item_type}_star_slider")
+            dpg.add_slider_int(label=self.tr("level", "Level"), min_value=1, max_value=5,
+                               default_value=item.level, callback=self.update_item_stats,
+                               user_data={'item': item, 'item_type': item_type},
+                               tag=f"{item_type}_level_slider")
+            dpg.add_slider_int(label=self.tr("calibration_level", "Calibration level"), min_value=0, max_value=item.get_max_calibration(),
+                               default_value=item.calibration, callback=self.update_item_stats,
+                               user_data={'item': item, 'item_type': item_type},
+                               tag=f"{item_type}_calibration_slider")
+            set_id = item.set_id
+            if set_id:
+                game_set = self.context.get_set_by_id(set_id)
+                if game_set:
+                    set_description = game_set.get('description', 'Описание сета отсутствует.')
+                    dpg.add_separator()
+                    dpg.add_text(f"{self.tr('set_label', 'Set')}: {game_set['name']}")
+                    dpg.add_text(set_description, wrap=380)
+            dpg.add_button(label=self.tr("close", "Close"), callback=lambda: dpg.delete_item(window_tag))
+
+    def update_item_stats(self, sender, app_data, user_data):
+        item = user_data['item']
+        item_type = user_data['item_type']
+        star_slider_tag = f"{item_type}_star_slider"
+        level_slider_tag = f"{item_type}_level_slider"
+        calibration_slider_tag = f"{item_type}_calibration_slider"
+        new_star = dpg.get_value(star_slider_tag)
+        new_level = dpg.get_value(level_slider_tag)
+        new_calibration = dpg.get_value(calibration_slider_tag)
+        item.star = new_star
+        item.level = new_level
+        item.calibration = new_calibration
+        self.player.equip_item(item)
+        max_calibration = item.get_max_calibration()
+        dpg.configure_item(calibration_slider_tag, max_value=max_calibration)
+        if new_calibration > max_calibration:
+            new_calibration = max_calibration
+            dpg.set_value(calibration_slider_tag, new_calibration)
+            item.calibration = new_calibration
+        self.update_stats_display()
+
+    def update_stats_display(self):
+        stats_text = self.context.get_stats_display_text(self.player)
+        if dpg.does_item_exist("stats_display_text"):
+            dpg.set_value("stats_display_text", stats_text)
+        self.update_equipment_summary()
+
+    def on_deviation_search_changed(self, sender, app_data, user_data):
+        self.deviation_search_query = app_data or ""
+        self.populate_deviation_selection_list()
+
+    def open_deviation_selection(self, sender=None, app_data=None, user_data=None):
+        self.deviation_search_query = ""
+        if dpg.does_item_exist("deviation_search_input"):
+            dpg.set_value("deviation_search_input", "")
+        self.populate_deviation_selection_list()
+        dpg.configure_item("deviation_selection_window", show=True)
+
+    def populate_deviation_selection_list(self):
+        dpg.delete_item("deviation_selection_list", children_only=True)
+        deviations = sorted(
+            [
+                entry for entry in self.context.get_combat_deviations()
+                if self.matches_search_query(
+                    self.deviation_search_query,
+                    self.get_deviation_search_blob(entry),
+                )
+            ],
+            key=lambda entry: self.context.get_deviation_display_name(entry),
+        )
+        dpg.add_button(
+            label=self.tr("clear_deviation", "Clear deviation"),
+            callback=self.clear_selected_deviation,
+            parent="deviation_selection_list",
+        )
+        with dpg.table(
+            header_row=False,
+            resizable=True,
+            policy=dpg.mvTable_SizingStretchProp,
+            parent="deviation_selection_list",
+        ):
+            dpg.add_table_column(init_width_or_weight=0.16)
+            dpg.add_table_column(init_width_or_weight=0.24)
+            dpg.add_table_column(init_width_or_weight=0.60)
+            for deviation in deviations:
+                with dpg.table_row():
+                    self.add_colored_image_button(
+                        self.get_deviation_texture(deviation),
+                        card_kind="deviation",
+                        width=self.armor_card_size[0],
+                        height=self.armor_card_size[1],
+                        callback=self.select_deviation,
+                        user_data=deviation,
+                    )
+                    with dpg.group():
+                        dpg.add_button(
+                            label=self.context.get_deviation_display_name(deviation),
+                            callback=self.select_deviation,
+                            user_data=deviation,
+                        )
+                        combat_profile = deviation.get("combat_profile") or {}
+                        if combat_profile:
+                            dpg.add_text(
+                                self.tr(
+                                    f"deviation_behavior_{combat_profile.get('behavior')}",
+                                    combat_profile.get("behavior", "").replace("_", " ").title(),
+                                ),
+                                color=[168, 181, 198],
+                            )
+                    dpg.add_text(self.get_deviation_description(deviation), wrap=340)
+
+    def select_deviation(self, sender, app_data, user_data):
+        deviation = user_data
+        self.context.select_deviation(deviation.get("name"))
+        self.refresh_equipment_ui()
+        self.update_stats_display()
+        dpg.configure_item("deviation_selection_window", show=False)
+
+    def clear_selected_deviation(self, sender=None, app_data=None, user_data=None):
+        self.context.clear_selected_deviation()
+        self.refresh_equipment_ui()
+        self.update_stats_display()
+        if dpg.does_item_exist("deviation_selection_window"):
+            dpg.configure_item("deviation_selection_window", show=False)
+
+    def open_deviation_config_window(self, sender=None, app_data=None, user_data=None):
+        deviation = self.context.selected_deviation
+        if not deviation:
+            return
+        window_tag = "deviation_config_window"
+        if dpg.does_item_exist(window_tag):
+            dpg.delete_item(window_tag)
+        window_width = 520
+        window_height = 420
+        x_pos, y_pos = self.get_centered_window_position(window_width, window_height)
+        with dpg.window(
+            label=f"{self.tr('deviation', 'Deviation')}: {self.context.get_deviation_display_name(deviation)}",
+            modal=True,
+            show=True,
+            tag=window_tag,
+            width=window_width,
+            height=window_height,
+            pos=(x_pos, y_pos),
+        ):
+            dpg.add_text(self.context.get_deviation_display_name(deviation))
+            aliases = self.context.get_deviation_aliases(deviation)
+            if aliases:
+                dpg.add_text(
+                    f"{self.tr('aliases', 'Aliases')}: {', '.join(aliases)}",
+                    color=[168, 181, 198],
+                    wrap=480,
+                )
+            if deviation.get("me_code"):
+                dpg.add_text(
+                    f"me-code: {deviation.get('me_code')}",
+                    color=[120, 138, 160],
+                )
+            dpg.add_separator()
+            dpg.add_text(self.get_deviation_description(deviation), wrap=480)
+            skill_entries = self.context.get_deviation_skill_display_entries(deviation)
+            if skill_entries:
+                dpg.add_separator()
+                dpg.add_text(self.tr("preview_skills", "Preview skills:"))
+                with dpg.child_window(height=160, border=True):
+                    for skill in skill_entries[:6]:
+                        skill_name = skill.get("display_name") or skill.get("name", "")
+                        skill_description = skill.get("display_description") or skill.get("description", "")
+                        exact_description = skill.get("display_exact_description") or skill.get("exact_description", "")
+                        dpg.add_text(skill_name, color=[255, 255, 255])
+                        dpg.add_text(skill_description, wrap=460, color=[168, 181, 198])
+                        if exact_description and exact_description != skill_description:
+                            dpg.add_text(exact_description, wrap=460, color=[120, 138, 160])
+                        coefficients = skill.get("coefficients_percent") or []
+                        if coefficients:
+                            coeff_text = ", ".join(f"{value:g}%" for value in coefficients[:4])
+                            dpg.add_text(
+                                f"{self.tr('coefficients', 'Coefficients')}: {coeff_text}",
+                                color=[120, 138, 160],
+                            )
+                        exact_variants = skill.get("exact_variants") or []
+                        if len(exact_variants) > 1:
+                            dpg.add_text(
+                                f"{self.tr('variants', 'Variants')}: {len(exact_variants)}",
+                                color=[94, 234, 212],
+                            )
+                        dpg.add_spacer(height=4)
+            dpg.add_separator()
+            dpg.add_slider_int(
+                label=self.tr("deviation_degree", "Deviation degree"),
+                min_value=0,
+                max_value=10,
+                default_value=int(self.context.selected_deviation_degree),
+                callback=self.update_selected_deviation_degree,
+                width=220,
+            )
+            dpg.add_button(label=self.tr("close", "Close"), callback=lambda: dpg.delete_item(window_tag))
+
+    def update_selected_deviation_degree(self, sender, app_data, user_data):
+        self.context.selected_deviation_degree = int(app_data)
+        self.context.reset_selected_deviation_runtime()
+        self.update_stats_display()
+
+    def open_weapon_selection(self, sender, app_data, user_data):
+        self.weapon_search_query = ""
+        if dpg.does_item_exist("weapon_search_input"):
+            dpg.set_value("weapon_search_input", "")
+        self.populate_weapon_selection_list()
+        dpg.configure_item("weapon_selection_window", show=True)
+
+    def populate_weapon_selection_list(self):
+        dpg.delete_item("weapon_selection_list", children_only=True)
+        weapons = sorted(
+            [
+                weapon for weapon in self.context.weapons_data
+                if self.matches_search_query(
+                    self.weapon_search_query,
+                    weapon.get('name', ''),
+                    self.get_weapon_description(weapon),
+                    weapon.get('type', ''),
+                )
+            ],
+            key=lambda weapon: weapon['name'],
+        )
+        weapons_by_type = {}
+        for wdata in weapons:
+            wtype = wdata.get('type', 'Unknown')
+            wkey = wtype.lower().replace(' ', '_')
+            if wkey not in weapons_by_type:
+                weapons_by_type[wkey] = []
+            weapons_by_type[wkey].append(wdata)
+        dpg.add_button(
+            label=self.tr("clear_weapon", "Clear weapon"),
+            callback=self.remove_weapon,
+            parent="weapon_selection_list",
+        )
+        with dpg.child_window(parent="weapon_selection_list", autosize_x=True, autosize_y=True):
+            for wtype_key, ws in weapons_by_type.items():
+                icon_texture = self.weapon_type_icons.get(wtype_key, self.create_default_texture())
+                with dpg.group(horizontal=True):
+                    dpg.add_image(icon_texture, width=25, height=25)
+                    dpg.add_text(f"{wtype_key.replace('_',' ').title()}")
+                with dpg.table(header_row=False, resizable=True, policy=dpg.mvTable_SizingStretchProp):
+                    dpg.add_table_column(init_width_or_weight=0.18)
+                    dpg.add_table_column(init_width_or_weight=0.25)
+                    dpg.add_table_column(init_width_or_weight=0.57)
+                    for weapon_data in ws:
+                        texture_id = self.weapon_images.get(weapon_data['id'], self.weapon_images['default'])
+                        with dpg.table_row():
+                            self.add_colored_image_button(
+                                texture_id,
+                                card_kind="weapon",
+                                rarity=weapon_data.get("rarity"),
+                                width=self.weapon_card_size[0],
+                                height=self.weapon_card_size[1],
+                                callback=self.select_weapon,
+                                user_data=weapon_data,
+                            )
+                            with dpg.group():
+                                dpg.add_button(
+                                    label=weapon_data['name'],
+                                    callback=self.select_weapon,
+                                    user_data=weapon_data,
+                                )
+                                dpg.add_text(
+                                    self.tr(f"weapon_type_{wtype_key}", wtype_key.replace('_', ' ').title()),
+                                    color=[168, 181, 198],
+                                )
+                            dpg.add_text(self.get_weapon_description(weapon_data), wrap=320)
+
+    def remove_weapon(self, sender, app_data, user_data):
+        self.current_attachment_slot = None
+        self.current_attachment_weapon = None
+        self.player.remove_weapon()
+        self.player.remove_mod("weapon")
+        self.context.initialize()
+        self.render_weapon_selector()
+        dpg.configure_item("weapon_selection_window", show=False)
+        self.update_stats_display()
+
+    def select_weapon(self, sender, app_data, user_data):
+        weapon_data = user_data
+        previous_weapon_id = getattr(self.player.weapon, "id", None)
+        weapon = self.context.create_weapon_instance(weapon_data)
+        self.current_attachment_slot = None
+        self.current_attachment_weapon = weapon
+        self.player.equip_weapon(weapon)
+        self.context.initialize()
+        if previous_weapon_id and previous_weapon_id != weapon.id:
+            self.context.weapon_switch_pending = True
+        self.render_weapon_selector()
+        dpg.configure_item("weapon_selection_window", show=False)
+        self.update_stats_display()
+
+    def open_weapon_config_window(self, sender, app_data, user_data=None):
+        weapon = self.player.weapon
+        if weapon:
+            self.show_weapon_config_window(weapon)
+
+    def show_weapon_config_window(self, weapon):
+        window_tag = f"{weapon.id}_config_window"
+        if dpg.does_item_exist(window_tag):
+            dpg.delete_item(window_tag)
+        self.active_weapon_config_window_tag = window_tag
+        window_width = 470
+        window_height = 640
+        x_pos, y_pos = self.get_centered_window_position(window_width, window_height)
+        with dpg.window(label=f"Настройка оружия {weapon.name}", modal=True, show=True, tag=window_tag,
+                        width=window_width, height=window_height, pos=(x_pos, y_pos)):
+            with dpg.child_window(border=False, autosize_x=True, height=560):
+                dpg.add_text(f"{self.tr('weapon_label', 'Weapon')}: {weapon.name}")
+                star_slider_tag = f"{weapon.id}_star_slider"
+                level_slider_tag = f"{weapon.id}_level_slider"
+                calibration_slider_tag = f"{weapon.id}_calibration_slider"
+                dpg.add_slider_int(label=self.tr("stars_count", "Stars"), min_value=1, max_value=6, default_value=weapon.star,
+                                   tag=star_slider_tag, callback=self.update_weapon_stats,
+                                   user_data={'weapon': weapon})
+                dpg.add_slider_int(label=self.tr("level", "Level"), min_value=1, max_value=5, default_value=weapon.level,
+                                   tag=level_slider_tag, callback=self.update_weapon_stats,
+                                   user_data={'weapon': weapon})
+                dpg.add_slider_int(label=self.tr("calibration", "Calibration"), min_value=0, max_value=6, default_value=weapon.calibration,
+                                   tag=calibration_slider_tag, callback=self.update_weapon_stats,
+                                   user_data={'weapon': weapon})
+                dpg.add_separator()
+                dpg.add_text(self.tr("description", "Description:"))
+                weapon_data = self.find_weapon_data(weapon_id=weapon.id) or {}
+                dpg.add_text(self.get_weapon_description(weapon_data), wrap=430)
+
+                dpg.add_separator()
+                dpg.add_text(self.tr("weapon_stats_title", "Current weapon stats"))
+                weapon_stats = weapon.get_stats()
+                for stat_name in (
+                    "damage_per_projectile",
+                    "fire_rate",
+                    "magazine_capacity",
+                    "reload_time_seconds",
+                    "reload_speed_percent",
+                    "stability",
+                    "accuracy",
+                    "range",
+                    "mobility",
+                ):
+                    if stat_name in weapon_stats:
+                        dpg.add_text(
+                            f"{self.context.format_stat_name(stat_name)}: {self.context.format_value(weapon_stats[stat_name])}",
+                            wrap=430,
+                        )
+
+                available_slots = self.get_weapon_attachment_slots(weapon)
+                if available_slots:
+                    dpg.add_separator()
+                    dpg.add_text(self.tr("attachments_title", "Attachments"))
+                    for slot_name in available_slots:
+                        current_attachment = weapon.equipped_attachments.get(slot_name)
+                        with dpg.group():
+                            with dpg.group(horizontal=True):
+                                dpg.add_text(f"{self.get_attachment_slot_label(slot_name)}:", wrap=120)
+                                dpg.add_button(
+                                    label=current_attachment.get("name", self.tr("select_attachment", "Select attachment"))
+                                    if current_attachment else self.tr("select_attachment", "Select attachment"),
+                                    callback=self.open_attachment_selection,
+                                    user_data={"slot": slot_name},
+                                    width=220,
+                                )
+                                dpg.add_button(
+                                    label=self.tr("clear", "Clear"),
+                                    callback=self.clear_attachment_slot,
+                                    user_data=slot_name,
+                                    enabled=current_attachment is not None,
+                                    width=70,
+                                )
+                            if current_attachment:
+                                dpg.add_text(self.get_attachment_description(current_attachment), wrap=430)
+
+                special_events = [
+                    ("weapon_switch", self.tr("simulate_weapon_switch", "Simulate weapon switch")),
+                    ("switch_mode", self.tr("simulate_switch_mode", "Simulate mode switch")),
+                    ("enter_charge_state", self.tr("simulate_charge_state", "Simulate charge state")),
+                    ("light_attack", self.tr("simulate_light_attack", "Simulate light attack")),
+                    ("heavy_attack", self.tr("simulate_heavy_attack", "Simulate heavy attack")),
+                    ("shoot_ice_crystal", self.tr("simulate_shoot_ice_crystal", "Simulate shooting Ice Crystal")),
+                    ("ice_crystal_shatter", self.tr("simulate_ice_crystal_shatter", "Simulate Ice Crystal shatter")),
+                    ("moving", self.tr("simulate_moving", "Simulate movement")),
+                    ("standing_up", self.tr("simulate_standing_up", "Simulate standing up")),
+                ]
+                available_special_events = [
+                    (event_name, label)
+                    for event_name, label in special_events
+                    if self.weapon_has_event(weapon, event_name)
+                ]
+                if available_special_events:
+                    dpg.add_separator()
+                    dpg.add_text(self.tr("mechanic_actions", "Mechanic actions"))
+                    with dpg.group(horizontal=True):
+                        for event_name, label in available_special_events:
+                            dpg.add_button(
+                                label=label,
+                                callback=self.simulate_weapon_event,
+                                user_data=event_name,
+                            )
+            dpg.add_button(
+                label=self.tr("close", "Close"),
+                callback=lambda: self.close_weapon_config_window(weapon),
+            )
+
+    def update_weapon_stats(self, sender, app_data, user_data):
+        weapon = user_data['weapon']
+        star_slider_tag = f"{weapon.id}_star_slider"
+        level_slider_tag = f"{weapon.id}_level_slider"
+        calibration_slider_tag = f"{weapon.id}_calibration_slider"
+        new_star = dpg.get_value(star_slider_tag)
+        new_level = dpg.get_value(level_slider_tag)
+        new_calibration = dpg.get_value(calibration_slider_tag)
+        weapon.star = new_star
+        weapon.level = new_level
+        weapon.calibration = new_calibration
+        weapon.get_stats()
+        self.player.equip_weapon(weapon)
+        self.player.recalculate_stats()
+        self.context.current_ammo = min(self.context.current_ammo, self.player.stats.get('magazine_capacity', 0))
+        self.update_stats_display()
+
+    def create_item_selection_window(self):
+        with dpg.window(label=self.tr("item_selection_window", "Item selection"), modal=True, show=False,
+                        tag="item_selection_window", width=820, height=560):
+            dpg.add_text(self.tr("select_item_prompt", "Select an item:"))
+            dpg.add_input_text(
+                label=self.tr("search_items", "Search items"),
+                tag="item_search_input",
+                callback=self.on_item_search_changed,
+                width=780,
+            )
+            dpg.add_child_window(tag="item_selection_list", autosize_x=True, autosize_y=True)
+            dpg.add_button(label=self.tr("close", "Close"),
+                           callback=lambda: dpg.configure_item("item_selection_window", show=False))
+
+    def populate_mod_selection_list(self, item_type):
+        dpg.delete_item("mod_selection_list", children_only=True)
+        mod_key = self.context.category_key_mapping.get(item_type, 'mod_weapon')
+        mods = sorted(
+            [
+                mod for mod in self.context.mods_data.get(mod_key, [])
+                if self.matches_search_query(
+                    self.mod_search_query,
+                    mod.get('name', ''),
+                    mod.get('description', ''),
+                    mod.get('category', ''),
+                )
+            ],
+            key=lambda mod: mod['name'],
+        )
+
+        dpg.add_button(
+            label=self.tr("clear_mod", "Clear mod"),
+            callback=self.remove_mod_from_slot,
+            user_data=item_type,
+            parent="mod_selection_list",
+        )
+
+        with dpg.table(
+            header_row=False,
+            resizable=True,
+            policy=dpg.mvTable_SizingStretchProp,
+            parent="mod_selection_list",
+        ):
+            dpg.add_table_column(init_width_or_weight=0.16)
+            dpg.add_table_column(init_width_or_weight=0.26)
+            dpg.add_table_column(init_width_or_weight=0.58)
+
+            for mod in mods:
+                texture_id = self.get_mod_texture(item_type, mod['name'])
+                with dpg.table_row():
+                    image_tag = f"{item_type}_{mod['name'].lower().replace(' ', '_')}_{dpg.generate_uuid()}"
+                    self.add_colored_image_button(
+                        texture_id,
+                        card_kind="mod",
+                        width=self.mod_card_size[0],
+                        height=self.mod_card_size[1],
+                        callback=self.select_mod_for_slot,
+                        user_data={'mod': mod, 'type': item_type},
+                        tag=image_tag,
+                    )
+
+                    handler_tag = f"{image_tag}_handler"
+                    with dpg.item_handler_registry(tag=handler_tag) as handler_id:
+                        dpg.add_item_clicked_handler(
+                            button=dpg.mvMouseButton_Right,
+                            callback=self.open_mod_config_window,
+                            user_data={'mod': mod, 'type': item_type, 'editable': False},
+                        )
+                    dpg.bind_item_handler_registry(image_tag, handler_id)
+
+                    with dpg.group():
+                        dpg.add_button(
+                            label=mod['name'],
+                            callback=self.select_mod_for_slot,
+                            user_data={'mod': mod, 'type': item_type},
+                        )
+                        mod_category = mod.get('category')
+                        if mod_category:
+                            dpg.add_text(mod_category, color=[168, 181, 198])
+                    dpg.add_text(mod.get('description', ''), wrap=320)
+
+    def remove_mod_from_slot(self, sender, app_data, user_data):
+        item_type = user_data
+        self.player.remove_mod(item_type)
+        self.refresh_slot_ui(item_type)
+        if dpg.does_item_exist("mod_selection_window"):
+            dpg.configure_item("mod_selection_window", show=False)
+        self.update_stats_display()
+
+    def select_mod_for_slot(self, sender, app_data, user_data):
+        mod = user_data['mod']
+        item_type = user_data['type']
+        self.player.equip_mod(self.clone_mod_for_equip(mod), item_type)
+        self.refresh_slot_ui(item_type)
+        if dpg.does_item_exist("mod_selection_window"):
+            dpg.configure_item("mod_selection_window", show=False)
+        self.update_stats_display()
+
+    def open_mod_config_window(self, sender, app_data, user_data):
+        mod = user_data['mod']
+        item_type = user_data.get('type')
+        editable = bool(user_data.get('editable'))
+        window_tag = f"mod_config_window_{item_type}_{mod['name'].lower().replace(' ', '_')}"
+        if dpg.does_item_exist(window_tag):
+            dpg.delete_item(window_tag)
+        window_width = 520
+        window_height = 520 if editable else 320
+        main_window_pos = dpg.get_viewport_pos()
+        main_window_width = dpg.get_viewport_width()
+        main_window_height = dpg.get_viewport_height()
+        x_pos = main_window_pos[0] + (main_window_width - window_width) / 2
+        y_pos = main_window_pos[1] + (main_window_height - window_height) / 2 - 80
+        with dpg.window(
+            label=f"{self.tr('mod_label', 'Mod')}: {mod['name']}",
+            modal=True,
+            show=True,
+            tag=window_tag,
+            width=window_width,
+            height=window_height,
+            pos=(x_pos, y_pos),
+        ):
+            dpg.add_text(mod['name'])
+            if mod.get('category'):
+                dpg.add_text(mod['category'], color=[168, 181, 198])
+            dpg.add_separator()
+            dpg.add_text(mod.get('description', self.tr('description_missing', 'Description is not available.')), wrap=480)
+            existing_rolls = list(mod.get('secondary_attributes', []))
+            if existing_rolls:
+                dpg.add_separator()
+                dpg.add_text(self.tr('secondary_attributes', 'Secondary attributes'))
+                dpg.add_text(self.get_mod_rolls_summary(mod), wrap=480, color=[168, 181, 198])
+            if editable:
+                dpg.add_separator()
+                dpg.add_text(
+                    self.tr(
+                        'secondary_attributes_note',
+                        'Secondary attributes are now configured from the main equipment panel to the right of the selected mod.'
+                    ),
+                    wrap=480,
+                    color=[168, 181, 198],
+                )
+            dpg.add_button(label=self.tr('close', 'Close'), callback=lambda: dpg.delete_item(window_tag))
+
+    def create_mod_selection_window(self):
+        with dpg.window(label=self.tr("mod_selection_window", "Mod selection"), modal=True, show=False,
+                        tag="mod_selection_window", width=820, height=560):
+            dpg.add_text(self.tr("select_mod_prompt", "Select a mod:"))
+            dpg.add_input_text(
+                label=self.tr("search_mods", "Search mods"),
+                tag="mod_search_input",
+                callback=self.on_mod_search_changed,
+                width=780,
+            )
+            dpg.add_child_window(tag="mod_selection_list", autosize_x=True, autosize_y=True)
+            dpg.add_button(label=self.tr("close", "Close"),
+                           callback=lambda: dpg.configure_item("mod_selection_window", show=False))
+
+    def create_weapon_selection_window(self):
+        with dpg.window(label=self.tr("weapon_selection_window", "Weapon selection"), modal=True, show=False,
+                        tag="weapon_selection_window", width=820, height=560):
+            dpg.add_text(self.tr("select_weapon_prompt", "Select a weapon:"))
+            dpg.add_input_text(
+                label=self.tr("search_weapons", "Search weapons"),
+                tag="weapon_search_input",
+                callback=self.on_weapon_search_changed,
+                width=780,
+            )
+            dpg.add_child_window(tag="weapon_selection_list", autosize_x=True, autosize_y=True)
+            dpg.add_button(label=self.tr("close", "Close"),
+                           callback=lambda: dpg.configure_item("weapon_selection_window", show=False))
+
+    def create_attachment_selection_window(self):
+        with dpg.window(label=self.tr("attachment_selection_window", "Attachment selection"), modal=True, show=False,
+                        tag="attachment_selection_window", width=820, height=560):
+            dpg.add_text(self.tr("select_attachment_prompt", "Select an attachment:"))
+            dpg.add_input_text(
+                label=self.tr("search_attachments", "Search attachments"),
+                tag="attachment_search_input",
+                callback=self.on_attachment_search_changed,
+                width=780,
+            )
+            dpg.add_child_window(tag="attachment_selection_list", autosize_x=True, autosize_y=True)
+            dpg.add_button(
+                label=self.tr("close", "Close"),
+                callback=lambda: self.close_attachment_selection_window(reopen_weapon_config=True),
+            )
+
+    def create_deviation_selection_window(self):
+        with dpg.window(label=self.tr("deviation_selection_window", "Deviation selection"), modal=True, show=False,
+                        tag="deviation_selection_window", width=820, height=560):
+            dpg.add_text(self.tr("select_deviation_prompt", "Select a deviation:"))
+            dpg.add_input_text(
+                label=self.tr("search_deviations", "Search deviations"),
+                tag="deviation_search_input",
+                callback=self.on_deviation_search_changed,
+                width=780,
+            )
+            dpg.add_child_window(tag="deviation_selection_list", autosize_x=True, autosize_y=True)
+            dpg.add_button(
+                label=self.tr("close", "Close"),
+                callback=lambda: dpg.configure_item("deviation_selection_window", show=False),
+            )
+
+    def create_mod_attribute_selection_window(self):
+        with dpg.window(
+            label=self.tr("mod_attribute_selection_window", "Secondary attribute selection"),
+            modal=True,
+            show=False,
+            tag="mod_attribute_selection_window",
+            width=820,
+            height=560,
+        ):
+            dpg.add_text(self.tr("select_attribute_prompt", "Select a secondary attribute:"))
+            dpg.add_input_text(
+                label=self.tr("search_attributes", "Search attributes"),
+                tag="mod_attribute_search_input",
+                callback=self.on_mod_attribute_search_changed,
+                width=780,
+            )
+            dpg.add_child_window(tag="mod_attribute_selection_list", autosize_x=True, autosize_y=True)
+            dpg.add_button(
+                label=self.tr("close", "Close"),
+                callback=lambda: dpg.configure_item("mod_attribute_selection_window", show=False),
+            )
+
+    def create_mod_attribute_tier_window(self):
+        with dpg.window(
+            label=self.tr("mod_attribute_tier_window", "Secondary attribute tier"),
+            modal=True,
+            show=False,
+            tag="mod_attribute_tier_window",
+            width=700,
+            height=520,
+        ):
+            dpg.add_child_window(tag="mod_attribute_tier_list", autosize_x=True, autosize_y=True)
+            dpg.add_button(
+                label=self.tr("close", "Close"),
+                callback=lambda: dpg.configure_item("mod_attribute_tier_window", show=False),
+            )
+
+    def open_attachment_selection(self, sender, app_data, user_data):
+        if not self.player.weapon or not isinstance(user_data, dict):
+            return
+        slot_name = user_data.get("slot")
+        if not slot_name:
+            return
+        self.current_attachment_slot = slot_name
+        self.current_attachment_weapon = self.player.weapon
+        self.attachment_search_query = ""
+        if dpg.does_item_exist("attachment_search_input"):
+            dpg.set_value("attachment_search_input", "")
+        self.close_weapon_config_window(self.player.weapon)
+        self.pending_attachment_window_open = True
+        self.pending_attachment_window_delay_frames = 1
+
+    def populate_attachment_selection_list(self):
+        if not self.current_attachment_weapon or not self.current_attachment_slot:
+            return
+        dpg.delete_item("attachment_selection_list", children_only=True)
+        attachments = sorted(
+            [
+                attachment for attachment in self.context.get_attachments_for_weapon(
+                    self.current_attachment_weapon,
+                    slot=self.current_attachment_slot,
+                )
+                if self.matches_search_query(
+                    self.attachment_search_query,
+                    attachment.get("name", ""),
+                    attachment.get("description", ""),
+                    self.get_attachment_slot_label(attachment.get("slot", "")),
+                )
+            ],
+            key=lambda attachment: attachment.get("name", ""),
+        )
+        dpg.add_button(
+            label=self.tr("clear_slot", "Clear slot"),
+            callback=self.clear_attachment_slot,
+            user_data=self.current_attachment_slot,
+            parent="attachment_selection_list",
+        )
+        with dpg.table(
+            header_row=False,
+            resizable=True,
+            policy=dpg.mvTable_SizingStretchProp,
+            parent="attachment_selection_list",
+        ):
+            dpg.add_table_column(init_width_or_weight=0.18)
+            dpg.add_table_column(init_width_or_weight=0.25)
+            dpg.add_table_column(init_width_or_weight=0.57)
+            for attachment in attachments:
+                texture_id = self.get_attachment_texture(attachment.get("id"))
+                with dpg.table_row():
+                    self.add_colored_image_button(
+                        texture_id,
+                        card_kind="attachment",
+                        width=self.attachment_card_size[0],
+                        height=self.attachment_card_size[1],
+                        callback=self.select_attachment_for_slot,
+                        user_data=attachment,
+                    )
+                    with dpg.group():
+                        dpg.add_button(
+                            label=attachment.get("name", attachment.get("id", "")),
+                            callback=self.select_attachment_for_slot,
+                            user_data=attachment,
+                        )
+                        dpg.add_text(
+                            self.get_attachment_slot_label(attachment.get("slot", "")),
+                            color=[168, 181, 198],
+                        )
+                    dpg.add_text(self.get_attachment_description(attachment), wrap=320)
+
+    def clear_attachment_slot(self, sender, app_data, user_data):
+        if not self.player.weapon:
+            return
+        self.player.weapon.remove_attachment(user_data)
+        self.player.equip_weapon(self.player.weapon)
+        self.context.initialize()
+        self.close_attachment_selection_window(reopen_weapon_config=False)
+        self.render_weapon_selector()
+        self.show_weapon_config_window(self.player.weapon)
+        self.update_stats_display()
+
+    def select_attachment_for_slot(self, sender, app_data, user_data):
+        if not self.player.weapon or not self.current_attachment_slot:
+            return
+        self.player.weapon.equip_attachment(self.current_attachment_slot, user_data)
+        self.player.equip_weapon(self.player.weapon)
+        self.context.initialize()
+        self.close_attachment_selection_window(reopen_weapon_config=False)
+        self.render_weapon_selector()
+        self.show_weapon_config_window(self.player.weapon)
+        self.update_stats_display()
+
+    def create_error_modals(self):
+        self.create_error_modal("error_modal_effect", "Пожалуйста, заполните все необходимые поля эффекта.")
+        self.create_error_modal("error_modal_end_conditional", "Нет условных эффектов для завершения.")
+        self.create_error_modal("error_modal_name", "Пожалуйста, введите название модификатора.")
+        self.create_error_modal("error_modal_category", "Пожалуйста, введите уникальное название категории.")
+        self.create_error_modal("error_modal_stat", "Пожалуйста, введите уникальное название стата.")
+        self.create_error_modal("error_modal_flag", "Пожалуйста, введите уникальное название флага.")
+        self.create_error_modal("error_modal_condition", "Пожалуйста, введите уникальное условие.")
+        self.create_error_modal("error_modal_item", "Пожалуйста, заполните все поля для создания предмета.")
+
+    def create_error_modal(self, tag, message):
+        with dpg.window(label="Ошибка", modal=True, show=False, tag=tag):
+            dpg.add_text(message)
+            dpg.add_button(label="Закрыть", callback=lambda: dpg.configure_item(tag, show=False))
+
+    def create_item_edit_window(self):
+        with dpg.window(label="Редактировать Предметы", modal=True, show=False,
+                        tag="edit_items_window", width=600, height=500):
+            dpg.add_text("Список предметов:")
+            dpg.add_child_window(tag="items_list", autosize_x=True, autosize_y=True)
+            dpg.add_button(label="Закрыть",
+                           callback=lambda: dpg.configure_item("edit_items_window", show=False))
+
+    def create_set_creation_section(self):
+        dpg.add_text("Введите информацию о сете:", color=[255, 255, 0])
+        dpg.add_input_text(label="Название сета", tag="set_name_input")
+        dpg.add_input_text(label="ID сета", tag="set_id_input")
+        dpg.add_input_text(label="Описание сета", tag="set_description_input", multiline=True)
+        dpg.add_button(label="Создать сет", callback=self.create_set_callback)
+        dpg.add_text("", tag="status_text_set")
+
+    def create_mod_creation_section(self):
+        dpg.add_text("Введите информацию о модификаторе:", color=[255, 255, 0])
+        with dpg.group(horizontal=True):
+            dpg.add_combo(self.context.mod_categories, label="Категория модификатора", tag="mod_category")
+            dpg.add_button(label="+", width=30, callback=self.add_category_callback)
+        dpg.add_input_text(label="Название модификатора", tag="mod_name")
+        dpg.add_separator()
+        dpg.add_text("Добавьте эффекты модификатора:", color=[255, 255, 0])
+        dpg.add_combo(['increase_stat', 'decrease_stat', 'set_flag', 'conditional_effect'],
+                      label="Тип эффекта", tag="effect_type")
+        with dpg.group(horizontal=True):
+            dpg.add_combo(self.context.stats_options, label="Стат (если применимо)", tag="effect_stat")
+            dpg.add_button(label="+", width=30, callback=self.add_new_stat_callback)
+        with dpg.group(horizontal=True):
+            dpg.add_input_text(label="Значение (если применимо)", tag="effect_value")
+        with dpg.group(horizontal=True):
+            dpg.add_combo(self.context.flags_options, label="Флаг (если применимо)", tag="effect_flag")
+            dpg.add_button(label="+", width=30, callback=self.add_new_flag_callback)
+        dpg.add_checkbox(label="Значение флага (если применимо)", tag="effect_flag_value")
+        with dpg.group(horizontal=True):
+            dpg.add_combo(self.context.conditions_options, label="Условие (если применимо)", tag="effect_condition")
+            dpg.add_button(label="+", width=30, callback=self.add_new_condition_callback)
+        with dpg.group(horizontal=True):
+            dpg.add_button(label="Добавить эффект", callback=self.add_effect_callback)
+            dpg.add_button(label="Завершить условный эффект", callback=self.end_conditional_effect_callback)
+        dpg.add_separator()
+        dpg.add_text("Предпросмотр эффектов:", color=[255, 255, 0])
+        dpg.add_input_text(multiline=True, readonly=True, width=780, height=200, tag="effects_preview")
+        with dpg.group(horizontal=True):
+            dpg.add_button(label="Сохранить модификатор", callback=self.create_mod_callback)
+            dpg.add_button(label="Сбросить форму", callback=self.reset_form_callback)
+            dpg.add_button(label="Изменить моды", callback=self.edit_mods_callback)
+        dpg.add_text("", tag="status_text")
+        dpg.add_text("Выберите изображение мода:")
+        dpg.add_button(label="Выбрать изображение", callback=self.select_mod_image)
+        dpg.add_text("", tag="mod_image_path")
+        self.create_mod_creation_windows()
+
+    def create_item_creation_section(self):
+        dpg.add_input_text(label="Название предмета", tag="item_name_input")
+        dpg.add_combo(items=["helmet", "mask", "top", "gloves", "pants", "boots"], label="Тип предмета",
+                      tag="item_type_combo")
+        dpg.add_combo(items=["legendary", "epic", "rare", "common"], label="Редкость", tag="item_rarity_combo")
+        dpg.add_input_text(label="ID сета (если применимо)", tag="item_set_input")
+        dpg.add_button(label="Выбрать изображение", callback=self.select_item_image)
+        dpg.add_text("", tag="item_image_path")
+        with dpg.group(horizontal=True):
+            dpg.add_button(label="Создать предмет", callback=self.create_item_callback)
+            dpg.add_button(label="Сбросить форму", callback=self.reset_item_form_callback)
+            dpg.add_button(label="Изменить предметы", callback=self.edit_items_callback)
+        dpg.add_text("", tag="status_text_item")
+
+    def edit_items_callback(self, sender, app_data, user_data):
+        self.populate_items_list()
+        dpg.configure_item("edit_items_window", show=True)
+
+    def populate_items_list(self):
+        dpg.delete_item("items_list", children_only=True)
+        for itm in self.context.items_data:
+            item_name = itm['name']
+            with dpg.group(horizontal=True, parent="items_list"):
+                dpg.add_button(label=item_name, callback=self.select_item_for_editing, user_data=itm)
+                dpg.add_button(label="Удалить", callback=self.delete_item_callback, user_data=itm)
+
+    def select_item_for_editing(self, sender, app_data, user_data):
+        item = user_data
+        dpg.set_value("item_name_input", item.get('name', ''))
+        dpg.set_value("item_type_combo", item.get('type', ''))
+        dpg.set_value("item_rarity_combo", item.get('rarity', ''))
+        dpg.set_value("item_set_input", item.get('set_id', ''))
+        item_image_path = f"{item['id']}.png"
+        dpg.set_value("item_image_path", f"Изображение: {item_image_path}")
+        self.context.current_item = item.copy()
+        dpg.configure_item("edit_items_window", show=False)
+
+    def delete_item_callback(self, sender, app_data, user_data):
+        item = user_data
+        success, message = self.context.delete_item(item)
+        if success:
+            self.populate_items_list()
+        else:
+            dpg.set_value("status_text_item", message)
+
+    def reset_item_form_callback(self, sender, app_data, user_data):
+        dpg.set_value("item_name_input", "")
+        dpg.set_value("item_type_combo", "")
+        dpg.set_value("item_rarity_combo", "")
+        dpg.set_value("item_set_input", "")
+        dpg.set_value("item_image_path", "")
+        if hasattr(self.context, 'current_item_image_path'):
+            delattr(self.context, 'current_item_image_path')
+        dpg.configure_item("status_text_item", default_value="", color=[0, 0, 0])
+
+    def select_item_image(self):
+        root = tk.Tk()
+        root.withdraw()
+        file_path = filedialog.askopenfilename(
+            filetypes=[("Image files", "*.png;*.jpg;*.jpeg"), ("All files", "*.*")]
+        )
+        root.destroy()
+        if file_path:
+            self.context.current_item_image_path = file_path
+            dpg.set_value("item_image_path", f"Изображение выбрано: {os.path.basename(file_path)}")
+
+    def create_mod_creation_windows(self):
+        with dpg.window(label="Добавить новую категорию", modal=True, show=False, tag="add_category_window"):
+            dpg.add_input_text(label="Название новой категории", tag="new_category_input")
+            dpg.add_button(label="Сохранить", callback=self.save_new_category_callback)
+            dpg.add_button(label="Отмена", callback=lambda: dpg.configure_item("add_category_window", show=False))
+
+        with dpg.window(label="Добавить новый стат", modal=True, show=False, tag="add_stat_window"):
+            dpg.add_input_text(label="Название нового стата", tag="new_stat_input")
+            dpg.add_button(label="Сохранить", callback=self.save_new_stat_callback)
+            dpg.add_button(label="Отмена", callback=lambda: dpg.configure_item("add_stat_window", show=False))
+
+        with dpg.window(label="Добавить новый флаг", modal=True, show=False, tag="add_flag_window"):
+            dpg.add_input_text(label="Название нового флага", tag="new_flag_input")
+            dpg.add_button(label="Сохранить", callback=self.save_new_flag_callback)
+            dpg.add_button(label="Отмена", callback=lambda: dpg.configure_item("add_flag_window", show=False))
+
+        with dpg.window(label="Добавить новое условие", modal=True, show=False, tag="add_condition_window"):
+            dpg.add_input_text(label="Новое условие", tag="new_condition_input")
+            dpg.add_button(label="Сохранить", callback=self.save_new_condition_callback)
+            dpg.add_button(label="Отмена", callback=lambda: dpg.configure_item("add_condition_window", show=False))
+
+        with dpg.window(label="Редактировать Моды", modal=True, show=False, tag="edit_mods_window", width=600, height=500):
+            dpg.add_text("Список модов:")
+            dpg.add_child_window(tag="mods_list", autosize_x=True, autosize_y=True)
+            dpg.add_button(label="Закрыть", callback=lambda: dpg.configure_item("edit_mods_window", show=False))
+
+    def select_mod_image(self):
+        root = tk.Tk()
+        root.withdraw()
+        file_path = filedialog.askopenfilename(
+            filetypes=[("Image files", "*.png;*.jpg;*.jpeg"), ("All files", "*.*")]
+        )
+        root.destroy()
+        if file_path:
+            self.context.current_mod_image_path = file_path
+            dpg.set_value("mod_image_path", f"Изображение выбрано: {os.path.basename(file_path)}")
+
+    def mouse_down_callback(self, sender, app_data, user_data):
+        self.mouse_pressed = True
+        self.context.mouse_pressed = True
+        logging.debug("Mouse down detected")
+
+    def mouse_up_callback(self, sender, app_data, user_data):
+        self.mouse_pressed = False
+        self.context.mouse_pressed = False
+
+    def open_mannequin_settings_window(self, sender, app_data, user_data):
+        window_tag = "mannequin_settings_window"
+        if dpg.does_item_exist(window_tag):
+            dpg.delete_item(window_tag)
+        window_width = 400
+        window_height = 500
+        main_window_pos = dpg.get_viewport_pos()
+        main_window_width = dpg.get_viewport_width()
+        main_window_height = dpg.get_viewport_height()
+        x_pos = main_window_pos[0] + (main_window_width - window_width) / 2
+        y_pos = main_window_pos[1] + (main_window_height - window_height) / 2 - 100
+        with dpg.window(label=self.tr("mannequin_settings", "Target dummy settings"), modal=True, show=True, tag=window_tag,
+                        width=window_width, height=window_height, pos=(x_pos, y_pos)):
+            dpg.add_text(
+                f"{self.tr('mannequin_hp', 'Target dummy HP')}: "
+                f"{self.context.format_value(self.context.mannequin.current_hp, hp_value=True)}/"
+                f"{self.context.format_value(self.context.mannequin.max_hp, hp_value=True)}"
+            )
+            hp_slider_tag = "mannequin_hp_slider"
+            dpg.add_slider_int(label=self.tr("set_hp", "Set HP"), min_value=1000, max_value=1000000,
+                               default_value=self.context.mannequin.max_hp, tag=hp_slider_tag,
+                               callback=self.apply_mannequin_hp_callback)
+            enemy_types = ['Обычный', 'Элитный', 'Босс']
+            dpg.add_combo(label=self.tr("enemy_type", "Enemy type"), items=enemy_types, default_value=self.context.mannequin.enemy_type,
+                          tag="mannequin_enemy_type_combo", callback=self.apply_mannequin_enemy_type_callback)
+            dpg.add_checkbox(label=self.tr("show_hotbar", "Show hotbar"), default_value=self.context.mannequin.show_hotbar,
+                             callback=self.toggle_hotbar_callback)
+            dpg.add_checkbox(label=self.tr("unified_shotgun_damage", "Unified shotgun damage"),
+                             default_value=self.context.mannequin.show_unified_shotgun_damage,
+                             callback=self.toggle_unified_shotgun_damage_callback)
+            dpg.add_separator()
+            dpg.add_text(self.tr("persistent_effects", "Persistent effects:"))
+            with dpg.child_window(height=250, border=True):
+                for status_name in self.context.get_mannequin_effect_ids():
+                    config = self.context.get_mannequin_effect_config(status_name)
+                    max_stacks = self.context.get_mannequin_effect_max_stacks(status_name)
+                    stack_tag = f"mannequin_effect_stacks_{status_name}"
+                    with dpg.group(horizontal=True):
+                        dpg.add_checkbox(
+                            label=self.get_status_display_name(status_name),
+                            default_value=config.get("enabled", False),
+                            user_data={"status": status_name, "stack_tag": stack_tag},
+                            callback=self.toggle_mannequin_effect,
+                        )
+                        dpg.add_slider_int(
+                            label=self.tr("stacks", "Stacks"),
+                            min_value=1,
+                            max_value=max_stacks,
+                            default_value=min(config.get("stacks", 1), max_stacks),
+                            width=180,
+                            tag=stack_tag,
+                            enabled=config.get("enabled", False) and max_stacks > 1,
+                            callback=self.update_mannequin_effect_stacks,
+                            user_data=status_name,
+                        )
+            dpg.add_button(label=self.tr("close", "Close"), callback=lambda: dpg.delete_item(window_tag))
+            dpg.add_separator()
+            dpg.add_text(self.tr("damage_animation_settings", "Damage animation settings:"))
+            dpg.add_slider_float(label=self.tr("speed", "Speed"), min_value=10, max_value=500,
+                                 default_value=self.context.damage_text_settings['speed'],
+                                 callback=lambda s,a,u: self.set_damage_text_setting('speed', a))
+            dpg.add_slider_float(label=self.tr("fade_delay", "Fade delay"), min_value=0.1, max_value=5.0,
+                                 default_value=self.context.damage_text_settings['fade_delay'],
+                                 callback=lambda s,a,u: self.set_damage_text_setting('fade_delay', a))
+            dpg.add_slider_int(label=self.tr("min_angle", "Min angle"), min_value=0, max_value=180,
+                               default_value=self.context.damage_text_settings['angle_min'],
+                               callback=lambda s,a,u: self.set_damage_text_setting('angle_min', a))
+            dpg.add_slider_int(label=self.tr("max_angle", "Max angle"), min_value=0, max_value=180,
+                               default_value=self.context.damage_text_settings['angle_max'],
+                               callback=lambda s,a,u: self.set_damage_text_setting('angle_max', a))
+            dpg.add_text(self.tr("crit_color", "Critical hit color:"))
+            dpg.add_color_picker(default_value=self.context.damage_text_settings['crit_color'], width=200,
+                                 callback=lambda s,a,u: self.set_damage_text_setting('crit_color', a))
+            dpg.add_text(self.tr("weakspot_color", "Weakspot color:"))
+            dpg.add_color_picker(default_value=self.context.damage_text_settings['weakspot_color'], width=200,
+                                 callback=lambda s,a,u: self.set_damage_text_setting('weakspot_color', a))
+            dpg.add_text(self.tr("crit_weakspot_color", "Critical weakspot color:"))
+            dpg.add_color_picker(default_value=self.context.damage_text_settings['crit_weakspot_color'], width=200,
+                                 callback=lambda s,a,u: self.set_damage_text_setting('crit_weakspot_color', a))
+            dpg.add_text(self.tr("normal_color", "Normal hit color:"))
+            dpg.add_color_picker(default_value=self.context.damage_text_settings['normal_color'], width=200,
+                                 callback=lambda s,a,u: self.set_damage_text_setting('normal_color', a))
+
+    def set_damage_text_setting(self, name, value):
+        # Цвета приходят в формате float [0..1], поэтому преобразуем в int [0..255]
+        if isinstance(value, list) and len(value) == 4:
+            value = [int(v * 255) for v in value]
+        self.context.damage_text_settings[name] = value
+
+    def apply_mannequin_enemy_type_callback(self, sender, app_data, user_data):
+        et = dpg.get_value("mannequin_enemy_type_combo")
+        self.context.mannequin.enemy_type = et
+        self.update_stats_display()
+
+    def toggle_hotbar_callback(self, sender, app_data, user_data):
+        self.context.mannequin.show_hotbar = not self.context.mannequin.show_hotbar
+        if self.context.mannequin.show_hotbar:
+            dpg.configure_item("hotbar_group", show=True)
+            dpg.configure_item("hp_bar_layer", show=True)
+        else:
+            dpg.configure_item("hotbar_group", show=False)
+            dpg.configure_item("hp_bar_layer", show=False)
+
+    def toggle_unified_shotgun_damage_callback(self, sender, app_data, user_data):
+        self.context.mannequin.show_unified_shotgun_damage = bool(app_data)
+
+    def toggle_mannequin_effect(self, sender, app_data, user_data):
+        status_name = user_data.get("status") if isinstance(user_data, dict) else user_data
+        stack_tag = user_data.get("stack_tag") if isinstance(user_data, dict) else None
+        max_stacks = self.context.get_mannequin_effect_max_stacks(status_name)
+        stacks = 1
+        if stack_tag and dpg.does_item_exist(stack_tag):
+            stacks = dpg.get_value(stack_tag)
+            dpg.configure_item(stack_tag, enabled=bool(app_data) and max_stacks > 1)
+        self.context.set_persistent_mannequin_effect(status_name, bool(app_data), stacks=stacks)
+        self.update_stats_display()
+
+    def update_mannequin_effect_stacks(self, sender, app_data, user_data):
+        status_name = user_data
+        config = self.context.get_mannequin_effect_config(status_name)
+        if not config.get("enabled"):
+            return
+        self.context.set_persistent_mannequin_effect(status_name, True, stacks=app_data)
+        self.update_stats_display()
+
+    def apply_mannequin_hp_callback(self, sender, app_data, user_data):
+        hp = dpg.get_value("mannequin_hp_slider")
+        self.context.mannequin.set_hp(hp)
+        self.update_stats_display()
+
+    def create_set_callback(self, sender, app_data, user_data=None):
+        sn = dpg.get_value("set_name_input").strip()
+        sid = dpg.get_value("set_id_input").strip()
+        sd = dpg.get_value("set_description_input").strip()
+        success, msg = self.context.create_set_data(sn, sid, sd)
+        if success:
+            dpg.configure_item("status_text_set", default_value=msg, color=[0, 255, 0])
+        else:
+            dpg.configure_item("status_text_set", default_value=msg, color=[255, 0, 0])
+
+    def toggle_creation_menu(self, val):
+        if val == "Мод":
+            dpg.configure_item("mod_creation_group", show=True)
+            dpg.configure_item("item_creation_group", show=False)
+            dpg.configure_item("set_creation_group", show=False)
+        elif val == "Предмет":
+            dpg.configure_item("mod_creation_group", show=False)
+            dpg.configure_item("item_creation_group", show=True)
+            dpg.configure_item("set_creation_group", show=False)
+        elif val == "Сет":
+            dpg.configure_item("mod_creation_group", show=False)
+            dpg.configure_item("item_creation_group", show=False)
+            dpg.configure_item("set_creation_group", show=True)
+
+    def add_category_callback(self, sender, app_data, user_data=None):
+        dpg.configure_item("add_category_window", show=True)
+
+    def save_new_category_callback(self, sender, app_data, user_data=None):
+        nc = dpg.get_value("new_category_input").strip()
+        if self.context.add_category(nc):
+            dpg.configure_item("mod_category", items=self.context.mod_categories)
+            dpg.set_value("new_category_input", "")
+            dpg.configure_item("add_category_window", show=False)
+        else:
+            dpg.configure_item("error_modal_category", show=True)
+
+    def add_new_stat_callback(self, sender, app_data, user_data=None):
+        dpg.configure_item("add_stat_window", show=True)
+
+    def save_new_stat_callback(self, sender, app_data, user_data=None):
+        ns = dpg.get_value("new_stat_input").strip()
+        if self.context.add_new_stat(ns):
+            dpg.configure_item("effect_stat", items=self.context.stats_options)
+            dpg.set_value("new_stat_input", "")
+            dpg.configure_item("add_stat_window", show=False)
+        else:
+            dpg.configure_item("error_modal_stat", show=True)
+
+    def add_new_flag_callback(self, sender, app_data, user_data=None):
+        dpg.configure_item("add_flag_window", show=True)
+
+    def save_new_flag_callback(self, sender, app_data, user_data=None):
+        nf = dpg.get_value("new_flag_input").strip()
+        if self.context.add_new_flag(nf):
+            dpg.configure_item("effect_flag", items=self.context.flags_options)
+            dpg.set_value("new_flag_input", "")
+            dpg.configure_item("add_flag_window", show=False)
+        else:
+            dpg.configure_item("error_modal_flag", show=True)
+
+    def add_new_condition_callback(self, sender, app_data, user_data=None):
+        dpg.configure_item("add_condition_window", show=True)
+
+    def save_new_condition_callback(self, sender, app_data, user_data=None):
+        nc = dpg.get_value("new_condition_input").strip()
+        if self.context.add_new_condition(nc):
+            dpg.configure_item("effect_condition", items=self.context.conditions_options)
+            dpg.set_value("new_condition_input", "")
+            dpg.configure_item("add_condition_window", show=False)
+        else:
+            dpg.configure_item("error_modal_condition", show=True)
+
+    def add_effect_callback(self, sender, app_data, user_data=None):
+        et = dpg.get_value("effect_type")
+        es = dpg.get_value("effect_stat")
+        ev = dpg.get_value("effect_value")
+        ef = dpg.get_value("effect_flag")
+        efv = dpg.get_value("effect_flag_value")
+        eco = dpg.get_value("effect_condition")
+        success, message = self.context.add_effect(et, es, ev, ef, efv, eco)
+        if success:
+            self.update_effects_preview()
+        else:
+            dpg.configure_item("error_modal_effect", show=True)
+
+    def update_effects_preview(self):
+        dpg.set_value("effects_preview",
+                      json.dumps(self.context.current_mod['effects'], ensure_ascii=False, indent=2))
+
+    def end_conditional_effect_callback(self, sender, app_data, user_data=None):
+        success, message = self.context.end_conditional_effect()
+        if success:
+            self.update_effects_preview()
+        else:
+            dpg.configure_item("error_modal_end_conditional", show=True)
+
+    def create_mod_callback(self, sender, app_data, user_data=None):
+        mn = dpg.get_value("mod_name").strip()
+        mc = dpg.get_value("mod_category").strip()
+        success, message = self.context.create_mod(mn, mc)
+        if success:
+            if hasattr(self.context, 'current_mod_image_path'):
+                mod_key = self.context.resolve_mod_key(mc)
+                dest_folder = os.path.join('data', 'icons', 'mods', mod_key)
+                os.makedirs(dest_folder, exist_ok=True)
+                dest_path = os.path.join(dest_folder, f"{mn.lower().replace(' ', '_')}.png")
+                shutil.copy(self.context.current_mod_image_path, dest_path)
+                self.load_images()
+                dpg.set_value("mod_image_path", "")
+                delattr(self.context, 'current_mod_image_path')
+            dpg.set_value("status_text", message)
+            self.context.reset_mod_form()
+            self.update_effects_preview()
+        else:
+            dpg.set_value("status_text", message)
+
+    def reset_form_callback(self, sender, app_data, user_data=None):
+        self.context.reset_mod_form()
+        self.update_effects_preview()
+        dpg.set_value("mod_name", "")
+        dpg.set_value("effect_type", "")
+        dpg.set_value("effect_stat", "")
+        dpg.set_value("effect_value", "")
+        dpg.set_value("effect_flag", "")
+        dpg.set_value("effect_flag_value", False)
+        dpg.set_value("effect_condition", "")
+        dpg.configure_item("status_text", default_value="", color=[0, 0, 0])
+
+    def create_item_callback(self, sender, app_data, user_data=None):
+        name = dpg.get_value("item_name_input").strip()
+        tp = dpg.get_value("item_type_combo").strip()
+        rt = dpg.get_value("item_rarity_combo").strip()
+        si = dpg.get_value("item_set_input").strip()
+        success, message = self.context.create_item_data(name, tp, rt, si)
+        if success:
+            if hasattr(self.context, 'current_item_image_path'):
+                dest_folder = os.path.join('data', 'icons', 'armor')
+                os.makedirs(dest_folder, exist_ok=True)
+                dest_path = os.path.join(dest_folder, f"{name.lower().replace(' ', '_')}.png")
+                shutil.copy(self.context.current_item_image_path, dest_path)
+                self.load_images()
+                dpg.set_value("item_image_path", "")
+                delattr(self.context, 'current_item_image_path')
+            dpg.configure_item("status_text_item", default_value=message, color=[0, 255, 0])
+        else:
+            dpg.configure_item("status_text_item", default_value=message, color=[255, 0, 0])
+
+    def edit_mods_callback(self, sender, app_data, user_data=None):
+        self.populate_mods_list()
+        dpg.configure_item("edit_mods_window", show=True)
+
+    def populate_mods_list(self):
+        dpg.delete_item("mods_list", children_only=True)
+        for cat_display_name, mod_key in self.context.category_key_mapping.items():
+            mods = self.context.mods_data.get(mod_key, [])
+            if mods:
+                dpg.add_text(f"Категория: {cat_display_name}", parent="mods_list")
+                for mod in mods:
+                    mod_name = mod['name']
+                    with dpg.group(horizontal=True, parent="mods_list"):
+                        dpg.add_button(
+                            label=mod_name,
+                            callback=self.select_mod_callback,
+                            user_data={'mod': mod, 'mod_key': mod_key},
+                        )
+                        dpg.add_button(label="Удалить", callback=self.delete_mod_callback,
+                                       user_data={'mod': mod, 'mod_key': mod_key})
+                dpg.add_separator(parent="mods_list")
+
+    def select_mod_callback(self, sender, app_data, user_data):
+        mod = user_data['mod']
+        mod_key = user_data.get('mod_key')
+        dpg.set_value("mod_name", mod.get('name', ''))
+        dpg.set_value("mod_category", self.context.resolve_slot_from_mod_key(mod_key) or '')
+        self.context.current_mod = copy.deepcopy(mod)
+        self.context.stats_stack = [self.context.current_mod['effects']]
+        self.context.current_mod_source = {
+            'mod_key': mod_key,
+            'original_name': mod.get('name', ''),
+            'description': mod.get('description', ''),
+        }
+        self.update_effects_preview()
+        dpg.set_value("effect_type", "")
+        dpg.set_value("effect_stat", "")
+        dpg.set_value("effect_value", "")
+        dpg.set_value("effect_flag", "")
+        dpg.set_value("effect_flag_value", False)
+        dpg.set_value("effect_condition", "")
+        dpg.configure_item("edit_mods_window", show=False)
+
+    def delete_mod_callback(self, sender, app_data, user_data):
+        mod = user_data['mod']
+        mod_key = user_data['mod_key']
+        success, message = self.context.delete_mod(mod, mod_key)
+        if success:
+            self.populate_mods_list()
+        else:
+            dpg.set_value("status_text", message)
+
+    def reset_combat_tracking(self, sender=None, app_data=None, user_data=None):
+        self.context.reset_combat_metrics()
+        self.dps_graph_y_limit = self.dps_graph_floor
+        self.last_dps_graph_update = 0.0
+        self.update_dps_display()
+        self.update_stats_display()
+        self.draw_mannequin_hp_bar()
+
+    def update_dps_display(self):
+        dps_text = (
+            f"DPS: {int(self.context.dps)}    "
+            f"{self.tr('max_dps', 'Max DPS')}: {int(self.context.max_dps)}    "
+            f"{self.tr('total_damage', 'Total DMG')}: {int(self.context.total_damage)}    "
+            f"{self.tr('max_total_damage', 'Max Total DMG')}: {int(self.context.max_total_damage)}"
+        )
+        if dpg.does_item_exist("dps_text"):
+            dpg.set_value("dps_text", dps_text)
+        ammo_text = (
+            f"{self.tr('ammo', 'Ammo')}: "
+            f"{self.context.current_ammo}/{self.player.stats.get('magazine_capacity', 0)}"
+        )
+        if dpg.does_item_exist("ammo_text"):
+            dpg.set_value("ammo_text", ammo_text)
+        self.update_damage_graph()
+
+    def update_damage_graph(self):
+        if not dpg.does_item_exist("dps_history_series"):
+            return
+        current_time = time.time()
+        if current_time - self.last_dps_graph_update < 0.1:
+            return
+        self.last_dps_graph_update = current_time
+
+        xs, ys = self.context.get_recent_dps_series(window_seconds=30, bucket_seconds=0.25)
+        smoothed = []
+        smoothing_factor = 0.28
+        for y_value in ys:
+            if not smoothed:
+                smoothed.append(y_value)
+            else:
+                smoothed.append(smoothed[-1] * (1.0 - smoothing_factor) + y_value * smoothing_factor)
+
+        dpg.set_value("dps_history_series", [xs, smoothed])
+        if dpg.does_item_exist("dps_plot_x") and xs:
+            dpg.set_axis_limits("dps_plot_x", -30.0, 0.0)
+        if dpg.does_item_exist("dps_plot_y"):
+            peak_dps = max(smoothed) if smoothed else 0.0
+            if peak_dps > 0.0:
+                self.dps_graph_y_limit = max(
+                    self.dps_graph_y_limit,
+                    max(self.dps_graph_floor, peak_dps * 1.12),
+                )
+            elif not self.context.damage_history:
+                self.dps_graph_y_limit = self.dps_graph_floor
+            dpg.set_axis_limits("dps_plot_y", 0.0, self.dps_graph_y_limit)
+
+    def update_equipment_summary(self):
+        weapon = self.player.weapon
+        current_signature = (
+            getattr(self.main_app, "current_language", "ru"),
+            (
+                getattr(weapon, 'id', None),
+                getattr(weapon, 'star', None),
+                getattr(weapon, 'level', None),
+                getattr(weapon, 'calibration', None),
+                tuple(
+                    (
+                        slot_name,
+                        json.dumps(weapon.equipped_attachments.get(slot_name) or {}, ensure_ascii=False, sort_keys=True),
+                    )
+                    for slot_name in self.attachment_slot_order
+                ) if weapon else (),
+                self.build_mod_signature(self.player.equipped_mods.get('weapon')),
+            ),
+            tuple(
+                (
+                    armor_type,
+                    self.build_item_signature(self.player.equipped_items.get(armor_type)),
+                    self.build_mod_signature(self.player.equipped_mods.get(armor_type)),
+                )
+                for armor_type in self.armor_types
+            ),
+        )
+        if current_signature == self.last_equipment_signature:
+            return
+        self.last_equipment_signature = current_signature
+        self.render_weapon_summary()
+        self.render_armor_summary()
+
+    def render_weapon_summary(self):
+        panel_tag = "weapon_summary_panel"
+        if not dpg.does_item_exist(panel_tag):
+            return
+        dpg.delete_item(panel_tag, children_only=True)
+        dpg.add_text(self.tr("weapon_summary", "Weapon summary"), parent=panel_tag)
+        weapon = self.player.weapon
+        if not weapon:
+            dpg.add_text(self.tr("weapon_not_equipped", "Weapon is not equipped"), parent=panel_tag, color=[168, 181, 198])
+            return
+        weapon_data = self.find_weapon_data(weapon_id=weapon.id) or {}
+        rows = [
+            (self.tr("name", "Name"), weapon.name),
+            (self.tr("type", "Type"), self.tr(f"weapon_type_{weapon.type}", weapon.type.replace("_", " ").title())),
+            (self.tr("stars_count", "Stars"), str(weapon.star)),
+            (self.tr("level", "Level"), str(weapon.level)),
+            (self.tr("calibration", "Calibration"), str(weapon.calibration)),
+        ]
+        equipped_mod = self.player.equipped_mods.get("weapon")
+        weapon_mod_value = self.tr("not_selected", "Not selected")
+        if equipped_mod:
+            weapon_mod_value = equipped_mod.get("name", weapon_mod_value)
+            weapon_mod_rolls = self.get_mod_rolls_summary(equipped_mod)
+            if weapon_mod_rolls:
+                weapon_mod_value = f"{weapon_mod_value}\n{weapon_mod_rolls}"
+        rows.append((self.tr("mod_label", "Mod"), weapon_mod_value))
+        for slot_name in self.attachment_slot_order:
+            attachment = weapon.equipped_attachments.get(slot_name)
+            rows.append((self.get_attachment_slot_label(slot_name), attachment.get("name") if attachment else self.tr("not_selected", "Not selected")))
+        with dpg.table(parent=panel_tag, header_row=False, resizable=True, policy=dpg.mvTable_SizingStretchProp, borders_innerV=True, borders_outerV=True, borders_innerH=True):
+            dpg.add_table_column(init_width_or_weight=0.38)
+            dpg.add_table_column(init_width_or_weight=0.62)
+            for label, value in rows:
+                with dpg.table_row():
+                    dpg.add_text(str(label))
+                    dpg.add_text(str(value), wrap=250)
+        description = self.get_weapon_description(weapon_data)
+        if description:
+            dpg.add_separator(parent=panel_tag)
+            dpg.add_text(description, wrap=320, parent=panel_tag, color=[168, 181, 198])
+
+    def render_armor_summary(self):
+        panel_tag = "armor_summary_panel"
+        if not dpg.does_item_exist(panel_tag):
+            return
+        dpg.delete_item(panel_tag, children_only=True)
+        dpg.add_text(self.tr("armor_summary", "Armor summary"), parent=panel_tag)
+        with dpg.table(parent=panel_tag, header_row=True, resizable=True, policy=dpg.mvTable_SizingStretchProp, borders_innerV=True, borders_outerV=True, borders_innerH=True):
+            dpg.add_table_column(label=self.tr("slot", "Slot"), init_width_or_weight=0.20)
+            dpg.add_table_column(label=self.tr("item_label", "Item"), init_width_or_weight=0.42)
+            dpg.add_table_column(label=self.tr("mod_label", "Mod"), init_width_or_weight=0.38)
+            any_rows = False
+            for armor_type in self.armor_types:
+                item = self.player.equipped_items.get(armor_type)
+                equipped_mod = self.player.equipped_mods.get(armor_type)
+                if not item and not equipped_mod:
+                    continue
+                any_rows = True
+                item_value = self.tr("not_selected", "Not selected")
+                if item:
+                    item_value = item.name
+                    progression = self.format_progression(item.star, item.level, item.calibration)
+                    if progression:
+                        item_value = f"{item_value}\n{progression}"
+                mod_value = self.tr("not_selected", "Not selected")
+                if equipped_mod:
+                    mod_value = equipped_mod.get("name", self.tr("not_selected", "Not selected"))
+                    mod_rolls = self.get_mod_rolls_summary(equipped_mod)
+                    if mod_rolls:
+                        mod_value = f"{mod_value}\n{mod_rolls}"
+                with dpg.table_row():
+                    dpg.add_text(self.get_slot_label(armor_type))
+                    dpg.add_text(item_value, wrap=190)
+                    dpg.add_text(mod_value, wrap=220)
+            if not any_rows:
+                with dpg.table_row():
+                    dpg.add_text("-")
+                    dpg.add_text(self.tr("armor_not_equipped", "Armor is not equipped"))
+                    dpg.add_text("-")
+
+    def draw_mannequin_hp_bar(self):
+        max_hp = self.context.mannequin.max_hp
+        current_hp = self.context.mannequin.current_hp
+        if current_hp <= 0:
+            self.context.mannequin.current_hp = max_hp
+            current_hp = max_hp
+            self.context.enemy_defeated_pending_reset = False
+        hp_percentage = current_hp / max_hp if max_hp > 0 else 0
+        bar_width = 150
+        bar_height = 15
+        green_width = bar_width * hp_percentage
+        bar_x = 75
+        bar_y = 5
+        if not dpg.does_item_exist("hp_bar_layer"):
+            return
+        dpg.delete_item("hp_bar_layer", children_only=True)
+        dpg.draw_rectangle(pmin=[bar_x, bar_y],
+                           pmax=[bar_x + green_width, bar_y + bar_height],
+                           color=[0, 255, 0, 255], fill=[0, 255, 0, 255],
+                           parent="hp_bar_layer")
+        dpg.draw_rectangle(pmin=[bar_x + green_width, bar_y],
+                           pmax=[bar_x + bar_width, bar_y + bar_height],
+                           color=[255, 0, 0, 255], fill=[255, 0, 0, 255],
+                           parent="hp_bar_layer")
+        dpg.draw_rectangle(pmin=[bar_x, bar_y],
+                           pmax=[bar_x + bar_width, bar_y + bar_height],
+                           color=[255, 255, 255, 255], fill=[0, 0, 0, 0],
+                           thickness=1, parent="hp_bar_layer")
+        hp_text = (
+            f"{self.context.format_value(current_hp, hp_value=True)}/"
+            f"{self.context.format_value(max_hp, hp_value=True)}"
+        )
+        dpg.draw_text(
+            pos=[bar_x + 20, bar_y - 2],
+            text=hp_text,
+            color=[255, 255, 255, 255],
+            size=13,
+            parent="hp_bar_layer",
+        )
+
+        status_payloads = sorted(
+            self.context.get_active_status_payloads(),
+            key=lambda payload: (0 if payload.get("target") == "mannequin" else 1, payload.get("status", "")),
+        )
+        icon_x = bar_x + bar_width + 18
+        icon_y = bar_y - 3
+        row_height = 38
+        icon_size = 28
+        for index, payload in enumerate(status_payloads[:7]):
+            row_top = icon_y + index * row_height
+            row_bottom = row_top + 32
+            border_color = [244, 114, 64, 220] if payload.get("target") == "mannequin" else [88, 166, 255, 220]
+            dpg.draw_rectangle(
+                pmin=[icon_x - 4, row_top - 2],
+                pmax=[382, row_bottom],
+                color=border_color,
+                fill=[20, 25, 34, 180],
+                rounding=6,
+                parent="hp_bar_layer",
+            )
+            icon_texture = self.get_status_icon_texture(payload.get("status"))
+            if icon_texture:
+                dpg.draw_image(
+                    icon_texture,
+                    pmin=[icon_x, row_top],
+                    pmax=[icon_x + icon_size, row_top + icon_size],
+                    parent="hp_bar_layer",
+                )
+            else:
+                dpg.draw_rectangle(
+                    pmin=[icon_x, row_top],
+                    pmax=[icon_x + icon_size, row_top + icon_size],
+                    color=[255, 255, 255, 255],
+                    fill=[55, 65, 81, 255],
+                    rounding=4,
+                    parent="hp_bar_layer",
+                )
+                dpg.draw_text(
+                    pos=[icon_x + 4, row_top + 6],
+                    text=self.get_status_display_name(payload.get("status", ""))[:3],
+                    color=[255, 255, 255, 255],
+                    size=11,
+                    parent="hp_bar_layer",
+                )
+            label_text = self.get_status_display_name(payload.get("status", ""))
+            remaining = payload.get("remaining", 0.0)
+            remaining_text = f"{remaining:.1f}s" if remaining < 10 else f"{int(round(remaining))}s"
+            dpg.draw_text(
+                pos=[icon_x + 36, row_top + 1],
+                text=label_text,
+                color=[255, 255, 255, 255],
+                size=12,
+                parent="hp_bar_layer",
+            )
+            dpg.draw_text(
+                pos=[icon_x + 36, row_top + 15],
+                text=remaining_text,
+                color=[203, 213, 225, 255],
+                size=11,
+                parent="hp_bar_layer",
+            )
+            stacks = payload.get("stacks", 0)
+            if stacks and stacks > 1:
+                dpg.draw_text(
+                    pos=[icon_x + 86, row_top + 15],
+                    text=f"x{stacks}",
+                    color=[255, 215, 0, 255],
+                    size=11,
+                    parent="hp_bar_layer",
+                )
+
+        for crystal in self.context.ice_crystals[:4]:
+            crystal_x, crystal_y = crystal.get("local_pos", (150, 200))
+            radius = float(crystal.get("radius", 14.0) or 14.0)
+            top = [crystal_x, crystal_y - radius]
+            right = [crystal_x + radius, crystal_y]
+            bottom = [crystal_x, crystal_y + radius]
+            left = [crystal_x - radius, crystal_y]
+            if hasattr(dpg, "draw_triangle"):
+                dpg.draw_triangle(top, right, bottom, color=[175, 245, 255, 255], fill=[56, 189, 248, 160], parent="hp_bar_layer")
+                dpg.draw_triangle(top, left, bottom, color=[175, 245, 255, 255], fill=[56, 189, 248, 160], parent="hp_bar_layer")
+            else:
+                dpg.draw_circle(center=[crystal_x, crystal_y], radius=radius, color=[175, 245, 255, 255], fill=[56, 189, 248, 160], parent="hp_bar_layer")
+            dpg.draw_circle(center=[crystal_x, crystal_y], radius=max(3.0, radius * 0.35), color=[255, 255, 255, 255], fill=[224, 242, 254, 220], parent="hp_bar_layer")
+            remaining = max(0.0, crystal.get("shatter_at", time.time()) - time.time())
+            dpg.draw_text(
+                pos=[crystal_x - 8, crystal_y + radius + 3],
+                text=f"{remaining:.0f}s",
+                color=[191, 219, 254, 255],
+                size=11,
+                parent="hp_bar_layer",
+            )
+
+    def handle_viewport_resize(self, width=None, height=None):
+        try:
+            if width is None:
+                width = dpg.get_viewport_client_width()
+            if height is None:
+                height = dpg.get_viewport_client_height()
+        except Exception:
+            return
+
+        panel_height = max(560, height - 120)
+        left_width = min(max(420, int(width * 0.36)), 560)
+        right_width = max(420, width - left_width - 70)
+        top_panel_height = min(410, max(360, int(panel_height * 0.46)))
+        summary_height = min(250, max(190, int(panel_height * 0.28)))
+        mannequin_width = min(max(400, int(right_width * 0.54)), 430)
+        plot_width = max(240, right_width - mannequin_width - 24)
+        summary_column_width = max(220, int((right_width - 16) / 2))
+
+        if dpg.does_item_exist("calc_parameters_panel"):
+            dpg.configure_item("calc_parameters_panel", width=left_width, height=panel_height)
+        if dpg.does_item_exist("calc_combat_panel"):
+            dpg.configure_item("calc_combat_panel", width=right_width, height=panel_height)
+        if dpg.does_item_exist("mannequin_panel"):
+            dpg.configure_item("mannequin_panel", width=mannequin_width, height=top_panel_height)
+        if dpg.does_item_exist("dps_plot_panel"):
+            dpg.configure_item("dps_plot_panel", width=plot_width, height=top_panel_height)
+        if dpg.does_item_exist("weapon_summary_panel"):
+            dpg.configure_item("weapon_summary_panel", width=summary_column_width, height=summary_height)
+        if dpg.does_item_exist("armor_summary_panel"):
+            dpg.configure_item("armor_summary_panel", width=summary_column_width, height=summary_height)
+        if dpg.does_item_exist("dps_history_plot"):
+            dpg.configure_item("dps_history_plot", width=max(220, plot_width - 24), height=max(250, top_panel_height - 44))
+        if dpg.does_item_exist("stats_display_text"):
+            dpg.configure_item("stats_display_text", wrap=max(360, right_width - 30))
+
+    def save_config_callback(self):
+        self.config_manager.save_config()
+
+    def load_config_callback(self):
+        self.config_manager.load_config()
+        self.refresh_equipment_ui()
+        self.update_stats_display()
+
+    def update_ui(self):
+        self.refresh_translations()
+        self.update_dps_display()
+        self.update_stats_display()
+        active_effects = list(self.context.mannequin.effects.keys())
+        active_effects.extend(
+            f"{status} x{count}" if count > 1 else status
+            for status, count in self.context.status_stack_counts.items()
+        )
+        effects_str = ", ".join(active_effects) if active_effects else self.tr("no_active_statuses", "No active statuses")
+        if dpg.does_item_exist("active_statuses_text"):
+            dpg.set_value("active_statuses_text", f"{self.tr('active_statuses', 'Active statuses')}: {effects_str}")
+        if dpg.does_item_exist("calc_save_config_button"):
+            dpg.configure_item("calc_save_config_button", label=self.tr("save_config", "Save configuration"))
+        if dpg.does_item_exist("calc_load_config_button"):
+            dpg.configure_item("calc_load_config_button", label=self.tr("load_config", "Load configuration"))
+        if dpg.does_item_exist("apply_build_preset_button"):
+            dpg.configure_item("apply_build_preset_button", label=self.tr("apply_preset", "Apply"))
+        if dpg.does_item_exist("compact_slot_view_checkbox"):
+            dpg.configure_item("compact_slot_view_checkbox", label=self.tr("compact_slot_view", "Hide slot text"))
+        if dpg.does_item_exist("item_search_input"):
+            dpg.configure_item("item_search_input", label=self.tr("search_items", "Search items"))
+        if dpg.does_item_exist("weapon_search_input"):
+            dpg.configure_item("weapon_search_input", label=self.tr("search_weapons", "Search weapons"))
+        if dpg.does_item_exist("mod_search_input"):
+            dpg.configure_item("mod_search_input", label=self.tr("search_mods", "Search mods"))
+        if dpg.does_item_exist("attachment_search_input"):
+            dpg.configure_item("attachment_search_input", label=self.tr("search_attachments", "Search attachments"))
+        if dpg.does_item_exist("mod_attribute_search_input"):
+            dpg.configure_item("mod_attribute_search_input", label=self.tr("search_attributes", "Search attributes"))
+        if dpg.does_item_exist("build_presets_combo"):
+            dpg.configure_item(
+                "build_presets_combo",
+                items=[self.get_build_display_name(build) for build in self.example_builds],
+            )
+            current_build = self.get_current_build()
+            if current_build:
+                dpg.set_value("build_presets_combo", self.get_build_display_name(current_build))
+            self.set_build_description(current_build)
+        self.refresh_equipment_ui()
+        self.handle_viewport_resize()

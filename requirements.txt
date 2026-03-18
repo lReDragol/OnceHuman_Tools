@@ -13,4 +13,6 @@ PySide6
 pytesseract
 pyTelegramBotAPI
 python-Levenshtein
+texture2ddecoder
 watchdog
+zstandard

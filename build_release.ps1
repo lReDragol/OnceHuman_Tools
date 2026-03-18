@@ -21,6 +21,7 @@ function Invoke-Build {
         [string]$Name,
         [string]$EntryScript,
         [string]$IconPath,
+        [string[]]$PythonPaths = @(),
         [string[]]$ExtraArgs = @()
     )
 
@@ -44,10 +45,17 @@ function Invoke-Build {
         "--distpath", $releaseDir,
         "--workpath", $workPath,
         "--specpath", $specRoot,
-        "--paths", $repoRoot,
         "--additional-hooks-dir", $repoRoot,
         "--icon", (Join-Path $repoRoot $IconPath)
-    ) + $ExtraArgs + @((Join-Path $repoRoot $EntryScript))
+    )
+
+    foreach ($pythonPath in @($PythonPaths)) {
+        if ($pythonPath) {
+            $args += @("--paths", $pythonPath)
+        }
+    }
+
+    $args += $ExtraArgs + @((Join-Path $repoRoot $EntryScript))
 
     Write-Host "Building $Name..."
     & $python @args
@@ -56,10 +64,17 @@ function Invoke-Build {
     }
 }
 
+Write-Host "Synchronizing portable_calc_v2..."
+& powershell -ExecutionPolicy Bypass -File (Join-Path $repoRoot "tools\sync_portable_calc_v2.ps1")
+if ($LASTEXITCODE -ne 0) {
+    throw "portable_calc_v2 sync failed"
+}
+
 Invoke-Build `
-    -Name "OnceHumanTools_V4.5" `
+    -Name "OnceHumanTools_V4.6" `
     -EntryScript "main.py" `
     -IconPath "data\icons\icon.ico" `
+    -PythonPaths @($repoRoot) `
     -ExtraArgs @(
         "--add-data", "$(Join-Path $repoRoot 'data');data",
         "--add-data", "$(Join-Path $repoRoot 'translations.json');."
@@ -69,18 +84,20 @@ Invoke-Build `
     -Name "BotFishPortable_V4" `
     -EntryScript "onli_fish_bot\main.py" `
     -IconPath "data\icons\fish.ico" `
+    -PythonPaths @($repoRoot) `
     -ExtraArgs @(
         "--exclude-module", "PyQt5",
         "--add-data", "$(Join-Path $repoRoot 'data\icons\fish.ico');data\icons"
     )
 
 Invoke-Build `
-    -Name "OnceHumanCalcPortable_V2.5" `
+    -Name "OnceHumanCalcPortable_V2.8" `
     -EntryScript "portable_calc_v2\main.py" `
-    -IconPath "data\icons\icon.ico" `
+    -IconPath "portable_calc_v2\data\icons\icon.ico" `
+    -PythonPaths @((Join-Path $repoRoot 'portable_calc_v2')) `
     -ExtraArgs @(
-        "--add-data", "$(Join-Path $repoRoot 'data');data",
-        "--add-data", "$(Join-Path $repoRoot 'translations.json');."
+        "--add-data", "$(Join-Path $repoRoot 'portable_calc_v2\data');data",
+        "--add-data", "$(Join-Path $repoRoot 'portable_calc_v2\translations.json');."
     )
 
 Write-Host ""

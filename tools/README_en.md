@@ -57,13 +57,65 @@ python tools/extract_once_human_attachment_icons.py --game-path "E:\SteamLibrary
 python tools/extract_once_human_attachment_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --report attachment_icons_report.json
 ```
 
+`extract_once_human_deviations.py`
+- Builds the deviation/pet catalog directly from the local `decompile` cache.
+- Extracts `deviation_id`, names, descriptions, asset names, combat/non-combat classification, in-game RU/EN localization, baseline combat profiles, and exact skill coefficients from the client bindict tables (`deviation_base_data.pyc`, `deviation_preview_skill_data.pyc`, `deviation_combat_config_data.pyc`, `deviation_skills_data.pyc`, `translate_data_ru.pyc`, `translate_data_en.pyc`).
+- Generates `data/menu/calc/bd_json/deviations.json`, which the calculator uses for deviation selection and baseline combat deviation simulation.
+
+Usage:
+```powershell
+python tools/extract_once_human_deviations.py --decompile-dir "E:\SteamLibrary\steamapps\common\Once Human\decompile" --output data\menu\calc\bd_json\deviations.json
+```
+
+`extract_once_human_deviation_icons.py`
+- Pulls real deviation/pet icons from local Once Human `.npk` packs.
+- No longer needs `QuickBMS` or `PVRTexToolCLI`: it scans the pack index directly, decodes the in-game `PVR` icon payloads in Python, and matches them by `icon_asset` / `me_code`.
+- Writes the synced icons to `data/icons/deviations/<deviation_id>.png`.
+
+Usage:
+```powershell
+python tools/extract_once_human_deviation_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human"
+python tools/extract_once_human_deviation_icons.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --combat-only --report deviation_icons_report.json
+```
+
+`decompile_once_human.py`
+- Main automatic decompile pipeline.
+- Creates a `decompile` folder next to the game.
+- Extracts `script.npk`, writes bindict sidecars, and can immediately run mod secondary attribute decoding.
+- The current mod secondary attribute decode exports all `108` discovered in-game families into the calculator JSON.
+- The safe extraction default is currently `workers=1`.
+- `bindict sidecars` are currently experimental and disabled by default.
+
+Usage:
+```powershell
+python tools/decompile_once_human.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --extract-mod-attributes
+python tools/decompile_once_human.py --game-path "E:\SteamLibrary\steamapps\common\Once Human" --skip-extract --extract-mod-attributes
+```
+
+`decompile_once_human_ui.py`
+- PySide6 wrapper around the automatic pipeline.
+- Intended for the `pick the game folder -> click Run -> get decompile` workflow.
+- Sidecar generation is exposed as a separate option because it is mainly useful for reverse engineering.
+
+Usage:
+```powershell
+python tools/decompile_once_human_ui.py
+```
+
 ## Typical workflow
 
-1. Run `once_human_game_probe.py` against the local game files to discover useful tables.
-2. Run `import_once_human_db.py --write` to update the calculator JSON data.
-3. Run `sync_once_human_db_icons.py` to pull weapon, armor, and baseline mod icons.
-4. Run `extract_once_human_mod_icons.py` if you want to replace mod icons with direct assets from the local client.
-5. Run `extract_once_human_attachment_icons.py` to refresh the direct in-game attachment icons.
+1. Run `decompile_once_human.py` or `decompile_once_human_ui.py` to build a local `decompile` cache.
+2. Run `once_human_game_probe.py` against `decompile` to discover useful tables.
+3. Run `import_once_human_db.py --write` to update the calculator JSON data.
+4. Run `sync_once_human_db_icons.py` to pull weapon, armor, and baseline mod icons.
+5. Run `extract_once_human_mod_icons.py` if you want to replace mod icons with direct assets from the local client.
+6. Run `extract_once_human_attachment_icons.py` to refresh the direct in-game attachment icons.
+7. Run `extract_once_human_deviations.py` to refresh the deviation/pet catalog used by the calculator.
+8. Run `extract_once_human_deviation_icons.py` to sync the direct in-game deviation icons.
+
+## Full decompile docs
+
+- [Automatic Once Human Decompile Pipeline](DECOMPILE_PIPELINE_en.md)
 
 ## Notes
 
@@ -72,3 +124,6 @@ python tools/extract_once_human_attachment_icons.py --game-path "E:\SteamLibrary
 - `sync_once_human_db_icons.py` uses the synced public dataset to fetch icons derived from real game assets.
 - `extract_once_human_mod_icons.py` needs local access to `quickbms.exe`, `Once_Human_Beta_NPK.bms`, and `PVRTexToolCLI.exe`. The script tries to auto-discover them in the temp directory first.
 - `extract_once_human_attachment_icons.py` uses the same toolchain, but targets weapon attachment icons instead of mod glyphs.
+- `extract_once_human_deviations.py` now also localizes deviation names/descriptions directly from the client, but not every hidden combat id / cooldown field from bindict is decoded yet.
+- `extract_once_human_deviation_icons.py` requires the Python package `texture2ddecoder`, but no longer depends on external `QuickBMS` / `PVRTexToolCLI`.
+- `decompile_once_human.py` already automates creation of the `decompile` cache, but the generic bindict tail decoder is not finished yet.

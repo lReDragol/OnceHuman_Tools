@@ -158,14 +158,20 @@ class MainApp:
             dpg.delete_item("Font_Registry")
 
         with dpg.font_registry(tag="Font_Registry"):
-            font_path = "data/file/ru.ttf"
-            if os.path.exists(font_path):
+            preferred_font_paths = [
+                os.path.join("C:\\Windows", "Fonts", "msyh.ttc"),
+                os.path.join("C:\\Windows", "Fonts", "ARIALUNI.ttf"),
+                "data/file/ru.ttf",
+            ]
+            font_path = next((path for path in preferred_font_paths if os.path.exists(path)), "")
+            if font_path:
                 with dpg.font(font_path, 13, default_font=True, tag=self.default_font_tag):
                     dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
+                    dpg.add_font_range_hint(dpg.mvFontRangeHint_Chinese_Full)
                 dpg.bind_font(self.default_font_tag)
-                print("Unified font (ru.ttf) loaded for all languages.")
+                print(f"Unified font loaded for all languages: {font_path}")
             else:
-                print("No ru.ttf found, using default Dear PyGui font.")
+                print("No compatible font found, using default Dear PyGui font.")
 
     def change_language(self, lang):
         self.current_language = lang
@@ -201,7 +207,7 @@ class MainApp:
 
     def stop(self):
         self.path_finder.search_running = False
-        if hasattr(self, 'path_finder_thread') and self.path_finder_thread.is_alive():
+        if getattr(self, 'path_finder_thread', None) is not None and self.path_finder_thread.is_alive():
             self.path_finder_thread.join()
         for tab in self.tabs:
             if hasattr(tab, "stop"):
