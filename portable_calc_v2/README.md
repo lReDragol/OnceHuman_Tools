@@ -4,6 +4,31 @@ This folder is self-contained.
 
 You can take only `portable_calc_v2` from the repository and run the calculator without cloning the full project.
 
+## Preview
+
+### 1. Presets And Compact Layout
+
+![Calculator presets demo](../docs/media/calc_demo_01_presets.gif)
+
+### 2. Weapon And Armor Setup
+
+![Calculator weapon and armor setup demo](../docs/media/calc_demo_02_weapon_setup.gif)
+
+### 3. Mods And Secondary Attributes
+
+![Calculator mods and attributes demo](../docs/media/calc_demo_03_armor_mods.gif)
+
+### 4. Dummy Settings And DPS Graph
+
+![Calculator dummy and DPS demo](../docs/media/calc_demo_04_combat_dps.gif)
+
+## What the calculator includes
+
+- Preset-based build setup with compact item and mod slots
+- Weapons, armor, sets, mods, and synced in-game icons
+- Local deviation and pet catalog extracted from the game data
+- Target dummy settings, DPS graph, and combat simulation
+
 ## Files included
 
 - `main.py` - portable calculator entrypoint

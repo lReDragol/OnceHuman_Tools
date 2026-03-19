@@ -5,23 +5,9 @@ Choose the documentation language:
 - [README in Russian](README_ru.md)
 - [README in English](README_en.md)
 
-## Calculator Preview
+## Calculator
 
-### 1. Presets And Compact Layout
-
-![Calculator presets demo](docs/media/calc_demo_01_presets.gif)
-
-### 2. Weapon And Armor Setup
-
-![Calculator weapon and armor setup demo](docs/media/calc_demo_02_weapon_setup.gif)
-
-### 3. Mods And Secondary Attributes
-
-![Calculator mods and attributes demo](docs/media/calc_demo_03_armor_mods.gif)
-
-### 4. Dummy Settings And DPS Graph
-
-![Calculator dummy and DPS demo](docs/media/calc_demo_04_combat_dps.gif)
+- [Portable Calculator README](portable_calc_v2/README.md)
 
 ## Policies
 
