@@ -1010,13 +1010,6 @@
       "source_url": "https://www.oncehumandb.com/armor/lonewolf-hat"
     },
     {
-      "id": "lonewolf_hood",
-      "name": "Lonewolf Hood",
-      "type": "helmet",
-      "rarity": "legendary",
-      "set_id": "lonewolf_set"
-    },
-    {
       "id": "renegade_hood",
       "name": "Renegade Hood",
       "type": "helmet",

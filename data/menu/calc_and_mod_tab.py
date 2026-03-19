@@ -333,6 +333,21 @@ class CalcAndModTab:
     def get_slot_label(self, slot):
         return self.tr(f"slot_{slot}", slot.capitalize())
 
+    def get_compact_selector_label(self, slot):
+        labels = {
+            "weapon": "Weapon",
+            "deviation": "Deviation",
+            "mod": "Mod",
+            "weapon_mod": "Mod",
+            "helmet": "Helmet",
+            "mask": "Mask",
+            "top": "Top",
+            "gloves": "Gloves",
+            "pants": "Pants",
+            "boots": "Boots",
+        }
+        return labels.get(slot, str(slot or "").replace("_", " ").title())
+
     def get_rarity_label(self, rarity):
         return self.tr(f"rarity_{rarity}", rarity.capitalize())
 
@@ -494,6 +509,7 @@ class CalcAndModTab:
             "user_data": user_data,
             "background_color": self.get_card_background_color(card_kind=card_kind, rarity=rarity),
             "tint_color": [255, 255, 255, 255],
+            "frame_padding": 0,
         }
         if tag is not None:
             kwargs["tag"] = tag
@@ -750,7 +766,32 @@ class CalcAndModTab:
     def toggle_compact_slot_view(self, sender, app_data, user_data):
         self.compact_slot_view = bool(app_data)
         self.refresh_equipment_ui()
+        self.update_selection_section_layout()
         self.handle_viewport_resize()
+
+    def ensure_layout_themes(self):
+        if not dpg.does_item_exist("compact_zero_spacing_theme"):
+            with dpg.theme(tag="compact_zero_spacing_theme"):
+                with dpg.theme_component(dpg.mvAll):
+                    dpg.add_theme_style(dpg.mvStyleVar_ItemSpacing, 0, 0, category=dpg.mvThemeCat_Core)
+        if not dpg.does_item_exist("default_item_spacing_theme"):
+            with dpg.theme(tag="default_item_spacing_theme"):
+                with dpg.theme_component(dpg.mvAll):
+                    dpg.add_theme_style(dpg.mvStyleVar_ItemSpacing, 8, 4, category=dpg.mvThemeCat_Core)
+
+    def update_selection_section_layout(self):
+        compact_view = self.is_compact_slot_view_enabled()
+        theme_tag = "compact_zero_spacing_theme" if compact_view else "default_item_spacing_theme"
+        for item_tag in ("equipment_selection_section", "armor_selection_group"):
+            if dpg.does_item_exist(item_tag):
+                dpg.bind_item_theme(item_tag, theme_tag)
+        for header_tag in ("weapon_selection_header", "armor_selection_header", "deviation_selection_header"):
+            if dpg.does_item_exist(header_tag):
+                dpg.configure_item(header_tag, show=not compact_view)
+        spacer_height = 24 if compact_view else 0
+        for spacer_tag in ("weapon_to_armor_spacer", "armor_to_deviation_spacer"):
+            if dpg.does_item_exist(spacer_tag):
+                dpg.configure_item(spacer_tag, height=spacer_height)
 
     def get_mod_attribute_preview_lines(self, attribute, *, tier_code=None):
         if not attribute:
@@ -998,20 +1039,23 @@ class CalcAndModTab:
                 with dpg.group(horizontal=True):
                     dpg.add_button(
                         label=attribute_label,
-                        width=170 if compact_view else 185,
+                        width=176 if compact_view else 185,
+                        height=20 if compact_view else 0,
                         callback=self.open_mod_attribute_selection,
                         user_data={"type": item_type, "row_index": row_index},
                     )
                     dpg.add_button(
                         label=tier_label,
-                        width=58,
+                        width=36 if compact_view else 58,
+                        height=20 if compact_view else 0,
                         callback=self.open_mod_attribute_tier_selection,
                         user_data={"type": item_type, "row_index": row_index},
                         enabled=bool(attribute_id),
                     )
                     dpg.add_button(
                         label="X",
-                        width=28,
+                        width=20 if compact_view else 28,
+                        height=20 if compact_view else 0,
                         callback=self.clear_mod_attribute_for_slot,
                         user_data={"type": item_type, "row_index": row_index},
                         enabled=bool(attribute_id),
@@ -1297,6 +1341,7 @@ class CalcAndModTab:
         self.update_stats_display()
 
     def build_ui(self):
+        self.ensure_layout_themes()
         with dpg.group():
             with dpg.tab_bar():
                 self.create_calc_tab()
@@ -1355,7 +1400,7 @@ class CalcAndModTab:
     def create_calc_tab(self):
         with dpg.tab(label=self.tr("calc_tab", "Calc"), tag="calc_tab_root"):
             with dpg.group(horizontal=True, tag="calc_layout_group"):
-                with dpg.child_window(tag="calc_parameters_panel", width=460, height=720, horizontal_scrollbar=True):
+                with dpg.child_window(tag="calc_parameters_panel", width=500, height=720, horizontal_scrollbar=True):
                     self.create_parameters_section()
                 with dpg.child_window(tag="calc_combat_panel", width=620, height=720):
                     self.create_combat_section()
@@ -1419,16 +1464,38 @@ class CalcAndModTab:
         dpg.add_input_int(label=self.tr("players_in_fortress", "Players in Fortress Warfare:"), default_value=1,
                           tag="players_in_fortress_input", width=100,
                           callback=self.on_parameter_change)
-        dpg.add_text(self.tr("weapon_selection", "Weapon selection:"), color=[255, 255, 255], bullet=True)
-        with dpg.group(horizontal=True, tag="weapon_selection_group"):
-            self.render_weapon_selector()
-        dpg.add_text(self.tr("armor_selection", "Armor selection:"), color=[255, 255, 255], bullet=True)
-        with dpg.group(horizontal=False, tag="armor_selection_group"):
-            for armor_type in self.armor_types:
-                self.render_armor_slot(armor_type)
-        dpg.add_text(self.tr("deviation_selection", "Deviation selection:"), color=[255, 255, 255], bullet=True)
-        with dpg.group(horizontal=True, tag="deviation_selection_group"):
-            self.render_deviation_selector()
+        with dpg.group(horizontal=False, tag="equipment_selection_section"):
+            dpg.add_text(
+                self.tr("weapon_selection", "Weapon selection:"),
+                color=[255, 255, 255],
+                bullet=True,
+                tag="weapon_selection_header",
+                show=not self.compact_slot_view,
+            )
+            with dpg.group(horizontal=True, tag="weapon_selection_group"):
+                self.render_weapon_selector()
+            dpg.add_spacer(height=24 if self.compact_slot_view else 0, tag="weapon_to_armor_spacer")
+            dpg.add_text(
+                self.tr("armor_selection", "Armor selection:"),
+                color=[255, 255, 255],
+                bullet=True,
+                tag="armor_selection_header",
+                show=not self.compact_slot_view,
+            )
+            with dpg.group(horizontal=False, tag="armor_selection_group"):
+                for armor_type in self.armor_types:
+                    self.render_armor_slot(armor_type)
+            dpg.add_spacer(height=24 if self.compact_slot_view else 0, tag="armor_to_deviation_spacer")
+            dpg.add_text(
+                self.tr("deviation_selection", "Deviation selection:"),
+                color=[255, 255, 255],
+                bullet=True,
+                tag="deviation_selection_header",
+                show=not self.compact_slot_view,
+            )
+            with dpg.group(horizontal=True, tag="deviation_selection_group"):
+                self.render_deviation_selector()
+        self.update_selection_section_layout()
 
     def create_parameters_table(self, title, params):
         with dpg.collapsing_header(label=title, default_open=False):
@@ -1450,8 +1517,77 @@ class CalcAndModTab:
         dpg.delete_item(parent_tag, children_only=True)
         weapon = self.player.weapon
         compact_view = self.is_compact_slot_view_enabled()
-        item_panel_width = 110 if compact_view else 250
-        mod_panel_width = 110 if compact_view else 235
+        if compact_view:
+            button_size = 92
+            gap = 12
+            equipped_mod = self.player.equipped_mods.get("weapon")
+            with dpg.group(horizontal=True, parent=parent_tag, tag="weapon_selection_row"):
+                if weapon:
+                    weapon_data = self.find_weapon_data(weapon_id=weapon.id) or {"name": weapon.name}
+                    texture_id = self.weapon_images.get(weapon.id, self.weapon_images['default'])
+                    self.add_colored_image_button(
+                        texture_id,
+                        card_kind="weapon",
+                        rarity=weapon_data.get("rarity", getattr(weapon, "rarity", None)),
+                        width=button_size,
+                        height=button_size,
+                        callback=self.open_weapon_selection,
+                        tag="weapon_image",
+                    )
+                    self.bind_right_click_handler(
+                        "weapon_image",
+                        "weapon_item_handler",
+                        self.open_weapon_config_window,
+                    )
+                else:
+                    dpg.add_button(
+                        label=self.get_compact_selector_label("weapon"),
+                        callback=self.open_weapon_selection,
+                        tag="weapon_selector",
+                        parent="weapon_selection_row",
+                        width=button_size,
+                        height=button_size,
+                    )
+
+                if weapon:
+                    dpg.add_spacer(width=gap)
+                    if equipped_mod:
+                        texture_id = self.get_mod_texture("weapon", equipped_mod["name"])
+                        self.add_colored_image_button(
+                            texture_id,
+                            card_kind="mod",
+                            width=button_size,
+                            height=button_size,
+                            callback=self.open_mod_selection,
+                            user_data="weapon",
+                            tag="weapon_mod_image",
+                        )
+                        self.bind_right_click_handler(
+                            "weapon_mod_image",
+                            "weapon_mod_handler",
+                            self.open_mod_config_window,
+                            {'mod': equipped_mod, 'type': 'weapon', 'editable': True},
+                        )
+                    else:
+                        dpg.add_button(
+                            label=self.get_compact_selector_label("mod"),
+                            callback=self.open_mod_selection,
+                            user_data="weapon",
+                            tag="weapon_mod_selector",
+                            width=button_size,
+                            height=button_size,
+                        )
+
+                if weapon and equipped_mod:
+                    dpg.add_spacer(width=gap)
+                    with dpg.child_window(width=280, height=92, border=False):
+                        self.render_mod_attribute_column("weapon")
+
+            dpg.bind_item_theme("weapon_selection_row", "compact_zero_spacing_theme")
+            return
+
+        item_panel_width = 250
+        mod_panel_width = 235
         attr_panel_width = 280
         if weapon:
             weapon_data = self.find_weapon_data(weapon_id=weapon.id) or {"name": weapon.name}
@@ -1533,16 +1669,119 @@ class CalcAndModTab:
 
     def render_armor_slot(self, item_type):
         row_tag = f"{item_type}_row"
+        spacer_tag = f"{item_type}_row_spacer"
         if dpg.does_item_exist(row_tag):
             dpg.delete_item(row_tag)
+        if dpg.does_item_exist(spacer_tag):
+            dpg.delete_item(spacer_tag)
 
+        item = self.player.equipped_items.get(item_type)
+        equipped_mod = self.player.equipped_mods.get(item_type)
         compact_view = self.is_compact_slot_view_enabled()
-        item_panel_width = 110 if compact_view else 230
-        mod_panel_width = 110 if compact_view else 230
-        attr_panel_width = 280
-        with dpg.group(horizontal=True, tag=row_tag, parent="armor_selection_group"):
-            with dpg.child_window(tag=f"{item_type}_item_panel", width=item_panel_width, height=150 if compact_view else 220, border=False):
-                item = self.player.equipped_items.get(item_type)
+        insert_before = self.get_next_armor_slot_row_tag(item_type)
+        if compact_view:
+            button_size = 92
+            gap = 12
+            group_kwargs = {
+                "horizontal": True,
+                "tag": row_tag,
+                "parent": "armor_selection_group",
+            }
+            if insert_before:
+                group_kwargs["before"] = insert_before
+            with dpg.group(**group_kwargs):
+                if item:
+                    item_data = self.find_item_data_by_id(item.id) or {}
+                    texture_id = self.item_images.get(item.id, self.item_images['default'])
+                    image_tag = f"{item_type}_item_image"
+                    self.add_colored_image_button(
+                        texture_id,
+                        card_kind="item",
+                        rarity=getattr(item, "rarity", item_data.get("rarity")),
+                        width=button_size,
+                        height=button_size,
+                        callback=self.open_item_selection,
+                        user_data=item_type,
+                        tag=image_tag,
+                    )
+                    self.bind_right_click_handler(
+                        image_tag,
+                        f"{item_type}_item_handler",
+                        self.open_item_config_window,
+                        item_type,
+                    )
+                else:
+                    dpg.add_button(
+                        label=self.get_compact_selector_label(item_type),
+                        callback=self.open_item_selection,
+                        user_data=item_type,
+                        tag=f"{item_type}_item_selector",
+                        width=button_size,
+                        height=button_size,
+                    )
+
+                if item:
+                    dpg.add_spacer(width=gap)
+                    if equipped_mod:
+                        texture_id = self.get_mod_texture(item_type, equipped_mod["name"])
+                        image_tag = f"{item_type}_mod_image"
+                        self.add_colored_image_button(
+                            texture_id,
+                            card_kind="mod",
+                            width=button_size,
+                            height=button_size,
+                            callback=self.open_mod_selection,
+                            user_data=item_type,
+                            tag=image_tag,
+                        )
+                        self.bind_right_click_handler(
+                            image_tag,
+                            f"{item_type}_mod_handler",
+                            self.open_mod_config_window,
+                            {'mod': equipped_mod, 'type': item_type, 'editable': True},
+                        )
+                    else:
+                        dpg.add_button(
+                            label=self.get_compact_selector_label("mod"),
+                            callback=self.open_mod_selection,
+                            user_data=item_type,
+                            tag=f"{item_type}_mod_selector",
+                            width=button_size,
+                            height=button_size,
+                        )
+
+                if item and equipped_mod:
+                    dpg.add_spacer(width=gap)
+                    with dpg.child_window(width=280, height=92, border=False):
+                        self.render_mod_attribute_column(item_type)
+
+            dpg.bind_item_theme(row_tag, "compact_zero_spacing_theme")
+            if item_type != self.armor_types[-1]:
+                spacer_kwargs = {
+                    "tag": spacer_tag,
+                    "parent": "armor_selection_group",
+                    "height": 12,
+                }
+                if insert_before:
+                    spacer_kwargs["before"] = insert_before
+                dpg.add_spacer(**spacer_kwargs)
+            return
+
+        item_panel_width = 126 if compact_view else 230
+        mod_panel_width = 96 if compact_view else 230
+        attr_panel_width = 252 if compact_view else 280
+        item_panel_height = 58 if compact_view and not item else (110 if compact_view else 220)
+        mod_panel_height = 110 if compact_view else 220
+        attr_panel_height = 155 if compact_view else 220
+        group_kwargs = {
+            "horizontal": True,
+            "tag": row_tag,
+            "parent": "armor_selection_group",
+        }
+        if insert_before:
+            group_kwargs["before"] = insert_before
+        with dpg.group(**group_kwargs):
+            with dpg.child_window(tag=f"{item_type}_item_panel", width=item_panel_width, height=item_panel_height, border=False):
                 if item:
                     item_data = self.find_item_data_by_id(item.id) or {}
                     texture_id = self.item_images.get(item.id, self.item_images['default'])
@@ -1568,54 +1807,66 @@ class CalcAndModTab:
                         dpg.add_text(self.get_item_description(item_data), wrap=220)
                 else:
                     dpg.add_button(
-                        label="+" if compact_view else self.get_slot_label(item_type),
+                        label=self.get_slot_label(item_type),
                         callback=self.open_item_selection,
                         user_data=item_type,
                         tag=f"{item_type}_item_selector",
-                        width=self.armor_card_size[0] if compact_view else 150,
-                        height=self.armor_card_size[1] if compact_view else 0,
+                        width=item_panel_width - 10 if compact_view else 150,
+                        height=40 if compact_view else 0,
                     )
 
-            with dpg.child_window(tag=f"{item_type}_mod_panel", width=mod_panel_width, height=150 if compact_view else 220, border=False):
-                equipped_mod = self.player.equipped_mods.get(item_type)
-                if item and equipped_mod:
-                    texture_id = self.get_mod_texture(item_type, equipped_mod["name"])
-                    image_tag = f"{item_type}_mod_image"
-                    self.add_colored_image_button(
-                        texture_id,
-                        card_kind="mod",
-                        width=self.mod_card_size[0],
-                        height=self.mod_card_size[1],
-                        callback=self.open_mod_selection,
-                        user_data=item_type,
-                        tag=image_tag,
-                    )
-                    self.bind_right_click_handler(
-                        image_tag,
-                        f"{item_type}_mod_handler",
-                        self.open_mod_config_window,
-                        {'mod': equipped_mod, 'type': item_type, 'editable': True},
-                    )
-                    if not compact_view:
-                        dpg.add_text(equipped_mod["name"], wrap=170)
-                        armor_mod_rolls = self.get_mod_rolls_summary(equipped_mod)
-                        if armor_mod_rolls:
-                            dpg.add_text(armor_mod_rolls, wrap=220, color=[168, 181, 198])
-                elif item:
-                    dpg.add_button(
-                        label="+" if compact_view else self.tr("select_mod", "Select mod"),
-                        callback=self.open_mod_selection,
-                        user_data=item_type,
-                        tag=f"{item_type}_mod_selector",
-                        width=self.mod_card_size[0] if compact_view else 150,
-                        height=self.mod_card_size[1] if compact_view else 0,
-                    )
-                else:
-                    dpg.add_spacer(height=1)
+            if item or not compact_view:
+                with dpg.child_window(tag=f"{item_type}_mod_panel", width=mod_panel_width, height=mod_panel_height, border=False):
+                    if item and equipped_mod:
+                        texture_id = self.get_mod_texture(item_type, equipped_mod["name"])
+                        image_tag = f"{item_type}_mod_image"
+                        self.add_colored_image_button(
+                            texture_id,
+                            card_kind="mod",
+                            width=self.mod_card_size[0],
+                            height=self.mod_card_size[1],
+                            callback=self.open_mod_selection,
+                            user_data=item_type,
+                            tag=image_tag,
+                        )
+                        self.bind_right_click_handler(
+                            image_tag,
+                            f"{item_type}_mod_handler",
+                            self.open_mod_config_window,
+                            {'mod': equipped_mod, 'type': item_type, 'editable': True},
+                        )
+                        if not compact_view:
+                            dpg.add_text(equipped_mod["name"], wrap=170)
+                            armor_mod_rolls = self.get_mod_rolls_summary(equipped_mod)
+                            if armor_mod_rolls:
+                                dpg.add_text(armor_mod_rolls, wrap=220, color=[168, 181, 198])
+                    elif item:
+                        dpg.add_button(
+                            label="+" if compact_view else self.tr("select_mod", "Select mod"),
+                            callback=self.open_mod_selection,
+                            user_data=item_type,
+                            tag=f"{item_type}_mod_selector",
+                            width=self.mod_card_size[0] if compact_view else 150,
+                            height=self.mod_card_size[1] if compact_view else 0,
+                        )
+                    else:
+                        dpg.add_spacer(height=1)
 
             if item and equipped_mod:
-                with dpg.child_window(width=attr_panel_width, height=155 if compact_view else 220, border=False):
+                with dpg.child_window(width=attr_panel_width, height=attr_panel_height, border=False):
                     self.render_mod_attribute_column(item_type)
+
+    def get_next_armor_slot_row_tag(self, item_type):
+        try:
+            current_index = self.armor_types.index(item_type)
+        except ValueError:
+            return None
+
+        for next_item_type in self.armor_types[current_index + 1:]:
+            next_row_tag = f"{next_item_type}_row"
+            if dpg.does_item_exist(next_row_tag):
+                return next_row_tag
+        return None
 
     def render_deviation_selector(self):
         parent_tag = "deviation_selection_group"
@@ -1624,6 +1875,34 @@ class CalcAndModTab:
         dpg.delete_item(parent_tag, children_only=True)
         compact_view = self.is_compact_slot_view_enabled()
         deviation = self.context.selected_deviation
+        if compact_view:
+            with dpg.group(horizontal=True, parent=parent_tag, tag="deviation_selection_row"):
+                if not deviation:
+                    dpg.add_button(
+                        label=self.get_compact_selector_label("deviation"),
+                        callback=self.open_deviation_selection,
+                        tag="deviation_selector",
+                        width=92,
+                        height=92,
+                    )
+                else:
+                    image_tag = "selected_deviation_image"
+                    self.add_colored_image_button(
+                        self.get_deviation_texture(deviation),
+                        card_kind="deviation",
+                        width=92,
+                        height=92,
+                        callback=self.open_deviation_selection,
+                        tag=image_tag,
+                    )
+                    self.bind_right_click_handler(
+                        image_tag,
+                        "selected_deviation_handler",
+                        self.open_deviation_config_window,
+                    )
+            dpg.bind_item_theme("deviation_selection_row", "compact_zero_spacing_theme")
+            return
+
         panel_width = 110 if compact_view else 290
         panel_height = 150 if compact_view else 235
         if not deviation:
@@ -1662,6 +1941,7 @@ class CalcAndModTab:
         for armor_type in self.armor_types:
             self.render_armor_slot(armor_type)
         self.render_deviation_selector()
+        self.update_selection_section_layout()
         self.update_equipment_summary()
 
     def create_combat_section(self):
@@ -3428,7 +3708,7 @@ class CalcAndModTab:
             return
 
         panel_height = max(560, height - 120)
-        left_width = min(max(420, int(width * 0.36)), 560)
+        left_width = min(max(500, int(width * 0.38)), 620)
         right_width = max(420, width - left_width - 70)
         top_panel_height = min(410, max(360, int(panel_height * 0.46)))
         summary_height = min(250, max(190, int(panel_height * 0.28)))

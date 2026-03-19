@@ -33,10 +33,7 @@ SITEMAPS = {
     "armor": f"{BASE_URL}/sitemap/armor.xml",
     "mods": f"{BASE_URL}/sitemap/mods.xml",
 }
-ARMOR_SLUG_ALIASES = {
-    # Legacy local item ids that map to the current public OnceHumanDB pages.
-    "lonewolf_hood": ["lonewolf-hat"],
-}
+ARMOR_SLUG_ALIASES = {}
 WEAPON_SLUG_ALIASES = {
     # The local calculator still has a few legacy/base entries that do not have
     # exact OnceHumanDB pages. Use the closest family page so the UI still gets

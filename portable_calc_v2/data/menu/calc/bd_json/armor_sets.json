@@ -119,8 +119,8 @@
   },
   "items": [
     {
-      "id": "lonewolf_hood",
-      "name": "Lonewolf Hood",
+      "id": "lonewolf_hat",
+      "name": "Lonewolf Hat",
       "type": "helmet",
       "rarity": "legendary",
       "set_id": "lonewolf_set"

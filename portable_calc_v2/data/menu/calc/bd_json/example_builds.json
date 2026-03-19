@@ -36,7 +36,7 @@
         "degree": 0
       },
       "items": {
-        "helmet": "lonewolf_hood",
+        "helmet": "lonewolf_hat",
         "mask": "lonewolf_mask",
         "top": "lonewolf_jacket",
         "gloves": "lonewolf_gloves",
@@ -127,7 +127,7 @@
         "degree": 0
       },
       "items": {
-        "helmet": "lonewolf_hood",
+        "helmet": "lonewolf_hat",
         "mask": "lonewolf_mask",
         "top": "heavy_duty_top",
         "gloves": "lonewolf_gloves",
@@ -585,7 +585,7 @@
         "degree": 0
       },
       "items": {
-        "helmet": "lonewolf_hood",
+        "helmet": "lonewolf_hat",
         "mask": "lonewolf_mask",
         "top": "heavy_duty_top",
         "gloves": "lonewolf_gloves",
